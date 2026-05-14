@@ -1,8 +1,11 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// Deploys to https://siunami.github.io/runner/ — base path matches repo name.
+// Base path is deploy-target-specific. Set VITE_BASE_PATH at build time:
+//   GitHub Pages (repo subpath):  VITE_BASE_PATH=/runner/  npm run build
+//   Vercel / Netlify (root):      (unset)                  npm run build
+//   Dev:                          (unset, defaults to "/")
 export default defineConfig({
-  base: "/runner/",
+  base: process.env.VITE_BASE_PATH ?? "/",
   plugins: [react()],
 });
