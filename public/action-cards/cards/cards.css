@@ -1,0 +1,977 @@
+/*
+ * Action-cards stylesheet.
+ * Design rules: public/action-cards/DESIGN.md
+ * Color is a signal that costs attention — default to neutrals.
+ * Permitted color: destructive red (irreversible action text + P1 dot), success green (Sent ✓ only).
+ * No yellow/amber, no accent blue, no per-category pill colors.
+ */
+
+/* Hide-attribute respected everywhere — overrides display:flex/grid/etc. */
+[hidden] { display: none !important; }
+
+/* Native Runner token model — mirrors packages/ui/src/styles/index.css (dark mode) */
+:root {
+  /* Base anchors */
+  --background: #21201d;
+  --foreground: #f7f7f5;
+  --bg-foreground-2: #26272D;
+
+  /* Foreground opacity scale (color-mix sRGB → flattened to rgba for dark mode) */
+  --foreground-3:  rgba(247, 247, 245, 0.03);
+  --foreground-5:  rgba(247, 247, 245, 0.05);
+  --foreground-10: rgba(247, 247, 245, 0.10);
+  --foreground-15: rgba(247, 247, 245, 0.15);
+  --foreground-30: rgba(247, 247, 245, 0.30);
+  --foreground-50: rgba(247, 247, 245, 0.50);
+  --foreground-70: rgba(247, 247, 245, 0.70);
+  --foreground-85: rgba(247, 247, 245, 0.85);
+
+  /* shadcn semantic tokens (matches Runner's app/web/src/index.css) */
+  --card: #2E2F35;  /* ~4% white-mix above page bg — lifted, not recessed */
+  --card-foreground: var(--foreground);
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --secondary: var(--foreground-5);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--foreground-5);
+  --muted-foreground: var(--foreground-50);
+  --accent: var(--foreground-5);
+  --accent-foreground: var(--foreground);
+  --destructive: #ef4444;
+  --success: #22c55e;
+  --info: #fbbf24;
+  --border: var(--foreground-5);
+  --input: var(--foreground-10);
+  --ring: rgba(247, 247, 245, 0.25);
+
+  /* Status fills (used for priority badges) */
+  --destructive-text: rgba(239, 68, 68, 0.85);
+  --destructive-bg:   rgba(239, 68, 68, 0.12);
+  --info-text:        rgba(251, 191, 36, 0.90);
+  --info-bg:          rgba(251, 191, 36, 0.12);
+  --accent-blue:      rgba(106, 156, 243, 0.90);
+  --accent-blue-bg:   rgba(106, 156, 243, 0.12);
+  --success-text:     rgba(34, 197, 94, 0.90);
+  --success-bg:       rgba(34, 197, 94, 0.10);
+  --success-border:   rgba(34, 197, 94, 0.25);
+
+  /* Elevation — matches --shadow-minimal */
+  --shadow-minimal:
+    rgba(247, 247, 245, 0.15) 0 0 0 1px,
+    rgba(0, 0, 0, 0.12) 0 1px 1px -0.5px,
+    rgba(0, 0, 0, 0.12) 0 3px 3px -1.5px;
+
+  /* Type */
+  --font-ui: "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  font-family: var(--font-ui);
+  background: var(--bg-foreground-2);
+  color: var(--foreground);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Page header — matches the session page header exactly ─── */
+.page-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 12px 16px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--foreground);
+}
+.brand svg { width: 20px; height: 20px; }
+.brand span { font-size: 14px; font-weight: 600; }
+.page-title-wrap { display: flex; justify-content: center; }
+.page-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 28rem;
+}
+
+/* ─── Thread layout — fills the iframe vertically, scrolls its own content ─── */
+.thread {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 8px 24px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--foreground-10) transparent;
+}
+.thread::-webkit-scrollbar { width: 6px; }
+.thread::-webkit-scrollbar-track { background: transparent; }
+.thread::-webkit-scrollbar-thumb {
+  background: var(--foreground-10);
+  border-radius: 3px;
+}
+.thread::-webkit-scrollbar-thumb:hover { background: var(--foreground-15); }
+
+/* ─── User message bubble — native: bg-foreground/5, no border, rounded-[16px], px-5 py-3.5, text-sm, max-w-[80%] ─── */
+.user-msg {
+  align-self: flex-end;
+  max-width: 80%;
+  background: var(--foreground-5);
+  color: var(--foreground);
+  border-radius: 16px;
+  padding: 14px 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
+}
+.user-msg.short { padding: 10px 16px; border-radius: 16px; }
+.user-msg.slash {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--foreground-70);
+}
+
+/* ─── Steps Completed — matches the native session chat toggle ─── */
+.steps {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+.steps .chev {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+.steps .count {
+  margin-left: -2px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--background);
+  box-shadow: var(--shadow-minimal);
+  font-size: 10px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+  line-height: 1;
+}
+.steps .label {
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+/* ─── Card — native: bg-card (= bg-background = #21201d), border, rounded-xl, flex-col, padding 24px ─── */
+.card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.card h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+.card h3 {
+  margin: 18px 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.card p { margin: 0 0 10px; font-size: 14px; line-height: 1.5; color: var(--foreground-85); }
+.card p:last-child { margin-bottom: 0; }
+.card ul { margin: 0 0 10px; padding-left: 20px; }
+.card li { margin-bottom: 4px; font-size: 14px; color: var(--foreground-85); line-height: 1.5; }
+.card strong { color: var(--foreground); font-weight: 600; }
+.card em { color: var(--foreground); font-style: italic; }
+.card .quote {
+  border-left: 2px solid var(--foreground-15);
+  padding: 4px 0 4px 12px;
+  color: var(--foreground-70);
+  font-style: italic;
+  margin: 8px 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.card code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: var(--muted);
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: var(--foreground);
+}
+.card .lead {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  margin: -2px 0 12px;
+  line-height: 1.5;
+}
+
+/* Tables inside cards */
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0 10px;
+  font-size: 13px;
+}
+.card th, .card td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.card th {
+  color: var(--muted-foreground);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.card tr:last-child td { border-bottom: 0; }
+
+/* Inline callout — neutral surface, icon carries the signal */
+.callout {
+  margin: 8px 0 12px;
+  padding: 12px 14px;
+  background: var(--foreground-5);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--foreground-85);
+  line-height: 1.5;
+}
+.callout .ico {
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--foreground-50);
+}
+
+/* ─── Decision card — same card primitive + a question chip + a tight option list ─── */
+.card.decision .question-chip {
+  display: inline-block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-70);
+  background: var(--foreground-5);
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  align-self: flex-start;
+}
+.card.decision h2 { margin-bottom: 4px; }
+
+.options {
+  display: flex; flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+}
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+  text-align: left;
+}
+.option:hover { background: var(--accent); }
+.option .radio {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--foreground-15);
+  background: var(--background);
+  flex-shrink: 0;
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.option.recommended .radio::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--foreground);
+}
+.option .body { flex: 1; min-width: 0; }
+.option .body .title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 2px;
+  line-height: 1.45;
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+}
+.option .body .badge {
+  font-size: 11px;
+  color: var(--foreground-70);
+  background: var(--foreground-5);
+  padding: 1px 7px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.option .body .sub {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+}
+
+/* ─── Resolution chip — confirmation of a user-resolved action. Quiet. ─── */
+.resolution {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--foreground-5);
+  border-radius: 999px;
+  color: var(--foreground-85);
+  font-size: 13px;
+}
+.resolution .check {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--success);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--background);
+  font-size: 9px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.resolution strong { color: var(--foreground); font-weight: 500; }
+
+/* ─── Action card group (suggested next steps) ─── */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.actions-label {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+  padding: 2px 4px;
+}
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+  text-align: left;
+  font-family: inherit;
+}
+.action-btn:hover {
+  background: var(--accent);
+  border-color: var(--foreground-15);
+}
+.action-btn .icon {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--foreground-70);
+}
+.action-btn .icon svg { width: 14px; height: 14px; }
+.action-btn .body { flex: 1; min-width: 0; }
+.action-btn .body .title {
+  font-size: 14px; font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 2px;
+  line-height: 1.4;
+}
+.action-btn .body .sub {
+  font-size: 13px; color: var(--muted-foreground);
+  line-height: 1.45;
+}
+.action-btn .arrow {
+  color: var(--foreground-30);
+  transition: transform 120ms ease, color 120ms ease;
+  flex-shrink: 0;
+}
+.action-btn:hover .arrow { color: var(--foreground); transform: translateX(2px); }
+
+/* ─── Chart placeholder ─── */
+.chart-ph {
+  margin: 10px 0 4px;
+  padding: 14px 16px;
+  background: var(--muted);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chart-ph .ctitle {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+.chart-ph .bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 80px;
+}
+.chart-ph .bar {
+  flex: 1;
+  background: var(--foreground-50);
+  border-radius: 3px 3px 0 0;
+  min-height: 6px;
+  opacity: 0.6;
+}
+.chart-ph .xlabels {
+  display: flex;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.chart-ph .xlabels span {
+  flex: 1;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Order/email summary card ─── */
+.card.summary .product {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: var(--muted);
+  border-radius: 8px;
+  margin: 4px 0 8px;
+}
+.card.summary .product .pimg {
+  width: 56px; height: 56px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6b4a2b, #3a2a18);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #e8c89a;
+  font-size: 20px;
+}
+.card.summary .product .pbody { flex: 1; min-width: 0; }
+.card.summary .product .pname {
+  font-size: 14px; font-weight: 500; color: var(--foreground);
+  margin-bottom: 2px;
+}
+.card.summary .product .pprice {
+  font-size: 13px; color: var(--foreground-70);
+  margin-bottom: 4px;
+}
+.card.summary .product .pdesc {
+  font-size: 13px; color: var(--muted-foreground);
+  line-height: 1.5;
+}
+.card.summary .message-block {
+  margin: 8px 0;
+  padding: 12px 14px;
+  background: var(--muted);
+  border-left: 2px solid var(--foreground-30);
+  border-radius: 6px;
+  font-style: italic;
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.card.summary .signoff {
+  color: var(--foreground-70);
+  font-style: normal;
+  display: block;
+  margin-top: 6px;
+}
+
+/* Variant: memory/preference messages (non-italic, neutral) */
+.message-block.message-block-normal {
+  font-style: normal;
+  border-left-color: var(--foreground-30);
+}
+
+/* Muted table cell + note — replaces inline style="color:..." overrides */
+.cell-muted { color: var(--foreground-70); }
+.note-muted {
+  color: var(--foreground-70);
+  font-size: 13px;
+}
+.card.summary .recipients {
+  display: flex; gap: 6px;
+  margin: 6px 0 12px;
+  flex-wrap: wrap;
+}
+.card.summary .recipient {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--muted);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--foreground);
+}
+.card.summary .recipient .ridot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--foreground-50);
+}
+.card.summary .recipient.ready .ridot { background: var(--success); }
+.card.summary .recipient .raddr {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+/* ─── Actions row inside cards ─── */
+.actions-row {
+  display: flex; gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+/* ─── Button — shadcn h-9 rounded-md variants ─── */
+.btn {
+  height: 36px;                  /* h-9 */
+  padding: 0 16px;               /* px-4 */
+  border-radius: 6px;            /* rounded-md */
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  transition: background-color 120ms ease, opacity 120ms ease;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--foreground-10); }
+.btn.primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.btn.primary:hover { opacity: 0.9; }
+.btn.outline {
+  background: transparent;
+  border: 1px solid var(--input);
+  color: var(--foreground);
+}
+.btn.outline:hover { background: var(--accent); }
+.btn.danger {
+  background: transparent;
+  color: var(--destructive-text);
+  border: 1px solid transparent;
+}
+.btn.danger:hover { background: var(--destructive-bg); }
+.btn.sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+/* ─── Chip / Pill — single neutral primitive. Differentiate with text, not color. ─── */
+.pill,
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--foreground-70);
+  background: var(--foreground-5);
+}
+/* All priority/level variants share the neutral chip. P1 gets a destructive dot prefix. */
+.pill.high,
+.pill.p1,
+.chip.is-p1 { color: var(--foreground); }
+.pill.high::before,
+.pill.p1::before,
+.chip.is-p1::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--destructive);
+}
+/* P2, P3, P4, .med, .low → inherit the base neutral chip. No override needed. */
+.chip.is-sent {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.chip.is-discarded {
+  color: var(--foreground-50);
+  text-decoration: line-through;
+}
+
+/* ─── Draft / ticket list rows inside a card ─── */
+.row-list {
+  display: flex; flex-direction: column;
+  gap: 2px;
+  margin: 4px 0 0;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.row:hover { background: var(--accent); }
+.row .row-body { flex: 1; min-width: 0; }
+.row .row-name {
+  font-size: 13.5px; font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 1px;
+  line-height: 1.4;
+}
+.row .row-meta {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row .row-arrow { color: var(--foreground-30); font-size: 14px; flex-shrink: 0; }
+
+/* ─── Message input — native: shadcn input wrapped in a Card, send is h-7 w-7 round-full ─── */
+.msg-input-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, var(--bg-foreground-2) 60%, transparent);
+  padding: 16px 24px 20px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.msg-input {
+  pointer-events: auto;
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 6px 6px 14px;
+  background: var(--card);
+  border: 1px solid var(--input);
+  border-radius: 12px;
+  box-shadow: var(--shadow-minimal);
+}
+.msg-input input {
+  flex: 1;
+  height: 28px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 0;
+}
+.msg-input input::placeholder { color: var(--muted-foreground); }
+.msg-input .send {
+  width: 28px; height: 28px;       /* h-7 w-7 */
+  border-radius: 9999px;           /* round-full */
+  background: var(--foreground);
+  color: var(--background);
+  border: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: opacity 120ms ease;
+}
+.msg-input .send:hover { opacity: 0.9; }
+.msg-input .send svg { stroke-width: 2.5; }
+
+/* ─── Composer — standard pattern for batch operations (see DESIGN.md §4) ─── */
+.composer-card { display: flex; flex-direction: column; gap: 0; }
+.composer-card > h2 { margin: 0; }
+
+.composer-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
+}
+
+.composer-head-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.composer-from {
+  font-size: 11px;
+  color: var(--foreground-50);
+  letter-spacing: 0.01em;
+}
+
+.composer-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* Chip row above the composer fields */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: 16px;
+}
+
+.composer-position {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground-50);
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: center;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: 0;
+  border-radius: 5px;
+  color: var(--foreground-50);
+  cursor: pointer;
+  padding: 0;
+}
+.nav-btn svg { width: 14px; height: 14px; }
+.nav-btn:hover:not(:disabled) {
+  background: var(--foreground-5);
+  color: var(--foreground);
+}
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Per-draft inline warning — sits above the recipient/body as context */
+.draft-warning {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  background: var(--foreground-5);
+  border-left: 2px solid var(--foreground-30);
+  border-radius: 0 4px 4px 0;
+  font-size: 12px;
+  color: var(--foreground-85);
+  line-height: 1.55;
+}
+
+/* Ticket sections inside the tickets composer */
+.ticket-section {
+  padding: 14px 0 0;
+}
+.ticket-section h4 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--foreground-50);
+}
+.ticket-quote {
+  margin: 0 0 8px;
+  padding: 4px 0 4px 12px;
+  border-left: 2px solid var(--foreground-15);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--foreground-85);
+  line-height: 1.55;
+}
+.ticket-quote:last-child { margin-bottom: 0; }
+.ticket-quote span {
+  color: var(--foreground-50);
+  font-style: normal;
+}
+.ticket-section p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--foreground-85);
+  line-height: 1.55;
+}
+
+/* Composer fields — label-less by default, reads as prose */
+.composer { display: flex; flex-direction: column; }
+
+.field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.field > input {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--foreground);
+  padding: 0;
+  min-width: 0;
+  outline: none;
+}
+.field > input::placeholder { color: var(--foreground-30); }
+.field > input:disabled { color: var(--foreground-50); cursor: default; }
+
+.field-to > input { color: var(--foreground-85); }
+.field-subject > input { font-weight: 600; font-size: 14px; }
+
+.field-body {
+  grid-template-columns: 1fr;
+  padding: 16px 0 8px;
+  border-bottom: 0;
+}
+.field-body > textarea {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--foreground);
+  resize: none;
+  min-height: 160px;
+  padding: 0;
+  outline: none;
+}
+.field-body > textarea:disabled { color: var(--foreground-50); cursor: default; }
+
+.edited-flag {
+  font-size: 11px;
+  color: var(--foreground-50);
+  font-style: italic;
+}
+
+/* Footer — single row, link-styled buttons */
+.composer-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.composer-tally {
+  flex: 1;
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--foreground-50);
+}
+.composer-tally .tally-sent { color: var(--success-text); font-weight: 500; }
+.composer-tally .tally-discarded { color: var(--foreground-50); font-weight: 500; }
+
+.link-btn {
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--foreground-70);
+  cursor: pointer;
+  padding: 4px 2px;
+}
+.link-btn:hover:not(:disabled) { color: var(--foreground); }
+.link-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.link-btn.danger { color: rgba(239, 68, 68, 0.85); }
+.link-btn.danger:hover:not(:disabled) { color: var(--destructive); }
+
+/* Done state */
+.done-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px 16px;
+  color: var(--foreground-70);
+  font-size: 13px;
+}
+.done-state > span:first-child {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.done-tally { display: inline-flex; gap: 10px; }
+.done-tally .tally-sent { color: var(--success-text); font-weight: 500; }
+.done-tally .tally-discarded { color: var(--foreground-50); font-weight: 500; }

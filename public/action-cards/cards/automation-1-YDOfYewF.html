@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Action Cards — Churn Win-Back</title>
+<link rel="stylesheet" href="cards.css" />
+</head>
+<body>
+<header class="page-header">
+  <a href="#" class="brand" title="Runner">
+    <svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M724.105 520.984C723.617 522.053 722.551 522.739 721.376 522.739H468.944C468.456 522.739 468.04 523.09 467.958 523.57L429.008 751.31C428.762 752.751 427.513 753.804 426.051 753.804H203C202.442 753.804 201.992 753.348 202 752.789L209.184 276.677C209.209 275.038 210.544 273.722 212.183 273.721H509.503C510.123 273.721 510.594 274.279 510.489 274.89L476.64 472.807C476.456 473.88 477.877 474.432 478.466 473.517L601.041 283.162C601.557 282.361 602.424 281.853 603.375 281.793L838.36 267.001C839.114 266.954 839.646 267.727 839.332 268.414L724.105 520.984Z" fill="currentColor"/></svg>
+    <span>Runner</span>
+  </a>
+  <div class="page-title-wrap"><span class="page-title">Churn Win-Back — May 13, 2026, 9:00 AM</span></div>
+  <div></div>
+</header>
+
+<div class="thread">
+
+  <div class="user-msg slash">/runner-my-workspace:churn-winback</div>
+
+  <button class="steps" type="button"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="count">18</span><span class="label">Steps Completed</span></button>
+
+  <div class="card">
+    <h2>Churn Win-Back Report — 2026-05-13</h2>
+    <div class="lead">~160 raw candidates after diffing active 2026-04-22 → 2026-05-05 vs silent last 7 days, minus internal emails. <strong>8 drafts ready below.</strong></div>
+
+    <h3>Notable skips</h3>
+    <ul>
+      <li><strong>Peer/competitor risk:</strong> Melty, Grammarly (2), Indent, Popcorn AI, Elise, Ramp, Levels.fyi, Wonder, Notion (3), TryOrdinal</li>
+      <li><strong>Team coverage</strong> (other teammates still active): WithPower, Elena Saradidis, WealthBridge, Renalabs, GetBoosted, Parabol, Fjor, Darika, GrowthCrew</li>
+      <li><strong>Within 30-day skip window:</strong> 11 users contacted in Runs #3–5</li>
+      <li><strong>Generic gmail / no context:</strong> ~30 users including high-volume tire-kickers (lil058279 with 844 msgs, jm9727567 with 123 msgs)</li>
+    </ul>
+  </div>
+
+  <div class="card composer-card" id="drafts-composer-card">
+    <header class="composer-head">
+      <div class="composer-head-titles">
+        <h2>Drafts — review and send</h2>
+        <span class="composer-from">from charlie@runner.now</span>
+      </div>
+      <div class="composer-nav">
+        <button class="nav-btn" type="button" id="prev-btn" aria-label="Previous draft">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <span class="composer-position" id="position">1 / 8</span>
+        <button class="nav-btn" type="button" id="next-btn" aria-label="Next draft">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="chip-row" id="chip-row">
+      <span class="chip">ⓘ Connector data broken — domain-only personalization</span>
+      <span class="chip" id="chip-meta"></span>
+    </div>
+
+    <p class="draft-warning" id="draft-warning" hidden></p>
+
+    <div class="composer" id="composer">
+      <div class="field field-to"><input type="text" id="f-to" aria-label="To" /></div>
+      <div class="field field-subject">
+        <input type="text" id="f-subject" aria-label="Subject" />
+        <span class="edited-flag" id="edited-flag" hidden>Edited</span>
+      </div>
+      <div class="field field-body"><textarea id="f-body" rows="8" aria-label="Body"></textarea></div>
+    </div>
+
+    <div class="done-state" id="done-state" hidden>
+      <span>All 8 drafts handled</span>
+      <span class="done-tally" id="done-tally"></span>
+      <button class="link-btn" type="button" id="reset-btn">Reset</button>
+    </div>
+
+    <footer class="composer-footer" id="composer-footer">
+      <button class="link-btn" type="button" id="discard-btn">Discard</button>
+      <span class="composer-tally" id="composer-tally"></span>
+      <button class="link-btn" type="button" id="send-all-btn">Send all 8</button>
+      <button class="btn primary" type="button" id="send-btn">Send</button>
+    </footer>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const DRAFTS = [
+    {
+      first: "Morne",
+      to: "morne@cogniate.ai",
+      domain: "Cogniate.ai",
+      msgs: 496,
+      context: "other team still active",
+      priority: "high",
+      warning: "Borderline peer — Cogniate is an AI agent platform. Included since other Cogniate users remain active and deep usage suggests genuine evaluation.",
+      subject: "Checking in — was it a workflow gap?",
+      body: "Morne — saw you went deep on Runner over a couple weeks then stopped. Curious what happened — was it a workflow gap, the speed, or something else? Other folks at Cogniate are still active so I don't think it's the broader fit. No pressure, just want the honest read.\n\n— Charlie"
+    },
+    {
+      first: "msevilla",
+      to: "msevilla@canarytechnologies.com",
+      domain: "Canary Technologies",
+      msgs: 181,
+      context: "hotel security",
+      priority: "high",
+      warning: "Used \"Hey there\" — first name was ambiguous. 181 msgs in 2 weeks is real engagement; worth a name fix.",
+      subject: "Quick read on Runner — for Canary's stack?",
+      body: "Hey there — noticed you stopped after a heavy two weeks (~180 messages). For Canary's hotel-security work I can't tell if Runner mapped to your stack or not. Would love a 10-min read either way — if the answer is \"nope, doesn't fit,\" that's useful too.\n\n— Charlie"
+    },
+    {
+      first: "David",
+      to: "david@degenerate.capital",
+      domain: "Degenerate Capital",
+      msgs: 68,
+      context: "crypto fund",
+      priority: "high",
+      warning: null,
+      subject: "Did Runner land short for the fund work?",
+      body: "David — short check-in. You ran a real evaluation of Runner from the crypto-fund angle, then went quiet. Did it land short, or did the workflow change? Either is useful intel. Happy to extend trial time if you want a second pass.\n\n— Charlie"
+    },
+    {
+      first: "Aubrey",
+      to: "aubrey@paperboytm.com",
+      domain: "Paperboy",
+      msgs: 26,
+      context: null,
+      priority: "med",
+      warning: null,
+      subject: "Want another swing at Runner?",
+      body: "Aubrey — checking back in. Saw you tried Runner for a stretch then trailed off. Happy to extend trial credits if you want another swing at it. Or — if the answer is \"not for me yet\" — would love the honest read.\n\n— Charlie"
+    },
+    {
+      first: "Audrey",
+      to: "audrey@mapo.studio",
+      domain: "Mapo Studio",
+      msgs: 22,
+      context: "design",
+      priority: "med",
+      warning: null,
+      subject: "What would've made Runner stickier for design?",
+      body: "Audrey — quick one. Mapo's design-team angle is one I haven't dug into much yet — I'd love to know what would've made Runner stickier for that workflow. 10 minutes, any time.\n\n— Charlie"
+    },
+    {
+      first: "Karman",
+      to: "karman@athenanorth.com",
+      domain: "Athena North",
+      msgs: 22,
+      context: null,
+      priority: "med",
+      warning: null,
+      subject: "What tripped you up with Runner?",
+      body: "Karman — saw you stopped after a small evaluation. Want to make sure I understand what tripped you up — is there a specific workflow Runner missed for Athena North? Easy to dig in if you've got 10 minutes.\n\n— Charlie"
+    },
+    {
+      first: "Robbie",
+      to: "robbie@wack.run",
+      domain: "Wack.run",
+      msgs: 18,
+      context: "agentic-space peer",
+      priority: "med",
+      warning: null,
+      subject: "Quick check-in — what didn't click?",
+      body: "Robbie — noticed you went quiet. Smaller evaluation but Wack.run is in the agentic space so I take this signal seriously. Want to chat about what didn't click?\n\n— Charlie"
+    },
+    {
+      first: "Dan",
+      to: "dan@ducttape.events",
+      domain: "DuctTape Events",
+      msgs: 21,
+      context: null,
+      priority: "med",
+      warning: null,
+      subject: "Events-ops fit — was it a gap?",
+      body: "Dan — events-ops is an angle I've been wondering about — Runner's not really built for it today. If there's something specific that would've made it useful, happy to either pass it to the team or just give you context on the roadmap.\n\n— Charlie"
+    }
+  ];
+
+  const TOTAL = DRAFTS.length;
+  const state = {
+    current: 0,
+    statuses: DRAFTS.map(() => "pending"),
+    edits: DRAFTS.map((d) => ({
+      to: d.to,
+      subject: d.subject,
+      body: d.body,
+      edited: false
+    }))
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const $composer = $("composer");
+  const $doneState = $("done-state");
+  const $footer = $("composer-footer");
+  const $to = $("f-to");
+  const $subject = $("f-subject");
+  const $body = $("f-body");
+  const $editedFlag = $("edited-flag");
+  const $position = $("position");
+  const $prev = $("prev-btn");
+  const $next = $("next-btn");
+  const $send = $("send-btn");
+  const $discard = $("discard-btn");
+  const $sendAll = $("send-all-btn");
+  const $tally = $("composer-tally");
+  const $doneTally = $("done-tally");
+  const $reset = $("reset-btn");
+  const $chipRow = $("chip-row");
+  const $chipMeta = $("chip-meta");
+  const $warning = $("draft-warning");
+
+  function counts() {
+    let p = 0, s = 0, d = 0;
+    state.statuses.forEach((v) => { if (v === "pending") p++; else if (v === "sent") s++; else d++; });
+    return { pending: p, sent: s, discarded: d };
+  }
+
+  function findNextPending(from) {
+    for (let i = from + 1; i < TOTAL; i++) if (state.statuses[i] === "pending") return i;
+    for (let i = 0; i < from; i++) if (state.statuses[i] === "pending") return i;
+    return -1;
+  }
+
+
+  function renderComposer() {
+    const i = state.current;
+    const d = DRAFTS[i];
+    const edits = state.edits[i];
+    const status = state.statuses[i];
+    const disabled = status !== "pending";
+
+    $to.value = edits.to;
+    $subject.value = edits.subject;
+    $body.value = edits.body;
+
+    [$to, $subject, $body].forEach((el) => { el.disabled = disabled; });
+
+    $editedFlag.hidden = !(edits.edited && status === "pending");
+
+    // Per-draft meta chip: domain · msgs · context
+    const parts = [d.domain, d.msgs + " msgs"];
+    if (d.context) parts.push(d.context);
+    $chipMeta.textContent = parts.join(" · ");
+
+    if (d.warning) {
+      $warning.hidden = false;
+      $warning.textContent = "⚠ " + d.warning;
+    } else {
+      $warning.hidden = true;
+      $warning.textContent = "";
+    }
+  }
+
+  function renderFooter() {
+    const c = counts();
+    const status = state.statuses[state.current];
+
+    $position.textContent = (state.current + 1) + " / " + TOTAL;
+    $prev.disabled = state.current === 0;
+    $next.disabled = state.current === TOTAL - 1;
+    $send.disabled = status !== "pending";
+    $discard.disabled = status !== "pending";
+    $sendAll.disabled = c.pending === 0;
+    $sendAll.textContent = "Send all " + c.pending;
+
+    const parts = [];
+    if (c.sent > 0) parts.push('<span class="tally-sent">' + c.sent + ' sent</span>');
+    if (c.discarded > 0) parts.push('<span class="tally-discarded">' + c.discarded + ' discarded</span>');
+    $tally.innerHTML = parts.join(" · ");
+  }
+
+  function renderDoneState() {
+    const c = counts();
+    const isDone = c.pending === 0;
+    $doneState.hidden = !isDone;
+    $composer.hidden = isDone;
+    $footer.hidden = isDone;
+    $chipRow.hidden = isDone;
+    if (isDone) {
+      const parts = [];
+      if (c.sent > 0) parts.push('<span class="tally-sent">' + c.sent + ' sent</span>');
+      if (c.discarded > 0) parts.push('<span class="tally-discarded">' + c.discarded + ' discarded</span>');
+      $doneTally.innerHTML = parts.join(" · ");
+    }
+  }
+
+  function renderAll() {
+    renderComposer();
+    renderFooter();
+    renderDoneState();
+  }
+
+  function markEdited() {
+    if (!state.edits[state.current].edited) {
+      state.edits[state.current].edited = true;
+      $editedFlag.hidden = state.statuses[state.current] !== "pending";
+    }
+  }
+
+  // Field edit wiring
+  $to.addEventListener("input", (e) => { state.edits[state.current].to = e.target.value; markEdited(); });
+  $subject.addEventListener("input", (e) => { state.edits[state.current].subject = e.target.value; markEdited(); });
+  $body.addEventListener("input", (e) => { state.edits[state.current].body = e.target.value; markEdited(); });
+
+  $prev.addEventListener("click", () => { if (state.current > 0) { state.current--; renderAll(); } });
+  $next.addEventListener("click", () => { if (state.current < TOTAL - 1) { state.current++; renderAll(); } });
+
+  $send.addEventListener("click", () => {
+    state.statuses[state.current] = "sent";
+    const nxt = findNextPending(state.current);
+    if (nxt !== -1) state.current = nxt;
+    renderAll();
+  });
+
+  $discard.addEventListener("click", () => {
+    state.statuses[state.current] = "discarded";
+    const nxt = findNextPending(state.current);
+    if (nxt !== -1) state.current = nxt;
+    renderAll();
+  });
+
+  $sendAll.addEventListener("click", () => {
+    state.statuses = state.statuses.map((s) => (s === "pending" ? "sent" : s));
+    renderAll();
+  });
+
+  $reset.addEventListener("click", () => {
+    state.statuses = DRAFTS.map(() => "pending");
+    state.edits = DRAFTS.map((d) => ({
+      to: d.to,
+      subject: d.subject,
+      body: d.body,
+      edited: false
+    }));
+    state.current = 0;
+    renderAll();
+  });
+
+  renderAll();
+})();
+</script>
+
+<div class="msg-input-bar">
+  <div class="msg-input">
+    <input type="text" placeholder="Reply to continue this session..." />
+    <button class="send" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
+  </div>
+</div>
+</body>
+</html>

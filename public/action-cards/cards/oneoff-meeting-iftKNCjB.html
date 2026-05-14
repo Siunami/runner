@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Action Cards — Understand user engagement patterns</title>
+<link rel="stylesheet" href="cards.css" />
+</head>
+<body>
+<header class="page-header">
+  <a href="#" class="brand" title="Runner">
+    <svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M724.105 520.984C723.617 522.053 722.551 522.739 721.376 522.739H468.944C468.456 522.739 468.04 523.09 467.958 523.57L429.008 751.31C428.762 752.751 427.513 753.804 426.051 753.804H203C202.442 753.804 201.992 753.348 202 752.789L209.184 276.677C209.209 275.038 210.544 273.722 212.183 273.721H509.503C510.123 273.721 510.594 274.279 510.489 274.89L476.64 472.807C476.456 473.88 477.877 474.432 478.466 473.517L601.041 283.162C601.557 282.361 602.424 281.853 603.375 281.793L838.36 267.001C839.114 266.954 839.646 267.727 839.332 268.414L724.105 520.984Z" fill="currentColor"/></svg>
+    <span>Runner</span>
+  </a>
+  <div class="page-title-wrap"><span class="page-title">Understand user engagement patterns</span></div>
+  <div></div>
+</header>
+
+<div class="thread">
+
+  <div class="user-msg">Talking to michel.davidoff@outlook.com — give me a sense of how he uses the app</div>
+
+  <button class="steps" type="button"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="count">86</span><span class="label">Steps Completed</span></button>
+
+  <div class="card">
+    <h2>Michel Davidoff — usage profile</h2>
+    <div class="lead">Fractional CTO / IT consultant, ex–CSU system infrastructure lead.</div>
+
+    <h3>Who he is</h3>
+    <p>From his first message in the app:</p>
+    <div class="quote">"I consult for companies that need better IT efficiency and vision. I am a CTO for the company and previously served as the Chief Infrastructure Officer for the California State University system, where I oversaw the deployment of all IT infrastructure on 23 campuses and 500K students. Show me how to get started with Runner."</div>
+
+    <h3>Account snapshot</h3>
+    <ul>
+      <li>Signed up <strong>Apr 21, 2026</strong> (17 days ago)</li>
+      <li>Active <strong>4 days only</strong> (Apr 21–24), dormant since</li>
+      <li><strong>No paid plan</strong>, no Stripe customer — burned ~$6 of granted credits, never converted</li>
+      <li>~$8.58 of inferred token cost across <strong>147 turns</strong> (118 on Opus 4.7, 29 on Haiku 4.5)</li>
+      <li><strong>Zero connectors</strong> — no Gmail / Slack / Calendar / Notion / anything OAuthed</li>
+    </ul>
+
+    <h3>What he was actually doing</h3>
+    <p>A single, very specific use case across 5+ sessions: <strong>software / SaaS portfolio rationalization for a university client.</strong> Uploaded a stack of Excel files + a Word doc and ran the agent against them via local-file tools (Bash 75×, Write 9×, Read 8×, Grep 4×, Edit 1× — Claude-Code style, no integrations).</p>
+    <p>Representative prompts:</p>
+    <ul>
+      <li>"Looking at all these files, tab 'All data Template' column AR, can you see the following data 142, 140, 148… if you do, list the file name"</li>
+      <li>"Look at column D on all the files and create a list of software that you would expect from a 4 year university to have and you do not see"</li>
+      <li>"Review the software capabilities and suggest what software can be eliminated or optimized"</li>
+    </ul>
+
+    <h3>The standout behavior</h3>
+    <p>He kept reaching for <code>/create-workflow</code> — invoked it <strong>4 separate times</strong> across 4 different sessions, plus an explicit "turn this into a reusable workflow." Clearly wanted to package the rationalization analysis as a repeatable thing for future client engagements.</p>
+
+    <h3>Churn read</h3>
+    <p>Strong intent signal (real business problem, sophisticated multi-step prompts, burned through expensive Opus credits, repeated workflow attempts) but he silently dropped off Apr 24 and never came back. The combination of "Show me how to get started" + four <code>/create-workflow</code> retries + no connectors connected reads like someone who knew what he wanted Runner to <em>be</em> but couldn't get the workflow primitive to stick — and once credits ran out, no paid conversion.</p>
+  </div>
+
+  <div class="actions">
+    <div class="actions-label">Suggested next steps</div>
+
+    <div class="action-btn">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div class="body">
+        <div class="title">Send personal reach-out from Yitong</div>
+        <div class="sub">"Saw you trying to build a workflow for SaaS rationalization — want a 15-min walk-through?"</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+
+    <div class="action-btn">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="body">
+        <div class="title">Add to Zac's Friday trial-extensions queue</div>
+        <div class="sub">High-fit ICP worth a credit top-up if he reactivates</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+
+    <div class="action-btn">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="body">
+        <div class="title">Investigate the <code>/create-workflow</code> funnel</div>
+        <div class="sub">4 attempts, possibly silent failures — file Linear ticket if broken</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+  </div>
+
+  <div class="user-msg short">Check logfire too</div>
+
+  <button class="steps" type="button"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="count">16</span><span class="label">Steps Completed</span></button>
+
+  <div class="card">
+    <h2>Logfire confirms and sharpens the picture</h2>
+    <div class="lead">A few corrections to the earlier read.</div>
+
+    <h3>Last real interaction was Apr 23, not Apr 24</h3>
+    <p>The Apr 24 22:00 / 22:02 spans were <strong>automated <code>/memory-review</code> skill runs</strong> (the scheduled daily-memory-review automation firing — not Michel typing). His final human prompt was Apr 23 11:51 AM PT in the <code>open-dove</code> session:</p>
+    <div class="quote">"Create a cleaned three-column version, original description in column A, extracted product name in column B and in column C state if the data in column A is a valid product/software name."</div>
+    <p>Then silence — <strong>15 days dormant.</strong> Apr 25 was app-open-but-idle (auto-update polls and memory syncs, no chat). No spans at all from Apr 26 onward — he hasn't even launched the app.</p>
+
+    <h3>Session shape — 7 sessions, 4 days</h3>
+    <div class="chart-ph">
+      <div class="ctitle">Michel's sessions — turns &amp; tokens</div>
+      <div class="bars">
+        <div class="bar" style="height:8%"></div>
+        <div class="bar" style="height:42%"></div>
+        <div class="bar" style="height:18%"></div>
+        <div class="bar" style="height:46%"></div>
+        <div class="bar" style="height:8%"></div>
+        <div class="bar" style="height:25%"></div>
+        <div class="bar" style="height:10%"></div>
+      </div>
+      <div class="xlabels">
+        <span>cool-shore</span>
+        <span>sleek-sparrow</span>
+        <span>broad-valley</span>
+        <span>plain-maple</span>
+        <span>sunny-channel</span>
+        <span>open-dove</span>
+        <span>jade-dusk</span>
+      </div>
+    </div>
+
+    <h3>Tool breakdown (4 active days)</h3>
+    <p>Bash 75, Write 9, Read 8, Skill 5, Grep 4, ToolSearch 2, Edit 1, plus 1 each of <code>present_workflow_cards</code> and <code>skill_validate</code>. <strong>Zero connector tool calls</strong> of any kind. He did create 2 workspaces (<code>POST /api/v1/workspaces</code> × 2) but never connected a single source.</p>
+
+    <h3>The /create-workflow retry pattern is even more pronounced</h3>
+    <p>He invoked it as the <em>first prompt</em> in 4 separate sessions (sleek-sparrow, broad-valley, plain-maple, sunny-channel, open-dove) — sometimes with no follow-up at all (sunny-channel: 1 turn, 12 seconds, just <code>/create-workflow</code> then stopped). Reads like he kept hoping the workflow generator would package his SaaS-rationalization analysis into something reusable, never quite got there, and gave up.</p>
+
+    <h3>Net assessment</h3>
+    <p>Unchanged but sharper: real ICP fit, real recurring use case (university client SaaS audits), tried 5+ times to make it a workflow, no connectors connected, dormant 15 days. Worth a personal reach-out from you with a specific <em>"I noticed you tried <code>/create-workflow</code> 5× for a SaaS-rationalization use case — let me show you how to make that stick"</em> hook.</p>
+  </div>
+
+</div>
+
+<div class="msg-input-bar">
+  <div class="msg-input">
+    <input type="text" placeholder="Reply to continue this session..." />
+    <button class="send" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
+  </div>
+</div>
+</body>
+</html>
