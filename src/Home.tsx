@@ -107,7 +107,7 @@ function PrototypePreview({ slug, title }: { slug: string; title: string }) {
     <div ref={wrapRef} className="prototype-preview" aria-hidden="true">
       <iframe
         title={`${title} preview`}
-        src={`/${slug}`}
+        src={`${import.meta.env.BASE_URL}#/${slug}`}
         loading="lazy"
         tabIndex={-1}
         style={{
