@@ -49,7 +49,7 @@ export type Artifact =
     }
   | {
       kind: "checklist";
-      items: { label: string; checked?: boolean }[];
+      items: { label: string; checked?: boolean; pendingMeta?: string }[];
     }
   | {
       kind: "attachments";
@@ -62,6 +62,24 @@ export type Artifact =
   | {
       kind: "people";
       entries: { name: string; meta?: string; note?: string }[];
+    }
+  | {
+      kind: "drafts";
+      intro?: string;
+      channel?: string;
+      defaultFrom?: string;
+      entries: {
+        recipient: string;
+        recipientMeta?: string;
+        subject?: string;
+        body: string;
+        hook?: string;
+        from?: string;
+        to?: string;
+        cc?: string[];
+        bcc?: string[];
+      }[];
+      previewCount?: number;
     }
   | {
       kind: "paused";
@@ -138,183 +156,229 @@ export const PROPOSALS: Project[] = [
   {
     id: cid("project"),
     status: "proposed",
-    title: "Fix the flaky auth tests on CI",
+    title: "Review my top 50 emails — reply / archive / flag",
     summary:
-      "The auth.refresh.token-rotation suite has been failing intermittently for two weeks. Last 5 retries all passed, but main went red Tuesday. Probably a race in the mock clock setup.",
+      "Looking at the last 50 in the inbox. Want a classification pass: which ones I should reply to, which to archive, and which to flag for review.",
     proposal:
-      "The auth.refresh.token-rotation suite has been failing intermittently for two weeks. Last 5 retries all passed, but main went red Tuesday. Probably a race in the mock clock setup.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Migrate from raw pg-pool to pgbouncer",
-    summary:
-      "We're hitting connection ceiling on Railway during peak. pgbouncer in transaction mode would let us 10x. Risk: we use SET LOCAL in two places, need to audit.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Strict typecheck the shared package",
-    summary:
-      "@runner/shared has strict: false. Migrating it would catch the kind of null-deref that bit us in the draft renderer last week.",
-    chatMessages: [],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Rewrite ToolSearch ranking",
-    summary:
-      "Current scoring is naive — substring + recency. Want BM25 over the description corpus, plus a small reranker on the top 20.",
-    chatMessages: [],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Delete the deprecated mock agent path",
-    summary:
-      "AGENT_MODE=mock is no longer referenced by any test. Confirm with grep, then rip it out — ~600 lines.",
-    chatMessages: [],
-    updatedAt: "2 days ago",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Upgrade Vite 5 → 6",
-    summary:
-      "Mostly a chore but unblocks the new SSR streaming API we want for /home.",
-    chatMessages: [],
-    updatedAt: "2 days ago",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Audit Claude SDK token counting drift",
-    summary:
-      "Billing dashboard shows ~3% drift between SDK-reported and Anthropic-reported usage. Either we're over-counting cache hits or the SDK changed.",
-    chatMessages: [],
-    updatedAt: "3 days ago",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Get to inbox zero before Friday",
-    summary:
-      "Trip starts Saturday. Need a clean inbox before I leave. Probably 80% archive.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Draft April investor update",
-    summary:
-      "Format is the same as March. Pull metrics from the dashboard, write the narrative, ping me to review.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Respond to the 14 unanswered customer emails",
-    summary:
-      "The ones tagged 'product-feedback'. Most just need acknowledgement + 'we're tracking it'.",
-    chatMessages: [],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Schedule the three board prep sessions",
-    summary:
-      "Three 1:1s with each board member before the May meeting. Find times that work for everyone, draft the prep doc.",
-    chatMessages: [],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Book SFO → NYC for May 22, return May 26",
-    summary:
-      "Prefer red-eye out, daytime back. United or Delta. Aisle. Under $700 if possible.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Find a hotel within 10 min walk of SoHo office",
-    summary:
-      "May 22-26. Quiet room, gym, good wifi. Budget $400/night. Show me 3 options.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Renew TSA PreCheck before it expires",
-    summary:
-      "Expires June 14. Find the renewal flow, fill what you can, leave the SSN field for me.",
-    chatMessages: [],
-    updatedAt: "2 days ago",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Reply to the 8 Slack threads where I'm pinged",
-    summary:
-      "Most are async questions I can answer in one line. Draft cards, I'll review.",
-    chatMessages: [],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Research onboarding flows from 5 best-in-class B2B SaaS",
-    summary:
-      "Linear, Notion, Vercel, Stripe, Figma. Screenshots + what made each one work.",
-    chatMessages: [],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Source 20 staff eng candidates with infra + AI background",
-    summary:
-      "Bay Area or remote. 8+ yrs. Has shipped a managed-services product. Draft outreach for the top 5.",
-    chatMessages: [],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "proposed",
-    title: "Order Thai for lunch — pad see ew, no tofu",
-    summary: "From Lers Ros if it's open, otherwise Osha. By 12:30.",
+      "Look at my top 50 emails, tell me which ones we should reply to and which ones we should archive and which ones I should review.",
     chatMessages: [],
     updatedAt: "Just now",
   },
   {
     id: cid("project"),
     status: "proposed",
-    title: "Clean Downloads folder",
+    title: "Find flights SFO → Chicago, May 14 arriving <3pm, return May 17",
     summary:
-      "Anything older than 60 days. Show me a list before deleting. Looking to reclaim 10+ GB.",
+      "Need to be at the venue by 4pm, so anything landing before 3 works. Return Saturday evening. Prefer United or Delta, aisle.",
     chatMessages: [],
-    updatedAt: "3 days ago",
+    updatedAt: "Today",
   },
   {
     id: cid("project"),
     status: "proposed",
-    title: "Read and summarize the latest MCP spec updates",
+    title: "Find SF houses near 749 Guerrero — 3bd, 2ba",
     summary:
-      "Spec moved to draft 0.4. What changed, what breaks, what we should adopt.",
+      "Browsing the neighborhood. Pull listings within 4 blocks, 3 bed / 2 bath, show list price and sqft. Top 5 is fine.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Set Gmail vacation auto-reply for next Monday",
+    summary:
+      "Out Monday, back Tuesday. Message: 'Out of office, back Tuesday.' Apply to both Gmail accounts.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Tell me about my Google Drive folder structure",
+    summary:
+      "Just curious what I've got and where things live. Top-level folders, anything that looks stale, anything I should reorganize.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Explore BigQuery — cannabis jobs + deals pipeline",
+    summary:
+      "What tables are available in my analytics dataset? Particularly interested in the cannabis_jobs table and whatever's in the deals pipeline.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Find the Q4 Budget spreadsheet",
+    summary:
+      "Somewhere in Drive — find it and link it. I keep losing it.",
     chatMessages: [],
     updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Add Action Items section to Meeting Notes (Apr 27)",
+    summary:
+      "Open the Meeting Notes Google Doc from April 27, 2026 and add an 'Action Items' section at the bottom. Leave it empty — I'll fill it.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Sum column B in budget sheet, write to B15",
+    summary:
+      "In the Q4 Budget spreadsheet, sum all of column B and put the total in cell B15. Quick one.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Schedule a 30-min sync with Yitong at 2pm PT today",
+    summary:
+      "Throw a 30-min hold on the calendar with yitong@runner.now for 2pm PT today. Default Google Meet.",
+    chatMessages: [],
+    updatedAt: "Just now",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Validate barley@oteagoa.com",
+    summary:
+      "Looks like a typo of someone real. Validate the address — MX records, deliverability, and suggest a likely-intended correction.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Draft a poem email to yitong@runner.now",
+    summary:
+      "Short, warm, vaguely about spring. 6-8 lines max. Subject line: something playful.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Sales deck — Expedia (flight MCPs for their business)",
+    summary:
+      "Create a Google Slides deck for an enterprise sales meeting with Expedia. Pitch: flight MCPs for their corporate travel arm. ~10 slides.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Find Toronto apartments near Union Station — 2bd, 2ba",
+    summary:
+      "Browsing Toronto. Walking distance to Union Station, 2 bed / 2 bath. List price and sqft for each.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Add 'Next Steps' closing slide to Q4 Deck Sample",
+    summary:
+      "Add a closing slide titled 'Next Steps' to the Q4 Deck Sample. Three bullets, leave them as placeholders.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Reformat the Notion 'Next 3mo Superman' doc as a Google Doc",
+    summary:
+      "Pull the Notion doc agoraxyz/Our-Next-3mo-Superman and create a clean, well-formatted Google Doc version I can share externally.",
+    chatMessages: [],
+    updatedAt: "2 days ago",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Show me my last 5 emails",
+    summary:
+      "Quick scan — what's the most recent thing in my inbox?",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Email charlie@fjor.co + label FYI",
+    summary:
+      "Send: 'thanks, I'll review the meeting notes tomorrow.' Apply the label 'FYI' to it once sent.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Pull April rent from 749 Guerrero Rent Tracker",
+    summary:
+      "Find the 749 Guerrero Rent Tracker in Drive. What did I pay in April? I'm about to send May rent.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Learn my Gmail writing style",
+    summary:
+      "Run /analyze-and-remember-writing-style across my Gmail accounts so future drafts sound like me.",
+    chatMessages: [],
+    updatedAt: "2 days ago",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Create board meeting notes doc",
+    summary:
+      "Format a Google Doc for the upcoming board meeting — agenda block, attendees, sections for each topic, action items at the bottom.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Send a calendar invite from runner.now → fjor.co",
+    summary:
+      "Send a calendar invite with title 'test' from my charlie@runner.now account to charlie@fjor.co. Just smoke-testing the cross-account flow.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Top 5 Toronto 3bd apartments walkable to Union Station",
+    summary:
+      "Sibling search to the 2bd version — same area, but 3 bedroom this time. Show me top 5 with price and sqft.",
+    chatMessages: [],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Pull recent emails from yitong@runner.now",
+    summary:
+      "Summarize the last few threads with Yitong. I want to see what's open before our 2pm.",
+    chatMessages: [],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "proposed",
+    title: "Top events last week (BigQuery)",
+    summary:
+      "Query the analytics dataset for the top 10 events by count last week. Just a quick scan.",
+    chatMessages: [],
+    updatedAt: "2 days ago",
   },
 ];
 
@@ -322,17 +386,399 @@ export const ACTIVE: Project[] = [
   {
     id: cid("project"),
     status: "active",
-    title: "April investor update",
+    title: "Inbox triage — top 50 emails",
     summary:
-      "Format is the same as March. Pull metrics, write narrative, send for review.",
+      "Classified all 50, drafted replies for the 14 actionables, queued 31 archives, flagged 5 for review. Drafts waiting.",
     chatMessages: seedChat(
-      "Draft the April investor update — same format as March.",
-      "Pulled the Q1 metrics, drafted the narrative, and prepared two cover chart options. Pick a chart and I'll send.",
+      "Look at my top 50 emails, tell me which ones we should reply to, which to archive, and which I should review.",
+      "Classified all 50. 14 actionable (drafts ready), 31 archive candidates, 5 flagged for your eyes. Skim and I'll send / archive in bulk.",
     ),
     cards: [
       {
         id: cid("card"),
-        title: "Pull metrics",
+        title: "Classify all 50",
+        state: "done",
+        artifact: {
+          kind: "metrics",
+          rows: [
+            { label: "Actionable", value: "14" },
+            { label: "Newsletter / noise", value: "31" },
+            { label: "Needs your decision", value: "5" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Draft replies for the 14 actionable threads",
+        state: "done",
+        artifact: {
+          kind: "note",
+          body:
+            "All 14 drafts in the Drafts folder, written in your Gmail voice (short, lowercase first word, no signoff for internal). Three flagged for your eyes: the Expedia procurement rep, the Anthropic partner-team intro, and the Stripe contract redline.",
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Review and send the drafts",
+        state: "triage",
+        triageNote:
+          "14 drafts ready. Skim the three flagged ones — others should be one-click sends.",
+        artifact: {
+          kind: "email",
+          to: "Expedia procurement",
+          subject: "Re: Flight MCP enterprise pricing",
+          body:
+            "Hi Dana —\n\nAppreciate the detailed RFP. Quick read: your volume falls into our enterprise tier; we'd structure it as a 12-month commit with a usage-based add-on for the agentic features.\n\nHappy to walk through Wednesday or Thursday next week — what works on your side?\n\nBest,\nCharlie",
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Archive the 31 noise emails",
+        state: "todo",
+        artifact: {
+          kind: "checklist",
+          items: [
+            { label: "12 newsletters (Stratechery, Lenny's, etc.)" },
+            { label: "9 calendar notifications already actioned" },
+            { label: "6 receipts (auto-filtered to Receipts label)" },
+            { label: "4 marketing from tools we already use" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "active",
+    title: "Chicago trip — May 14-17",
+    summary:
+      "SFO → ORD outbound under $400 found, hotel options in the Loop staged, dinners pending.",
+    chatMessages: seedChat(
+      "Find me flights from SFO to Chicago for May 14, arriving before 3pm. Return May 17 evening.",
+      "Three flight options that land before 3pm. Two are under $400. Picked hotel options near the Loop too — one is over your usual cap but four blocks from the venue.",
+    ),
+    cards: [
+      {
+        id: cid("card"),
+        title: "Find flights SFO → ORD, May 14 (arrive <3pm)",
+        state: "done",
+        artifact: {
+          kind: "options",
+          intro: "Three options that land before 3pm. United nonstop is the cleanest.",
+          options: [
+            {
+              id: "ua-2241",
+              title: "United UA-2241 — nonstop",
+              meta: "May 14 · 08:40 SFO → 14:55 ORD · $362 · aisle 12B",
+              notes: "Nonstop, lands at 2:55pm. Cheapest of the three.",
+            },
+            {
+              id: "aa-1156",
+              title: "American AA-1156 — nonstop",
+              meta: "May 14 · 07:15 SFO → 13:25 ORD · $398 · aisle 9C",
+              notes: "Earlier arrival, slightly more expensive. Better buffer to the venue.",
+            },
+            {
+              id: "dl-5530",
+              title: "Delta DL-5530 — 1 stop (MSP)",
+              meta: "May 14 · 06:00 SFO → 14:48 ORD · $341 · aisle 14D",
+              notes: "Cheapest but earliest wake-up and the MSP layover is tight.",
+            },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Pick hotel — Chicago Loop, May 14-17",
+        state: "triage",
+        triageNote:
+          "Three options. Conrad is over the $300 cap but 4 blocks from the venue.",
+        artifact: {
+          kind: "options",
+          intro: "Three Loop hotels. Conrad is closest but over budget.",
+          options: [
+            {
+              id: "conrad",
+              title: "Conrad Chicago",
+              meta: "$345/night · 4 blocks to venue",
+              notes: "Over the $300 cap. Best location and gym; quiet rooms.",
+            },
+            {
+              id: "kimpton-gray",
+              title: "Kimpton Gray",
+              meta: "$278/night · 7 blocks to venue",
+              notes: "Under budget. Solid wifi, smaller rooms. Walkable.",
+            },
+            {
+              id: "hyatt-mag",
+              title: "Hyatt Centric The Loop",
+              meta: "$252/night · 10 blocks to venue",
+              notes: "Cheapest. Decent gym, 12-min walk in good weather.",
+            },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Return flight ORD → SFO, May 17 evening",
+        state: "done",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "United UA-1885 — nonstop", meta: "May 17 · 19:10 ORD → 21:42 SFO · $348" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Schedule dinners in Chicago",
+        state: "todo",
+        artifact: {
+          kind: "people",
+          entries: [
+            { name: "Reece W.", meta: "Wed May 14", note: "Suggested Avec — awaiting reply" },
+            { name: "Talia O.", meta: "Thu May 15", note: "Confirmed at Kasama 7pm" },
+            { name: "Marcus B.", meta: "Fri May 16", note: "Pinged, no reply yet" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "active",
+    title: "749 Guerrero — pay May rent",
+    summary:
+      "Found the tracker, pulled April rent. Form ready, paused at the routing-number field.",
+    chatMessages: seedChat(
+      "Find my 749 Guerrero Rent Tracker — what was April rent? I'm paying May now.",
+      "Found it. April was $4,825 (same as March). Pulled up the landlord's online payment portal, filled everything except routing number — drop that in and I'll submit.",
+    ),
+    cards: [
+      {
+        id: cid("card"),
+        title: "Find the 749 Guerrero Rent Tracker sheet",
+        state: "done",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "749 Guerrero Rent Tracker", meta: "Google Sheets · last edited Apr 30" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Confirm April rent amount",
+        state: "done",
+        artifact: {
+          kind: "metrics",
+          rows: [
+            { label: "April rent", value: "$4,825" },
+            { label: "March rent", value: "$4,825" },
+            { label: "YTD paid", value: "$19,300" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Submit May payment via landlord portal",
+        state: "triage",
+        triageNote:
+          "Form filled except routing number. Drop it in and I'll submit.",
+        kind: "form",
+        verifyState: "idle",
+        formFields: [
+          {
+            key: "routing",
+            label: "Bank routing number",
+            type: "password",
+            placeholder: "XXXXXXXXX (9 digits)",
+            value: "",
+          },
+          {
+            key: "memo",
+            label: "Memo line",
+            type: "text",
+            placeholder: "e.g. May 2026 rent — 749 Guerrero",
+            value: "May 2026 rent — 749 Guerrero",
+          },
+        ],
+        artifact: {
+          kind: "paused",
+          reason: "Routing number requires manual entry — won't autofill banking credentials.",
+          awaiting: "User to enter routing number; I'll verify and submit.",
+        },
+      },
+    ],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "active",
+    title: "Expedia sales deck",
+    summary:
+      "10-slide pitch on flight MCPs for Expedia's corporate travel arm. Outline + 7 slides drafted, waiting on logo + case study slide.",
+    chatMessages: seedChat(
+      "Create a Google Slides sales deck for an enterprise meeting with Expedia — pitch is flight MCPs for their business.",
+      "Drafted 10 slides. The case study slide is a placeholder until you tell me which logo to feature. Deck link below.",
+    ),
+    cards: [
+      {
+        id: cid("card"),
+        title: "Outline + structure",
+        state: "done",
+        artifact: {
+          kind: "checklist",
+          items: [
+            { label: "Title", checked: true },
+            { label: "The corporate travel problem", checked: true },
+            { label: "Why MCPs", checked: true },
+            { label: "Our flight MCP — capabilities", checked: true },
+            { label: "Integration footprint", checked: true },
+            { label: "Case study (placeholder)", checked: false },
+            { label: "Pricing tier proposal", checked: true },
+            { label: "Rollout plan (90 days)", checked: true },
+            { label: "Success metrics", checked: true },
+            { label: "Next steps", checked: true },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Draft the 10 slides",
+        state: "done",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "Expedia — Flight MCP Pitch (v0.4)", meta: "Google Slides · 10 slides" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Pick a customer logo for the case study slide",
+        state: "triage",
+        triageNote:
+          "Three options — pick one and I'll drop it into slide 6.",
+        artifact: {
+          kind: "decision",
+          question: "Which case study should we lead with on slide 6?",
+          choices: [
+            {
+              id: "navan",
+              label: "Navan (corporate travel)",
+              rationale:
+                "Closest analog to Expedia's audience. Strong activation numbers (62% W1). Risk: they're a partial competitor.",
+            },
+            {
+              id: "ramp",
+              label: "Ramp (finance team workflow)",
+              rationale:
+                "Best-known logo. Less travel-specific but the agent integration story translates. Safe pick.",
+            },
+            {
+              id: "datadog",
+              label: "Datadog (enterprise ops)",
+              rationale:
+                "Most prestigious. Their travel use case is small but the engineering rigor proves out the integration. Best technical credibility.",
+            },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "active",
+    title: "Board meeting prep — May 19",
+    summary:
+      "Notes doc structured, pre-read sent, three 1:1s on the calendar. Waiting on financial pack from finance.",
+    chatMessages: seedChat(
+      "Help me prep for the May 19 board meeting — notes doc, pre-read, and 1:1s.",
+      "Created the notes doc with our usual structure, sent the pre-read 96 hours out, scheduled the three 1:1s. Finance pack is the last open item.",
+    ),
+    cards: [
+      {
+        id: cid("card"),
+        title: "Create board meeting notes Google Doc",
+        state: "done",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "Board meeting — May 19", meta: "Google Doc · agenda, attendees, 6 sections" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Send pre-read 96h ahead",
+        state: "done",
+        artifact: {
+          kind: "email",
+          to: "Board (5 members)",
+          subject: "May 19 pre-read + agenda",
+          body:
+            "Board team —\n\nAttaching the May 19 pre-read and agenda 96 hours ahead per usual cadence.\n\nKey reads: Q1 close, Q2 plan, and the new pricing proposal (page 11).\n\nReply with anything you want surfaced live.\n\nBest,\nCharlie",
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Schedule three 1:1s with board members",
+        state: "done",
+        artifact: {
+          kind: "people",
+          entries: [
+            { name: "James K.", meta: "Wed May 14 · 4pm", note: "Confirmed" },
+            { name: "Yitong L.", meta: "Thu May 15 · 11am", note: "Confirmed" },
+            { name: "Ramesh P.", meta: "Fri May 16 · 9am", note: "Tentative — awaiting" },
+          ],
+        },
+      },
+      {
+        id: cid("card"),
+        title: "Get financial pack from finance team",
+        state: "triage",
+        triageNote:
+          "Pinged Maria Tuesday, no response yet. Worth a nudge or wait?",
+        artifact: {
+          kind: "decision",
+          question: "Finance hasn't sent the pack — chase or wait?",
+          choices: [
+            {
+              id: "chase",
+              label: "Nudge Maria today",
+              rationale:
+                "Pre-read goes out tomorrow. If she's heads-down on close, a gentle ping unblocks me.",
+            },
+            {
+              id: "wait",
+              label: "Wait until tomorrow AM",
+              rationale:
+                "She's heads-down on monthly close. A nudge today might be unwelcome. Risk: tight turnaround if she's late.",
+            },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Today",
+  },
+  {
+    id: cid("project"),
+    status: "active",
+    title: "April investor update",
+    summary:
+      "Metrics pulled, narrative drafted, two cover-chart options ready for selection.",
+    chatMessages: seedChat(
+      "Draft the April investor update — same format as March.",
+      "Pulled the April metrics, drafted the narrative, prepared two cover chart options. Pick a chart and I'll send.",
+    ),
+    cards: [
+      {
+        id: cid("card"),
+        title: "Pull April metrics from BigQuery",
         state: "done",
         artifact: {
           kind: "metrics",
@@ -340,7 +786,7 @@ export const ACTIVE: Project[] = [
             { label: "ARR", value: "$4.6M", trend: "+18% MoM" },
             { label: "Net new logos", value: "42", trend: "+11" },
             { label: "Gross margin", value: "76%", trend: "+1pp" },
-            { label: "Cash runway", value: "18mo", trend: "flat" },
+            { label: "Cash runway", value: "18 mo", trend: "flat" },
           ],
         },
       },
@@ -351,12 +797,12 @@ export const ACTIVE: Project[] = [
         artifact: {
           kind: "note",
           body:
-            "April was the strongest month since launch — ARR crossed $4.6M (+18% MoM) on the back of mid-market expansion. Two larger logos (Acme, Beta) closed. Hiring slowed to a single offer due to focus on the staff-eng search. Outlook for May is steady; June depends on the new pricing rolling cleanly.",
+            "April was the strongest month since launch — ARR crossed $4.6M (+18% MoM) on mid-market expansion. Two larger logos (Acme, Beta) closed. Hiring slowed to a single offer due to focus on the staff-eng search. Outlook for May is steady; June depends on the new pricing rolling cleanly.",
         },
       },
       {
         id: cid("card"),
-        title: "Generate two chart options for the cover",
+        title: "Pick a cover chart",
         state: "triage",
         triageNote:
           "Two layouts attached. Pick one and I'll send the update.",
@@ -368,15 +814,13 @@ export const ACTIVE: Project[] = [
               id: "chart-a",
               title: "Option A — ARR trendline",
               meta: "Single line, 6 months",
-              notes:
-                "Cleanest read; mirrors what investors saw in March. Best if we want continuity.",
+              notes: "Cleanest read; mirrors March. Best if you want continuity.",
             },
             {
               id: "chart-b",
               title: "Option B — ARR + Net new logos",
               meta: "Stacked dual-axis",
-              notes:
-                "More information density. Good if we want to highlight the logo acceleration.",
+              notes: "More information density. Highlights logo acceleration.",
             },
           ],
         },
@@ -387,291 +831,150 @@ export const ACTIVE: Project[] = [
   {
     id: cid("project"),
     status: "active",
-    title: "Hire a Staff Engineer",
+    title: "Q1 analytics — cannabis jobs + deals pipeline",
     summary:
-      "Bay Area or remote, 8+ yrs, infra/AI background. Driving the search end-to-end.",
+      "BigQuery exploration complete, deals pipeline pulled, summary memo drafted. Need your read before circulating.",
     chatMessages: seedChat(
-      "Source 20 staff eng candidates with infra + AI background. Bay Area or remote.",
-      "Sourced 20, reached out to top 5, 3 replied. Need to schedule intros and decide on candidate #2 — she declined the on-site but is open to a longer chat.",
+      "Take a look at BigQuery — what tables are available? Tell me about cannabis_jobs and the deals pipeline.",
+      "Mapped the dataset. cannabis_jobs has 412k rows; deals pipeline has 1.8k records. Drafted a one-pager summarizing the trends.",
     ),
     cards: [
       {
         id: cid("card"),
-        title: "Source 20 candidates",
-        state: "done",
-        artifact: {
-          kind: "people",
-          entries: [
-            { name: "Aiden L.", meta: "Stripe → infra eng", note: "10 yrs, distributed systems" },
-            { name: "Linnea S.", meta: "Anthropic → systems", note: "12 yrs, prior staff" },
-            { name: "Marcus B.", meta: "Cloudflare → edge", note: "9 yrs, performance focus" },
-            { name: "Priya N.", meta: "Snowflake → query", note: "11 yrs, prior tech lead" },
-            { name: "+ 16 more", note: "Full pipeline tracked in Notion" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Outreach to top 5",
-        state: "done",
-        artifact: {
-          kind: "note",
-          body:
-            "Sent personalized outreach to Aiden, Linnea, Marcus, Priya, and Wen. Reply rate 60% (3 of 5). Two passes (Marcus, Wen).",
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Schedule intros for the 3 who replied",
-        state: "todo",
-        artifact: {
-          kind: "checklist",
-          items: [
-            { label: "Aiden L. — proposed Tue 2pm or Wed 11am" },
-            { label: "Linnea S. — flexible, prefers Thursday" },
-            { label: "Priya N. — only afternoons next week" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Decide whether to keep pursuing candidate #2 (Linnea)",
-        state: "triage",
-        triageNote:
-          "She declined the on-site but is open to a longer chat. Worth pushing or move on?",
-        artifact: {
-          kind: "decision",
-          question:
-            "Linnea declined the on-site but offered a longer informal chat. Continue or pass?",
-          choices: [
-            {
-              id: "push",
-              label: "Push for the chat",
-              rationale:
-                "Strong signal in her reply; long chat is a low-cost way to reset the funnel. Risk: another 2 weeks of cycle time.",
-            },
-            {
-              id: "pass",
-              label: "Pass and refocus",
-              rationale:
-                "Three other candidates progressing; an unwilling candidate rarely converts. Keep the bar high.",
-            },
-          ],
-        },
-      },
-    ],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "active",
-    title: "NYC trip — May 22-26",
-    summary:
-      "SFO → JFK red-eye out, daytime back. Hotel near SoHo office, 4 dinners, airport pickups.",
-    chatMessages: seedChat(
-      "Plan the NYC trip May 22-26. Hotel near SoHo, dinners with Mike, Priya, Anand, plus airport pickup.",
-      "Booked the flights and put hotel options up — one is over budget but a 4 min walk. Need approval before I book #2.",
-    ),
-    cards: [
-      {
-        id: cid("card"),
-        title: "Book SFO → JFK red-eye May 22",
-        state: "done",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "United UA-1525", meta: "May 22 · 22:30 SFO → 06:55 JFK · $612" },
-            { label: "Confirmation #UA-7HJ43X", meta: "Aisle, exit row" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Find 3 hotel options near SoHo",
-        state: "triage",
-        triageNote:
-          "Two options under budget, one above. Need approval to book #2 (Crosby St Hotel, $480/night) — over the $400 cap but 4 min walk.",
-        artifact: {
-          kind: "options",
-          intro: "Three options near SoHo. Crosby is over budget but closest.",
-          options: [
-            {
-              id: "h-soho-grand",
-              title: "Soho Grand Hotel",
-              meta: "$365/night · 7 min walk",
-              notes:
-                "Quiet rooms on high floors, full gym. Stayed in Feb — solid wifi.",
-            },
-            {
-              id: "h-crosby",
-              title: "Crosby Street Hotel",
-              meta: "$480/night · 4 min walk",
-              notes:
-                "Over the $400 cap. Best location. Needs your approval to book.",
-            },
-            {
-              id: "h-arlo",
-              title: "Arlo SoHo",
-              meta: "$295/night · 12 min walk",
-              notes: "Cheapest. Smaller rooms, decent gym. Right at the budget edge.",
-            },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Add calendar holds for the trip",
-        state: "done",
-        artifact: {
-          kind: "checklist",
-          items: [
-            { label: "May 22 — outbound flight", checked: true },
-            { label: "May 23-25 — NYC office days", checked: true },
-            { label: "May 26 — return flight", checked: true },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Schedule dinners with Mike, Priya, Anand",
-        state: "todo",
-        artifact: {
-          kind: "people",
-          entries: [
-            { name: "Mike T.", meta: "Tuesday May 23", note: "Confirmed at L'Artusi 7pm" },
-            { name: "Priya N.", meta: "Wednesday May 24", note: "Awaiting reply" },
-            { name: "Anand R.", meta: "Thursday May 25", note: "Suggested 3 spots, choose one" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Pre-book Revel for airport pickup",
-        state: "todo",
-        artifact: {
-          kind: "note",
-          body:
-            "Plan: schedule a Revel for JFK arrival on May 23 at 06:55 and SFO departure May 26 at 19:30. Will hold once flights are confirmed.",
-        },
-      },
-    ],
-    updatedAt: "Today",
-  },
-  {
-    id: cid("project"),
-    status: "active",
-    title: "Inbox triage — today",
-    summary: "47 unread to clear before EOD. Mostly classify, draft, and send.",
-    chatMessages: seedChat(
-      "Get through inbox triage today.",
-      "Classified all 47, drafted replies for the 12 actionables, archived 31 noise emails. Drafts ready for your review.",
-    ),
-    cards: [
-      {
-        id: cid("card"),
-        title: "Classify 47 unread",
+        title: "List BigQuery datasets and tables",
         state: "done",
         artifact: {
           kind: "metrics",
           rows: [
-            { label: "Actionable", value: "12" },
-            { label: "Newsletter / noise", value: "31" },
-            { label: "Needs decision", value: "4" },
+            { label: "Datasets", value: "4" },
+            { label: "Tables (analytics)", value: "23" },
+            { label: "cannabis_jobs rows", value: "412,038" },
+            { label: "deals_pipeline rows", value: "1,847" },
           ],
         },
       },
       {
         id: cid("card"),
-        title: "Draft replies for 12 actionables",
+        title: "Pull deals pipeline by stage",
         state: "done",
         artifact: {
-          kind: "note",
-          body:
-            "All 12 drafts ready in the Drafts folder. Average length 2 paragraphs. Three flagged for your eyes (RFP from Acme, contract redline from legal, mentor intro from Sarah).",
+          kind: "metrics",
+          rows: [
+            { label: "Discovery", value: "624" },
+            { label: "Qualified", value: "311" },
+            { label: "Proposal", value: "187" },
+            { label: "Negotiation", value: "94" },
+            { label: "Closed-Won (Q1)", value: "62" },
+          ],
         },
       },
       {
         id: cid("card"),
-        title: "Review and send drafts",
+        title: "Draft summary memo",
         state: "triage",
         triageNote:
-          "12 drafts ready. Skim and send — flagging the three that need your eyes.",
-        artifact: {
-          kind: "email",
-          to: "12 recipients",
-          subject: "Acme RFP — proposed pricing structure",
-          body:
-            "Hi Sam,\n\nThanks for the detailed RFP. Quick read: the volume tier matches our enterprise plan; we'd add a 12-month commit discount and a usage-based addon for the agentic features. Draft pricing in the attached doc.\n\nHappy to walk you through this Thursday or Friday — what works on your side?\n\nBest,",
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Archive the 31 noise emails",
-        state: "done",
+          "One-pager ready. Skim before I send it to the team.",
         artifact: {
           kind: "note",
-          body: "Auto-archived. Two senders moved to permanent filter.",
+          body:
+            "Q1 read: deals_pipeline volume up 22% QoQ but conversion from Qualified → Proposal slipped 4pp. cannabis_jobs activity flat — likely market-level. Recommend: instrument the Qualified → Proposal handoff for hand-off latency. Memo doc linked in Drive.",
         },
       },
     ],
-    updatedAt: "Today",
+    updatedAt: "Yesterday",
   },
   {
     id: cid("project"),
     status: "active",
-    title: "Postmortem: May 3 MCP proxy outage",
+    title: "Toronto apartment hunt — near Union Station",
     summary:
-      "Pulled the timeline, identified root cause, drafted writeup. Need sign-off on action items.",
+      "12 listings scanned, top 4 surfaced, two showings on the calendar.",
     chatMessages: seedChat(
-      "Write up the May 3 MCP proxy outage. Need timeline, root cause, action items.",
-      "Done with the writeup. Pulled the trace, identified the bad upstream timeout config as root cause, drafted three action items. Want sign-off before sending broader.",
+      "Find me apartments in Toronto near Union Station — 2 bed 2 bath. Top picks.",
+      "Pulled 12 listings within 10 min walk, filtered to 4 strong ones, booked showings for the top 2.",
     ),
     cards: [
       {
         id: cid("card"),
-        title: "Pull the trace timeline",
+        title: "Search listings near Union Station",
         state: "done",
         artifact: {
-          kind: "attachments",
-          items: [
-            { label: "trace-2026-05-03.json", meta: "14.2 MB · 3,918 spans" },
-            { label: "Logfire dashboard", meta: "logfire/runner/2026-05-03" },
+          kind: "metrics",
+          rows: [
+            { label: "Listings scanned", value: "12" },
+            { label: "Match criteria (2bd/2ba)", value: "7" },
+            { label: "Final shortlist", value: "4" },
           ],
         },
       },
       {
         id: cid("card"),
-        title: "Identify root cause",
+        title: "Top 4 picks",
         state: "done",
         artifact: {
-          kind: "note",
-          body:
-            "Upstream Anthropic API gateway returned 502s for 9 minutes; our proxy had no fallback timeout, so all in-flight requests piled up and saturated the worker pool. No retries because the request shape failed our internal validation cache.",
+          kind: "options",
+          intro: "Top 4 with price + sqft.",
+          options: [
+            { id: "front-st", title: "88 Front St E #1204", meta: "2 bed · 2 bath · 1,150 sqft · $4,200/mo", notes: "5 min walk. South-facing." },
+            { id: "wellington", title: "12 Wellington St W #802", meta: "2 bed · 2 bath · 1,080 sqft · $3,850/mo", notes: "7 min walk. Older building, lower price." },
+            { id: "yonge-st", title: "60 Yonge St #1801", meta: "2 bed · 2 bath · 1,210 sqft · $4,500/mo", notes: "3 min walk. Newest unit, priciest." },
+            { id: "king-w", title: "300 King St W #2105", meta: "2 bed · 2 bath · 1,140 sqft · $4,100/mo", notes: "9 min walk. Best gym/amenities." },
+          ],
         },
       },
       {
         id: cid("card"),
-        title: "Write up timeline and contributing factors",
+        title: "Book showings",
+        state: "todo",
+        artifact: {
+          kind: "checklist",
+          items: [
+            { label: "88 Front St — Sat May 17 · 11am", checked: true },
+            { label: "60 Yonge St — Sat May 17 · 2pm", checked: true },
+            { label: "12 Wellington — pending agent reply" },
+            { label: "300 King W — pending agent reply" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Yesterday",
+  },
+  {
+    id: cid("project"),
+    status: "active",
+    title: "Set Gmail vacation auto-reply",
+    summary:
+      "Tried three times — each attempt hit a renderer crash. Walked around it via the IMAP route; awaiting your confirm to apply.",
+    chatMessages: seedChat(
+      "Set my Gmail vacation auto-reply for next Monday: 'Out of office, back Tuesday'.",
+      "First three attempts triggered renderer crashes on the settings tab. Routed through IMAP settings instead. Ready to apply — just need you to confirm the dates.",
+    ),
+    cards: [
+      {
+        id: cid("card"),
+        title: "Attempt via Gmail settings UI (3×)",
         state: "done",
         artifact: {
           kind: "note",
           body:
-            "5 min outage, 17 min full impact. Contributing factors: validation cache thundering herd, no per-upstream circuit breaker, alert routing missed because of paging policy update from last week.",
+            "Three retries — each crashed the renderer mid-flow (sessions 260428-deft-slate, 260428-ready-bronze, 260428-snug-crane). Logged the stack trace and filed it. Switched to IMAP settings path.",
         },
       },
       {
         id: cid("card"),
-        title: "Confirm preventive action items with platform team",
+        title: "Apply auto-reply via IMAP settings",
         state: "triage",
         triageNote:
-          "Walk through these three with platform leads in person. Confirm here once you've got verbal sign-off — drop a note or screenshot of the channel ack.",
+          "Dates and message ready. Confirm and I'll apply across both accounts.",
         kind: "confirm",
         artifact: {
           kind: "checklist",
           items: [
-            { label: "Add per-upstream circuit breaker (owner: Mark)" },
-            { label: "Cap validation cache fan-out at 50 concurrent (owner: Lina)" },
-            { label: "Restore alert routing rule for proxy 5xx > 1% / min (owner: oncall)" },
+            { label: "Start: Mon May 12, 12:00 AM PT" },
+            { label: "End: Tue May 13, 12:00 AM PT" },
+            { label: "Subject: 'Out of office'" },
+            { label: "Body: 'Out of office, back Tuesday.'" },
+            { label: "Apply to: charlie@runner.now AND charlie@voteagora.com" },
           ],
         },
       },
@@ -681,136 +984,97 @@ export const ACTIVE: Project[] = [
   {
     id: cid("project"),
     status: "active",
-    title: "Migrate to pgbouncer",
+    title: "Notion 'Next 3mo Superman' → Google Doc",
     summary:
-      "Audit complete, staging deployed, load test green. Pool mode call needed.",
+      "Notion doc parsed, content reformatted, GDoc generated. Review the formatting before I share it.",
     chatMessages: seedChat(
-      "Move us off raw pg-pool to pgbouncer.",
-      "Audit done — two SET LOCAL callsites. Staging up, load test green. Need a pool mode decision.",
+      "Review the Notion doc 'Our-Next-3mo-Superman' and make me a well-formatted Google Doc version.",
+      "Pulled the Notion content, rebuilt the structure in Google Docs with proper heading styles and a TOC. Linked below — let me know if you want any sections reordered.",
     ),
     cards: [
       {
         id: cid("card"),
-        title: "Audit SET LOCAL usage",
-        state: "done",
-        artifact: {
-          kind: "code",
-          summary: "Two callsites use SET LOCAL — both in audit middleware.",
-          changes: [
-            { label: "server/audit/middleware.ts", meta: "SET LOCAL audit.user" },
-            { label: "server/billing/tx.ts", meta: "SET LOCAL billing.context" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Stand up pgbouncer in staging",
+        title: "Fetch the Notion source",
         state: "done",
         artifact: {
           kind: "note",
           body:
-            "Deployed to staging cluster. 100 connection limit on bouncer side, 1k on Postgres side. Health check passing.",
+            "Pulled 18 blocks, 4 nested toggles, 2 embedded tables, and the linked Loom (kept as a hyperlink — Docs doesn't embed Loom natively).",
         },
       },
       {
         id: cid("card"),
-        title: "Run load test",
+        title: "Create the Google Doc",
         state: "done",
         artifact: {
-          kind: "metrics",
-          rows: [
-            { label: "p50 latency", value: "8ms", trend: "-2ms" },
-            { label: "p99 latency", value: "42ms", trend: "-15ms" },
-            { label: "Connection saturation", value: "31%", trend: "down from 92%" },
+          kind: "attachments",
+          items: [
+            { label: "Our Next 3 Months — Superman (Google Doc)", meta: "Created · 4 sections · TOC · 1,840 words" },
           ],
         },
       },
       {
         id: cid("card"),
-        title: "Decide pool mode: transaction vs session",
+        title: "Review formatting + share",
         state: "triage",
         triageNote:
-          "Transaction mode breaks our two SET LOCAL callsites. Either rewrite them (~2 days) or use session mode and accept lower pooling.",
+          "Skim the doc — once you're happy, I'll set view-only sharing for the team.",
         artifact: {
           kind: "decision",
-          question: "Pick a pool mode for pgbouncer rollout.",
+          question: "Who should get access?",
           choices: [
-            {
-              id: "tx-mode",
-              label: "Transaction mode + rewrite SET LOCAL",
-              rationale:
-                "10x pooling. ~2 days of work in audit + billing. Required for the eventual API migration. Highest long-term ceiling.",
-            },
-            {
-              id: "session-mode",
-              label: "Session mode (no rewrite)",
-              rationale:
-                "Ship today, no code change. Pooling gain ~3x instead of 10x. Acceptable until next quarter.",
-            },
+            { id: "exec", label: "Exec team only (view)", rationale: "Tight loop, low risk of leak." },
+            { id: "all-hands", label: "Whole company (view)", rationale: "Aligned with our transparency default. Some context cost." },
+            { id: "external", label: "Exec + board (view)", rationale: "If you want board pre-input before circulating internally." },
           ],
         },
       },
     ],
-    updatedAt: "Today",
+    updatedAt: "2 days ago",
   },
   {
     id: cid("project"),
     status: "active",
-    title: "Renew TSA PreCheck",
+    title: "Q4 Deck — closing slides",
     summary:
-      "Expires June 14. Form ready, paused on the SSN field.",
+      "Added 'Next Steps' and 'Closing, Thank You' slides. Layouts done; copy needs your edit pass.",
     chatMessages: seedChat(
-      "Renew TSA PreCheck — expires June 14.",
-      "Opened the renewal flow, filled everything I could. Need you to drop in the SSN to submit.",
+      "Add closing slides to my Q4 Deck — 'Next Steps' and 'Closing, Thank You'.",
+      "Added both slides matching the deck's style. Filled in placeholder copy — you'll want to edit the Next Steps bullets.",
     ),
     cards: [
       {
         id: cid("card"),
-        title: "Open the renewal flow",
+        title: "Add 'Next Steps' slide",
         state: "done",
         artifact: {
-          kind: "note",
-          body: "Logged in to TSA enrollment portal with the existing KTN. Renewal flow available.",
+          kind: "checklist",
+          items: [
+            { label: "Layout: title + 3 bullets, mirroring slide 4", checked: true },
+            { label: "Placeholder bullets in — edit before sharing", checked: false },
+            { label: "Footer + slide number aligned", checked: true },
+          ],
         },
       },
       {
         id: cid("card"),
-        title: "Fill the renewal form",
+        title: "Add 'Closing, Thank You' slide",
         state: "done",
         artifact: {
           kind: "note",
           body:
-            "Pre-populated name, address, KTN, passport. Reviewed for typos. Form ready aside from the SSN field.",
+            "Single line title centered, subtle gradient background matching the title slide. Brand-aligned. No further action needed.",
         },
       },
       {
         id: cid("card"),
-        title: "Need SSN to submit",
+        title: "Replace Next Steps placeholder copy",
         state: "triage",
-        triageNote:
-          "Paused at the SSN field — drop it in and I'll verify the format and submit.",
-        kind: "form",
-        verifyState: "idle",
-        formFields: [
-          {
-            key: "ssn",
-            label: "Social Security Number",
-            type: "password",
-            placeholder: "XXX-XX-XXXX",
-            value: "",
-          },
-          {
-            key: "ktnConfirm",
-            label: "Confirm KTN (last 4)",
-            type: "text",
-            placeholder: "e.g. 4821",
-            value: "",
-          },
-        ],
+        triageNote: "Three bullets are placeholders. Edit and I'll finalize.",
         artifact: {
-          kind: "paused",
-          reason: "SSN field requires manual entry — won't autofill sensitive data.",
-          awaiting: "User to enter SSN below; AI will verify and submit.",
+          kind: "note",
+          body:
+            "Current placeholders: 'Follow up with team', 'Schedule next review', 'Track KPIs'. Worth replacing with the actual three commitments from the deck's body.",
         },
       },
     ],
@@ -819,199 +1083,55 @@ export const ACTIVE: Project[] = [
   {
     id: cid("project"),
     status: "active",
-    title: "Clean Downloads folder",
+    title: "Learn my Gmail writing style",
     summary:
-      "84 items >60 days old, 12.4GB. Confirm the deletion list before I move them to Trash.",
+      "Sampled 18 sent messages across both accounts. Style profile drafted. Confirm before saving to memory.",
     chatMessages: seedChat(
-      "Clean my Downloads folder. Anything older than 60 days.",
-      "Inventoried 84 items, 12.4GB. Categorized them. Confirm the list before I move to Trash.",
+      "Run /analyze-and-remember-writing-style for my Gmail accounts.",
+      "Sampled 18 sent messages across charlie@runner.now and charlie@voteagora.com. Drafted a style profile — your voice differs by account. Want to confirm before I save it.",
     ),
     cards: [
       {
         id: cid("card"),
-        title: "Inventory items >60d old",
+        title: "Sample sent messages",
         state: "done",
         artifact: {
           kind: "metrics",
           rows: [
-            { label: "Total items", value: "84" },
-            { label: "Total size", value: "12.4 GB" },
-            { label: "Oldest", value: "247 days" },
+            { label: "Messages sampled (runner.now)", value: "11" },
+            { label: "Messages sampled (voteagora.com)", value: "7" },
+            { label: "Median length", value: "62 words" },
           ],
         },
       },
       {
         id: cid("card"),
-        title: "Categorize: screenshots / installers / docs / other",
+        title: "Draft style profile",
         state: "done",
         artifact: {
-          kind: "metrics",
-          rows: [
-            { label: "Screenshots", value: "37 (1.2 GB)" },
-            { label: "Installers (.dmg/.pkg)", value: "18 (8.9 GB)" },
-            { label: "Docs (PDF, ZIP)", value: "21 (1.8 GB)" },
-            { label: "Other", value: "8 (0.5 GB)" },
-          ],
+          kind: "note",
+          body:
+            "Runner.now voice: lowercase first word for internal, no signoff for short threads, em-dashes liberally. voteagora.com voice: more formal, sentence case throughout, signs off with 'Best, Charlie'. Both: short paragraphs, no emojis, occasional rhetorical question to soften asks.",
         },
       },
       {
         id: cid("card"),
-        title: "Confirm deletion list",
+        title: "Save profile to memory",
         state: "triage",
         triageNote:
-          "Ready to move 84 items to Trash. Showing summary — confirm before I proceed.",
+          "Confirm and I'll commit this as the per-account Gmail style profile.",
+        kind: "confirm",
         artifact: {
           kind: "checklist",
           items: [
-            { label: "37 screenshots — older than 60 days" },
-            { label: "18 installers — Xcode, Docker, Slack, Zoom, Notion" },
-            { label: "21 misc docs — most are old contract drafts and exports" },
-            { label: "8 other — PDFs, fonts, downloads-from-browser" },
+            { label: "Save runner.now Gmail Communication Style profile" },
+            { label: "Save voteagora.com Gmail Communication Style profile" },
+            { label: "Use these when drafting future Gmail replies on each account" },
           ],
         },
       },
     ],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "active",
-    title: "Q2 competitive scan",
-    summary:
-      "8 competitors tracked. Funding/headcount/positioning pulled. Need synthesis + leadership review.",
-    chatMessages: seedChat(
-      "Run Q2 competitive scan.",
-      "Tracked 8 competitors and pulled funding/headcount/positioning. Synthesis + leadership review still to do.",
-    ),
-    cards: [
-      {
-        id: cid("card"),
-        title: "Identify the 8 competitors to track",
-        state: "done",
-        artifact: {
-          kind: "people",
-          entries: [
-            { name: "Replit Agents", meta: "Direct" },
-            { name: "Cursor Composer", meta: "Direct" },
-            { name: "Lindy", meta: "Adjacent — agentic todo" },
-            { name: "Sweep", meta: "Adjacent" },
-            { name: "Codeium Cascade", meta: "Direct" },
-            { name: "Devin (Cognition)", meta: "Direct" },
-            { name: "Warp Agent Mode", meta: "Adjacent" },
-            { name: "Zed AI", meta: "Adjacent" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Pull funding, headcount, positioning",
-        state: "done",
-        artifact: {
-          kind: "note",
-          body:
-            "Logged in the comp tracker doc. Replit and Cursor remain best-funded; Devin's traction questions persist; Lindy and Sweep both pivoted positioning since Q1.",
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Summarize key shifts since Q1",
-        state: "todo",
-        artifact: {
-          kind: "note",
-          body:
-            "Plan: 1-page memo, 4 bullets per competitor max. Will pull the Q1 doc for diff. Aiming for 800-1200 words total.",
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Schedule review with leadership",
-        state: "todo",
-        artifact: {
-          kind: "checklist",
-          items: [
-            { label: "Find a 45-minute slot before May 19" },
-            { label: "Send pre-read 24h ahead" },
-            { label: "Capture decisions in the comp tracker" },
-          ],
-        },
-      },
-    ],
-    updatedAt: "Yesterday",
-  },
-  {
-    id: cid("project"),
-    status: "active",
-    title: "Upgrade Vite 5 → 6",
-    summary:
-      "Migration in progress. Codemods done, SSR layer broken, HMR needs re-enabling for shadcn package.",
-    chatMessages: seedChat(
-      "Upgrade us from Vite 5 to 6.",
-      "Read the migration guide, ran codemods. SSR layer has two breakages and shadcn HMR is off. Working through them.",
-    ),
-    cards: [
-      {
-        id: cid("card"),
-        title: "Read migration guide",
-        state: "done",
-        artifact: {
-          kind: "note",
-          body:
-            "Three breaking changes affect us: middleware mode signature, deprecated `define` field, and `legacy.buildSsrCjsExternalHeuristics`.",
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Run codemods on apps/web",
-        state: "done",
-        artifact: {
-          kind: "code",
-          summary: "Ran @vitejs/codemod-vite-6 across the workspace.",
-          changes: [
-            { label: "vite.config.ts", meta: "Updated 4 packages" },
-            { label: "src/server/ssr.ts", meta: "Adapter signature changed" },
-            { label: "package.json", meta: "Bumped to ^6.4" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Fix breakages in the SSR layer",
-        state: "todo",
-        artifact: {
-          kind: "code",
-          summary: "Two open errors in SSR streaming after the bump.",
-          changes: [
-            { label: "ssr.ts:42", meta: "ViteDevServer signature mismatch" },
-            { label: "stream.ts:91", meta: "transformIndexHtml return type" },
-          ],
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Re-enable HMR for shadcn package",
-        state: "todo",
-        artifact: {
-          kind: "note",
-          body:
-            "shadcn registers its own HMR boundary which silently broke. Plan: pin to 0.8.x for now, file an upstream issue.",
-        },
-      },
-      {
-        id: cid("card"),
-        title: "Roll to staging",
-        state: "todo",
-        artifact: {
-          kind: "checklist",
-          items: [
-            { label: "Cut a release branch" },
-            { label: "Deploy to staging cluster" },
-            { label: "Run full e2e suite" },
-            { label: "Watch for HMR regressions for 24h" },
-          ],
-        },
-      },
-    ],
-    updatedAt: "Yesterday",
+    updatedAt: "2 days ago",
   },
 ];
 
@@ -1019,318 +1139,383 @@ export const DONE: Project[] = [
   {
     id: cid("project"),
     status: "done",
-    title: "Q1 board meeting",
-    summary: "Held Apr 9. Approved budget, no objections to Q2 plan.",
+    title: "Email triage — May 3 batch (50)",
+    summary: "Drafted 14 replies, archived 31 noise emails, flagged 5.",
     chatMessages: seedChat(
-      "Run the Q1 board meeting.",
-      "Held Apr 9. Approved budget, no objections to Q2 plan. Filed minutes and decision log.",
+      "Look at my latest emails, help me draft replies and after I send them, archive the ones where I was the last email.",
+      "Done. 14 drafts sent, 31 archived, 5 flagged for your eyes. Inbox now at 11 unread.",
     ),
     artifacts: [
       {
         id: cid("art"),
-        title: "Pre-read sent 96h ahead",
-        artifact: {
-          kind: "email",
-          to: "Board (5 members)",
-          subject: "Q1 pre-read and Apr 9 agenda",
-          body:
-            "Board team,\n\nAttaching the Q1 pre-read and Apr 9 agenda 96 hours ahead per our usual cadence.\n\nKey reads: Q1 metrics, Q2 plan, budget proposal (page 14).\n\nReply with anything you want surfaced live.\n\nBest,",
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Deck v3",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "board-deck-v3.key", meta: "Updated through Apr 8" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Minutes filed",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "docs/board/2026-04-09.md", meta: "12 sections, 4 decisions captured" },
-          ],
-        },
-      },
-    ],
-    decisions: ["Bump R&D spend +15% in Q2"],
-    updatedAt: "Apr 9",
-  },
-  {
-    id: cid("project"),
-    status: "done",
-    title: "Hired Product Designer (Maya K.)",
-    summary: "Started May 1.",
-    chatMessages: seedChat(
-      "Hire a product designer.",
-      "Maya K. accepted Apr 18, started May 1. Funnel summary filed.",
-    ),
-    artifacts: [
-      {
-        id: cid("art"),
-        title: "Sourced 35 candidates",
+        title: "Classification metrics",
         artifact: {
           kind: "metrics",
           rows: [
-            { label: "Sourced", value: "35" },
-            { label: "Phone screened", value: "8" },
-            { label: "On-site", value: "3" },
-            { label: "Offer", value: "1" },
+            { label: "Replied", value: "14" },
+            { label: "Archived", value: "31" },
+            { label: "Flagged for review", value: "5" },
           ],
         },
       },
       {
         id: cid("art"),
-        title: "Offer extended to Maya K., accepted Apr 18",
-        artifact: {
-          kind: "email",
-          subject: "Welcome to Runner — offer details",
-          body:
-            "Hi Maya,\n\nWe'd love for you to join us as Senior Product Designer. Offer details attached. Looking forward to having you onboard.\n\nWelcome aboard!",
-        },
-      },
-    ],
-    decisions: ["Skip the take-home next round — the live exercise was more signal"],
-    updatedAt: "Apr 18",
-  },
-  {
-    id: cid("project"),
-    status: "done",
-    title: "Shipped billing page v2",
-    summary: "Self-serve plan changes now possible.",
-    chatMessages: seedChat(
-      "Ship billing page v2.",
-      "Shipped. Self-serve plan changes are now live. Annual prepay parked for now.",
-    ),
-    artifacts: [
-      {
-        id: cid("art"),
-        title: "PR — web#798",
-        artifact: {
-          kind: "code",
-          summary: "Billing page v2 with self-serve plan changes.",
-          changes: [
-            { label: "web/billing/PlanSelector.tsx", meta: "+312 / -42" },
-            { label: "server/billing/api.ts", meta: "+158 / -19" },
-            { label: "shared/billing-types.ts", meta: "+24 / -2" },
-          ],
-        },
-      },
-    ],
-    decisions: ["Don't expose annual prepay yet — pricing not finalized"],
-    updatedAt: "Apr 30",
-  },
-  {
-    id: cid("project"),
-    status: "done",
-    title: "Mar 28 rate-limit incident postmortem",
-    summary: "Wrote up, presented, action items in flight.",
-    chatMessages: seedChat(
-      "Postmortem the Mar 28 rate-limit incident.",
-      "Doc filed, presented to platform team. 5 action items assigned, all tracked.",
-    ),
-    artifacts: [
-      {
-        id: cid("art"),
-        title: "Postmortem doc",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "docs/incidents/2026-03-28.md", meta: "Timeline, root cause, factors" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "5 action items",
-        artifact: {
-          kind: "checklist",
-          items: [
-            { label: "Add per-workspace quota caps", checked: true },
-            { label: "Tune circuit-breaker thresholds", checked: true },
-            { label: "Wire alert to PagerDuty", checked: true },
-            { label: "Add runbook entry", checked: true },
-            { label: "Re-run capacity test on staging", checked: true },
-          ],
-        },
-      },
-    ],
-    decisions: ["Introduce per-workspace quota caps (now live, see today's spike)"],
-    updatedAt: "Apr 4",
-  },
-  {
-    id: cid("project"),
-    status: "done",
-    title: "London trip Apr 15-22",
-    summary: "Booked, attended, returned.",
-    chatMessages: seedChat(
-      "Plan London trip Apr 15-22.",
-      "All booked, all dinners held. Recommendation: 8 days next time, the last day was rushed.",
-    ),
-    artifacts: [
-      {
-        id: cid("art"),
-        title: "BA flights booked",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "BA-286 SFO → LHR", meta: "Apr 15 · Confirmation BA-7XQ8" },
-            { label: "BA-285 LHR → SFO", meta: "Apr 22 · Confirmation BA-9MN1" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Soho Hotel · 7 nights",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "Soho Hotel London", meta: "Apr 15-22 · £388/night · gym, quiet floor" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "12 dinners scheduled and held",
-        artifact: {
-          kind: "people",
-          entries: [
-            { name: "Tom (Anthropic UK)", meta: "Apr 15 — Lyle's" },
-            { name: "Anna + Reece", meta: "Apr 16 — Brat" },
-            { name: "Old SFO crew", meta: "Apr 17 — Sketch" },
-            { name: "Plus 9 more", note: "All held, notes filed" },
-          ],
-        },
-      },
-    ],
-    decisions: ["Extend to 8 days next time — the last day was rushed"],
-    updatedAt: "Apr 22",
-  },
-  {
-    id: cid("project"),
-    status: "done",
-    title: "Closed seed extension",
-    summary: "$8M from existing investors + one new lead.",
-    chatMessages: seedChat(
-      "Close the seed extension.",
-      "Term sheet signed Apr 2. Wire received Apr 11. Cap table updated. Skipping the Series A pitch tour for 12 months.",
-    ),
-    artifacts: [
-      {
-        id: cid("art"),
-        title: "Term sheet signed Apr 2",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "termsheet-2026-04-02.pdf", meta: "Counter-signed" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Wire received Apr 11",
-        artifact: {
-          kind: "metrics",
-          rows: [
-            { label: "Total raised", value: "$8.0M" },
-            { label: "Existing investors", value: "$5.5M" },
-            { label: "New lead", value: "$2.5M" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Cap table updated",
+        title: "Drafts sent",
         artifact: {
           kind: "note",
-          body: "Pulley updated. Founder + employee dilution within plan. ESOP top-up to 14%.",
-        },
-      },
-    ],
-    decisions: ["Skip a Series A pitch tour for 12 months — focus on revenue"],
-    updatedAt: "Apr 11",
-  },
-  {
-    id: cid("project"),
-    status: "done",
-    title: "Strategy doc v3",
-    summary: "Published internally Apr 5. Reviewed by exec team + board.",
-    chatMessages: seedChat(
-      "Write strategy doc v3.",
-      "Published Apr 5. Path 2 (agentic todo) committed; Path 1 deprioritized.",
-    ),
-    artifacts: [
-      {
-        id: cid("art"),
-        title: "Strategy doc v3",
-        artifact: {
-          kind: "attachments",
-          items: [
-            { label: "docs/strategy/v3.md", meta: "9,400 words · 4 pillars" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Reviewed by exec + board",
-        artifact: {
-          kind: "people",
-          entries: [
-            { name: "Exec team", meta: "Apr 3" },
-            { name: "Board readout", meta: "Apr 5" },
-          ],
+          body:
+            "All 14 sent. Three needed light edits before send (the Stripe contract redline, the Anthropic partner intro, and the Expedia procurement reply).",
         },
       },
     ],
     decisions: [
-      "Commit to the agentic-todo direction (Path 2)",
-      "De-prioritize generalist agent (Path 1)",
+      "Auto-archive newsletters older than 7 days going forward",
     ],
-    updatedAt: "Apr 5",
+    updatedAt: "May 3",
   },
   {
     id: cid("project"),
     status: "done",
-    title: "Rewrote onboarding flow",
-    summary: "Activation up 18% week over week.",
+    title: "Booked SFO → Chicago for May 14",
+    summary: "United UA-2241 nonstop, $362, lands 2:55pm. Aisle 12B.",
     chatMessages: seedChat(
-      "Rewrite the onboarding flow.",
-      "Shipped. Activation up 18% WoW. The 'tour' step had <5% adoption — killed it.",
+      "Find me flights from SFO to Chicago May 14, arriving before 3pm.",
+      "Booked UA-2241 nonstop, $362, lands 2:55pm. Confirmation in your inbox.",
     ),
     artifacts: [
       {
         id: cid("art"),
-        title: "3 PRs merged",
+        title: "Flight booked",
         artifact: {
-          kind: "code",
-          summary: "Onboarding flow rebuilt across web + server.",
-          changes: [
-            { label: "web/onboarding/Welcome.tsx", meta: "new" },
-            { label: "server/onboarding/api.ts", meta: "rewritten" },
-            { label: "Removed src/onboarding/Tour.tsx", meta: "deleted" },
-          ],
-        },
-      },
-      {
-        id: cid("art"),
-        title: "Activation metrics",
-        artifact: {
-          kind: "metrics",
-          rows: [
-            { label: "Activation rate", value: "62%", trend: "+18 pp WoW" },
-            { label: "Time to first action", value: "1m 42s", trend: "-3m" },
-            { label: "Tour step adoption", value: "<5%" },
+          kind: "attachments",
+          items: [
+            { label: "United UA-2241 SFO → ORD", meta: "May 14 · 08:40 → 14:55 · Confirmation UA-3KJ91X" },
           ],
         },
       },
     ],
-    decisions: ["Kill the optional 'tour' — adoption was <5%"],
+    updatedAt: "May 5",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "SF house scan — 5 listings near 749 Guerrero",
+    summary: "Top 5 3bd/2ba listings within 4 blocks. Open houses logged.",
+    chatMessages: seedChat(
+      "Find me houses in SF near 749 Guerrero — 3 bed 2 bath, list price and sqft.",
+      "Top 5 in the neighborhood. Two have weekend open houses already scheduled.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "5 listings",
+        artifact: {
+          kind: "options",
+          intro: "5 near-block listings.",
+          options: [
+            { id: "g-737", title: "737 Guerrero", meta: "3 bed · 2 bath · 1,820 sqft · $2.4M", notes: "Open house Sat 1pm." },
+            { id: "g-810", title: "810 Guerrero", meta: "3 bed · 2 bath · 1,950 sqft · $2.65M", notes: "Open house Sun 2pm." },
+            { id: "d-925", title: "925 Dolores", meta: "3 bed · 2 bath · 1,780 sqft · $2.55M", notes: "By appointment." },
+            { id: "v-415", title: "415 Valencia", meta: "3 bed · 2 bath · 2,100 sqft · $2.8M", notes: "Higher price, more square footage." },
+            { id: "g-655", title: "655 Guerrero", meta: "3 bed · 2 bath · 1,650 sqft · $2.25M", notes: "Closest to 749. Cheapest." },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 5",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "749 Guerrero Rent Tracker — Cleaner Tab",
+    summary: "Reorganized and formatted the Cleaner tab; conditional formatting applied.",
+    chatMessages: seedChat(
+      "Find my 749 Guerrero Rent Tracker — help me organize and format the Cleaner tab.",
+      "Reorganized into three sections, applied conditional formatting for paid/unpaid status, and froze the header row.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Cleaner tab formatted",
+        artifact: {
+          kind: "code",
+          summary: "Cleaner tab restructured with conditional formatting.",
+          changes: [
+            { label: "Header row frozen", meta: "row 1" },
+            { label: "Conditional format: paid (green) / unpaid (red)", meta: "column D" },
+            { label: "Currency format applied to amounts", meta: "column B" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 1",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "BigQuery — top 10 events last week",
+    summary: "Pulled top 10 events from analytics, summarized counts and trends.",
+    chatMessages: seedChat(
+      "Query my analytics dataset on BigQuery for the top 10 events last week by count.",
+      "Top 10 events pulled. Session_start dominates as expected; agent_chat is up 14% week-over-week.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Top 10 events (last 7 days)",
+        artifact: {
+          kind: "metrics",
+          rows: [
+            { label: "session_start", value: "182,914" },
+            { label: "agent_chat", value: "94,201", trend: "+14% WoW" },
+            { label: "tool_call", value: "78,533", trend: "+9%" },
+            { label: "mcp_invoke", value: "41,028" },
+            { label: "draft_created", value: "12,886" },
+          ],
+        },
+      },
+    ],
     updatedAt: "Apr 28",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Q4 Budget — column B summed in B15",
+    summary: "Found the sheet, summed column B, wrote $487,512 to B15.",
+    chatMessages: seedChat(
+      "In the Q4 Budget spreadsheet, sum column B and write the result in B15.",
+      "Done. B15 = $487,512. Formula left as =SUM(B2:B14) so it'll auto-update.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "B15 updated",
+        artifact: {
+          kind: "note",
+          body: "B15 = SUM(B2:B14) = $487,512. Currency format applied.",
+        },
+      },
+    ],
+    updatedAt: "Apr 28",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Meeting Notes (Apr 27) — Action Items section added",
+    summary: "Opened the doc, added a blank Action Items section at the bottom.",
+    chatMessages: seedChat(
+      "Open my Meeting Notes April 27, 2026 doc and add an Action Items section at the bottom.",
+      "Added. Section uses the same H2 style as your other meeting docs. Empty bullet list ready to fill.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Doc updated",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "Meeting Notes — April 27, 2026", meta: "Google Doc · +1 section" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Apr 28",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Test email to yitong@runner.now",
+    summary: "Sent.",
+    chatMessages: seedChat(
+      "Read my latest email and write to yitong@runner.now: 'This is a test email, thank you for the meeting today!'",
+      "Sent. Subject auto-generated from your meeting context.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Email sent",
+        artifact: {
+          kind: "email",
+          to: "yitong@runner.now",
+          subject: "Thanks for the meeting today",
+          body: "This is a test email, thank you for the meeting today!",
+        },
+      },
+    ],
+    updatedAt: "Apr 28",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Email validation — charlie@voteagora.com",
+    summary: "Valid. MX records resolve, no disposable signal, no catch-all.",
+    chatMessages: seedChat(
+      "Is charlie@voteagora.com a valid email?",
+      "Yes — MX records resolve cleanly, deliverability OK, no disposable/catch-all signal. Safe to send to.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Validation result",
+        artifact: {
+          kind: "checklist",
+          items: [
+            { label: "MX records present", checked: true },
+            { label: "Deliverable", checked: true },
+            { label: "Not disposable", checked: true },
+            { label: "Not catch-all", checked: true },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 6",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Board meeting notes Google Doc",
+    summary: "Formatted doc for upcoming board meeting — agenda, attendees, section blocks, action items.",
+    chatMessages: seedChat(
+      "Help me create a meeting notes Google Doc that's well-formatted for the upcoming board meeting.",
+      "Created. Includes agenda block, attendee list, six section blocks, and an Action Items section at the bottom.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Doc structure",
+        artifact: {
+          kind: "checklist",
+          items: [
+            { label: "Title + date", checked: true },
+            { label: "Attendees (5 board members)", checked: true },
+            { label: "Agenda block", checked: true },
+            { label: "Six section H2s for topics", checked: true },
+            { label: "Action Items section at bottom", checked: true },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 1",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Poem email to Yitong",
+    summary: "Sent a short spring poem.",
+    chatMessages: seedChat(
+      "Draft me an email with a poem to send to yitong@runner.now.",
+      "Drafted and sent. Six lines, light, spring-themed. You signed off with 'c'.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Email sent",
+        artifact: {
+          kind: "email",
+          to: "yitong@runner.now",
+          subject: "small thing",
+          body:
+            "yitong —\n\nlight comes earlier now\nthe sidewalks are forgetful\nbut the magnolias remember everything\nand spill it out at once\n\n(thinking of you)\n\nc",
+        },
+      },
+    ],
+    updatedAt: "May 6",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Pulled April rent — $4,825",
+    summary: "Found the tracker, pulled the April line, matched March exactly.",
+    chatMessages: seedChat(
+      "Look for the 749 Guerrero Rent Tracker. What was rent in April? I need to pay May.",
+      "Found it. April rent: $4,825 (same as March). Ready to set up May payment when you are.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "April rent line",
+        artifact: {
+          kind: "metrics",
+          rows: [
+            { label: "April rent", value: "$4,825" },
+            { label: "Status", value: "Paid Apr 1" },
+            { label: "March rent (for ref)", value: "$4,825" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 1",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Expedia sales deck — first draft (8 slides)",
+    summary: "First-pass draft of the Expedia sales deck before the full 10-slide build.",
+    chatMessages: seedChat(
+      "Create me a Google Slides for a sales presentation with an enterprise customer — Expedia, on flight MCPs for our business.",
+      "First draft up: 8 slides covering problem, solution, integration, pricing, next steps. Will expand to the full 10 later.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Deck v0.1",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "Expedia — Flight MCP Pitch (v0.1)", meta: "Google Slides · 8 slides" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 1",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Linked the Q4 Budget spreadsheet",
+    summary: "Found in Drive at /Finance/Budgets/2025/. Linked it.",
+    chatMessages: seedChat(
+      "Find the Q4 Budget spreadsheet.",
+      "Found at /Finance/Budgets/2025/Q4 Budget. Linked below.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Link",
+        artifact: {
+          kind: "attachments",
+          items: [
+            { label: "Q4 Budget", meta: "/Finance/Budgets/2025/Q4 Budget · Google Sheets" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "Apr 28",
+  },
+  {
+    id: cid("project"),
+    status: "done",
+    title: "Morning briefing — May 1",
+    summary: "Daily brief: 3 meetings, 11 unread, 2 deadlines.",
+    chatMessages: seedChat(
+      "/morning-briefing",
+      "Today: 3 meetings (Yitong 11am, board sync 2pm, Maria 4pm). 11 unread (Acme RFP is the only urgent one). 2 deadlines: pre-read draft due tomorrow, May rent on the 1st.",
+    ),
+    artifacts: [
+      {
+        id: cid("art"),
+        title: "Daily summary",
+        artifact: {
+          kind: "metrics",
+          rows: [
+            { label: "Meetings today", value: "3" },
+            { label: "Unread email", value: "11" },
+            { label: "Deadlines this week", value: "2" },
+          ],
+        },
+      },
+    ],
+    updatedAt: "May 1",
   },
 ];
 
@@ -1353,179 +1538,162 @@ export interface SplitTodo {
 }
 
 export const SPLIT_PROJECT_ORDER: string[] = [
-  "OG Guild",
-  "Finances",
-  "Housing",
-  "Hiring",
-  "Investor update",
+  "Inbox",
+  "Travel",
+  "749 Guerrero",
+  "Board Prep",
+  "Analytics",
+  "Sales",
   "Everything",
 ];
 
 export const SPLIT_TODOS: SplitTodo[] = [
   {
-    id: "split-call-michael",
-    title: "Call with Michael",
-    time: "15:00",
+    id: "split-yitong-sync",
+    title: "30-min sync with Yitong",
+    time: "14:00",
     bucket: "today",
-    project: "Hiring",
+    project: "Inbox",
   },
   {
-    id: "split-lunch-investors",
-    title: "Lunch with investors",
-    time: "12:30",
+    id: "split-board-pre-read",
+    title: "Send board pre-read",
+    note: "96h ahead of May 19 — needs to go today.",
     bucket: "today",
-    project: "Investor update",
+    project: "Board Prep",
   },
   {
-    id: "split-print-stickers",
-    title: "Print stickers for the conference",
-    note: "Pick up at FedEx by 5pm — booth setup is tonight.",
+    id: "split-may-rent",
+    title: "Pay May rent — 749 Guerrero",
+    note: "$4,825. Form is filled except routing number.",
     bucket: "today",
-    project: "Hiring",
+    project: "749 Guerrero",
   },
   {
     id: "split-cover-chart",
-    title: "Approve cover chart for April investor update",
+    title: "Pick April investor update cover chart",
     note: "Two options waiting in the active stack.",
     bucket: "today",
-    project: "Investor update",
+    project: "Inbox",
   },
   {
-    id: "split-reply-mike",
-    title: "Reply to Mike about Thursday dinner",
+    id: "split-vacation-reply",
+    title: "Confirm Gmail vacation auto-reply",
+    note: "Dates ready — confirm to apply across both accounts.",
     bucket: "today",
-    project: "OG Guild",
+    project: "Inbox",
   },
   {
-    id: "split-thai-lunch",
-    title: "Order Thai for lunch — pad see ew, no tofu",
-    note: "Lers Ros if open, otherwise Osha. By 12:30.",
+    id: "split-expedia-logo",
+    title: "Pick case study logo for Expedia deck",
     bucket: "today",
+    project: "Sales",
   },
   {
-    id: "split-standup-linnea",
-    title: "Standup with Linnea",
-    time: "09:30",
+    id: "split-chicago-hotel",
+    title: "Pick Chicago hotel — Conrad vs Kimpton vs Hyatt",
     bucket: "tomorrow",
-    project: "Hiring",
+    project: "Travel",
   },
   {
-    id: "split-narrative-linnea",
-    title: "Send draft narrative to Linnea before Wed call",
+    id: "split-toronto-agents",
+    title: "Chase agents for Wellington + King W showings",
     bucket: "tomorrow",
-    project: "Hiring",
+    project: "Travel",
   },
   {
-    id: "split-tsa-precheck",
-    title: "Renew TSA PreCheck — flight is Saturday",
-    note: "SSN field needs to be done in person.",
+    id: "split-finance-pack",
+    title: "Nudge Maria for the finance pack",
+    note: "Pre-read goes out tomorrow.",
     bucket: "tomorrow",
+    project: "Board Prep",
   },
   {
-    id: "split-april-rent",
-    title: "Pay April rent",
-    bucket: "tomorrow",
-    project: "Housing",
-  },
-  {
-    id: "split-board-prep",
-    title: "Schedule the 3 board prep sessions",
-    note: "Each board member, 1:1, before May meeting.",
+    id: "split-share-superman",
+    title: "Decide sharing for Superman GDoc",
     bucket: "this-week",
-    project: "Investor update",
+    project: "Board Prep",
   },
   {
-    id: "split-decide-linnea",
-    title: "Decide on Linnea — push for chat or pass",
+    id: "split-q1-memo",
+    title: "Circulate Q1 analytics memo",
+    note: "After your read pass.",
     bucket: "this-week",
-    project: "Hiring",
+    project: "Analytics",
   },
   {
-    id: "split-fde-ashby",
-    title: "Post FDE role on Ashby",
-    note: "Roughly: ship customer integrations, pair with founders. Bay Area or remote.",
+    id: "split-chicago-dinners",
+    title: "Lock in Chicago dinners (Reece, Marcus)",
     bucket: "this-week",
-    project: "Hiring",
+    project: "Travel",
   },
   {
-    id: "split-quarterly-taxes",
-    title: "Submit quarterly estimated taxes",
+    id: "split-toronto-showings",
+    title: "Toronto showings — 88 Front, 60 Yonge",
+    note: "Sat May 17. Confirm with agents.",
     bucket: "this-week",
-    project: "Finances",
+    project: "Travel",
   },
   {
-    id: "split-christine-dinner",
-    title: "Book Christine's birthday dinner reservation",
-    note: "Party of 8, Friday at 7. Try Nopa first.",
+    id: "split-q4-deck-copy",
+    title: "Edit 'Next Steps' bullets on Q4 Deck",
     bucket: "this-week",
-    project: "OG Guild",
+    project: "Sales",
   },
   {
-    id: "split-lease-addendum",
-    title: "Sign new lease addendum",
+    id: "split-board-mtg",
+    title: "Board meeting — May 19",
     bucket: "next-week",
-    project: "Housing",
+    project: "Board Prep",
   },
   {
-    id: "split-investor-update-send",
-    title: "Send investor update",
+    id: "split-chicago-trip",
+    title: "Chicago trip — May 14-17",
     bucket: "next-week",
-    project: "Investor update",
+    project: "Travel",
   },
   {
-    id: "split-insurance-quotes",
-    title: "Review insurance quotes",
-    note: "Three brokers, compare deductibles.",
+    id: "split-gmail-style",
+    title: "Confirm Gmail style profiles",
+    note: "Drafted — review and save to memory.",
     bucket: "next-week",
-    project: "Finances",
+    project: "Inbox",
   },
   {
-    id: "split-source-candidates",
-    title: "Source 20 staff eng candidates",
-    note: "Bay Area or remote, infra/AI background.",
+    id: "split-pipeline-handoff",
+    title: "Instrument Qualified → Proposal handoff latency",
     bucket: "this-month",
-    project: "Hiring",
+    project: "Analytics",
   },
   {
-    id: "split-investor-narrative",
-    title: "Finalize April investor update narrative",
+    id: "split-749-decision",
+    title: "Decide on 749 Guerrero — renew or move",
+    note: "Lease decision by end of month.",
     bucket: "this-month",
-    project: "Investor update",
+    project: "749 Guerrero",
   },
   {
-    id: "split-hvac",
-    title: "Schedule HVAC tune-up",
+    id: "split-toronto-pick",
+    title: "Pick a Toronto apartment",
     bucket: "this-month",
-    project: "Housing",
+    project: "Travel",
   },
   {
-    id: "split-mothers-day",
-    title: "Mother's day gift",
-    note: "Ship a week before. Likes books, candles, slow craft.",
-    bucket: "this-month",
+    id: "split-expedia-followup",
+    title: "Expedia follow-up after the meeting",
+    project: "Sales",
   },
   {
-    id: "split-guild-trip",
-    title: "Plan summer guild trip",
-    note: "Rough dates, see who's in, draft a budget.",
-    project: "OG Guild",
+    id: "split-bq-cleanup",
+    title: "Clean up BigQuery scratch tables",
+    project: "Analytics",
   },
   {
-    id: "split-student-loans",
-    title: "Refinance student loans",
-    project: "Finances",
+    id: "split-drive-tidy",
+    title: "Tidy Drive folder structure",
   },
   {
-    id: "split-dishwasher-filter",
-    title: "Order new dishwasher filter",
-    project: "Housing",
-  },
-  {
-    id: "split-linkedin",
-    title: "Update LinkedIn profile",
-  },
-  {
-    id: "split-mcp-spec",
-    title: "Read MCP spec 0.4 changes",
+    id: "split-poem-followup",
+    title: "Reply to Yitong if she writes back about the poem",
   },
 ];

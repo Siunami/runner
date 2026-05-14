@@ -9,6 +9,30 @@ interface Prototype {
 
 const PROTOTYPES: Prototype[] = [
   {
+    slug: "runner-os",
+    name: "Runner — Integrations in context",
+    description:
+      "Mock macOS desktop with movable Notes, Slack, and Chrome windows. The Runner character attaches to the focused window and suggests context-aware todos and workflows.",
+  },
+  {
+    slug: "dashboard-todolist",
+    name: "Dashboard + Todolist",
+    description:
+      "Active Work System. Dashboard surfaces consequence-ranked attention; list shows live work state at a glance; detail turns ambiguity into structured action cards you can accept, redirect, or reject.",
+  },
+  {
+    slug: "dashboard-subscriptions",
+    name: "Dashboard — Subscriptions",
+    description:
+      "Subscribe to the things top of mind right now. Each subscription rolls up its work as a natural-language status, with consequence-framed callouts for what needs you.",
+  },
+  {
+    slug: "runner-style",
+    name: "Runner — Orchestrator look",
+    description:
+      "Same Dashboard + Todolist prototype re-skinned in the Orchestrator's warm-paper / macOS-window aesthetic. Same dashboard rails, list groups, and action-card detail view — just a different visual language.",
+  },
+  {
     slug: "action-board",
     name: "Action Board",
     description:
@@ -25,6 +49,12 @@ const PROTOTYPES: Prototype[] = [
     name: "Tab view",
     description:
       "Browser-style tabs for categories. One tab per project, time-sensitive on its own tab, and a new-tab page with a category grid and recently viewed.",
+  },
+  {
+    slug: "action-cards",
+    name: "Action cards",
+    description:
+      "Side-by-side comparison of the original Runner session view and a proposed action-cards rendering. Sidebar lists six prototyped sessions; clicking one loads both views — verbatim transcript on the left, distilled cards on the right.",
   },
 ];
 

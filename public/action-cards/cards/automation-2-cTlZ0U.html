@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Action Cards — Daily Feedback Triage</title>
+<link rel="stylesheet" href="cards.css" />
+</head>
+<body>
+<header class="page-header">
+  <a href="#" class="brand" title="Runner">
+    <svg viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M724.105 520.984C723.617 522.053 722.551 522.739 721.376 522.739H468.944C468.456 522.739 468.04 523.09 467.958 523.57L429.008 751.31C428.762 752.751 427.513 753.804 426.051 753.804H203C202.442 753.804 201.992 753.348 202 752.789L209.184 276.677C209.209 275.038 210.544 273.722 212.183 273.721H509.503C510.123 273.721 510.594 274.279 510.489 274.89L476.64 472.807C476.456 473.88 477.877 474.432 478.466 473.517L601.041 283.162C601.557 282.361 602.424 281.853 603.375 281.793L838.36 267.001C839.114 266.954 839.646 267.727 839.332 268.414L724.105 520.984Z" fill="currentColor"/></svg>
+    <span>Runner</span>
+  </a>
+  <div class="page-title-wrap"><span class="page-title">Daily Feedback Triage — May 13, 2026, 8:00 AM</span></div>
+  <div></div>
+</header>
+
+<div class="thread">
+
+  <div class="user-msg slash">/runner-my-workspace:feedback-triage</div>
+
+  <button class="steps" type="button"><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span class="count">76</span><span class="label">Steps Completed</span></button>
+
+  <div class="card">
+    <h2>📡 Feedback Brief — 2026-05-13</h2>
+    <div class="lead">~15 substantive pieces of feedback from #runner-user-feedback (Agora), #all-runners + #feature-requests (Run Club), Cogniate WhatsApp, 2 Telegram DMs. iMessage isn't readable today — flagged.</div>
+
+    <h3>Themes</h3>
+    <ul>
+      <li><strong>Referral link still broken end-to-end</strong> — Two unrelated users (Ranan, Laura) say the shared link doesn't auto-apply the invite code despite RUN-1472 being "Done" 2026-04-25. Ranan is gating 250 user shares on it.</li>
+      <li><strong>"Edit this query / delete this response"</strong> — Naazia and Nilesh independently asked for the Perplexity-style edit + regenerate, plus delete a bad turn.</li>
+      <li><strong>Heartbeat account labeling + Telegram coverage</strong> — dcbuilder reports Heartbeat shows <code>account 2</code>/<code>account 3</code> instead of the email/name, and Telegram isn't scanned at all.</li>
+      <li><strong>BYO-Claude-Max billing flow is confusing on first run</strong> — Lui signed up for $50 plan, connected Claude Max, still saw "Runner billing required." Same shape as RUN-2343 yesterday.</li>
+      <li><strong>Connector breadth</strong> — Odoo, n8n, MS Planner, Canva, iCloud Mail, GHL, Custom MCP. Mohammed's Odoo is now RUN-2362.</li>
+      <li><strong>App polish</strong> — David Yap wants a minimize button beside the close X; Naazia wants email display names + attachments.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="ico">🌡</span><strong>Sentiment:</strong> Mostly upbeat — Naazia, Thomas, Hailey, Mohammed, dcbuilder are in "actively co-building" mode. Two sharp pain points: Ranan (referral link) and Lui (billing). No churn signals.
+    </div>
+  </div>
+
+  <div class="card composer-card" id="tickets-composer-card">
+    <header class="composer-head">
+      <div class="composer-head-titles">
+        <h2>New tickets — review &amp; file</h2>
+        <span class="composer-from">6 tickets drafted · priorities &amp; assignees pre-routed</span>
+      </div>
+      <div class="composer-nav">
+        <button class="nav-btn" type="button" id="t-prev" aria-label="Previous ticket">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <span class="composer-position" id="t-position">1 / 6</span>
+        <button class="nav-btn" type="button" id="t-next" aria-label="Next ticket">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="chip-row" id="t-chip-row">
+      <span class="chip" id="t-chip-priority"></span>
+      <span class="chip" id="t-chip-routing"></span>
+    </div>
+
+    <div class="composer" id="t-composer">
+      <div class="field field-subject">
+        <input type="text" id="t-title" aria-label="Ticket title" />
+        <span class="edited-flag" id="t-edited-flag" hidden>Edited</span>
+      </div>
+      <div class="ticket-section">
+        <h4>Quote — what the user said</h4>
+        <div id="t-quotes"></div>
+      </div>
+      <div class="ticket-section">
+        <h4>Rationale</h4>
+        <p id="t-rationale"></p>
+      </div>
+    </div>
+
+    <div class="done-state" id="t-done-state" hidden>
+      <span>All 6 tickets handled</span>
+      <span class="done-tally" id="t-done-tally"></span>
+      <button class="link-btn" type="button" id="t-reset">Reset</button>
+    </div>
+
+    <footer class="composer-footer" id="t-footer">
+      <button class="link-btn" type="button" id="t-skip">Skip</button>
+      <span class="composer-tally" id="t-tally"></span>
+      <button class="link-btn" type="button" id="t-file-all">File all 6</button>
+      <button class="btn primary" type="button" id="t-file">File</button>
+    </footer>
+  </div>
+
+  <div class="card">
+    <h3>Already tracked — no new ticket needed</h3>
+    <ul>
+      <li><strong>Heartbeat near-disaster RSVP'd to aunt</strong> (Naazia) → <strong>RUN-2213</strong>, Steven confirms fix ships next release</li>
+      <li><strong>Large-PDF upload corrupts session</strong> (Charlie) → <strong>RUN-2384</strong></li>
+      <li><strong>Own Claude Code account but cannot use Runner</strong> (Charlie's report) → <strong>RUN-2343</strong></li>
+      <li><strong>Auth-required connectors miss reconnect button</strong> (Kevin) → <strong>RUN-2340</strong>, Kevin already merged</li>
+      <li><strong>Odoo connector</strong> (Mohammed) → <strong>RUN-2362</strong></li>
+      <li><strong>Custom MCP / n8n</strong> (Ranan) → <strong>RUN-1613</strong> — n8n unlocks once Custom MCP ships</li>
+    </ul>
+  </div>
+
+  <div class="actions">
+    <div class="actions-label">Suggested next steps</div>
+
+    <div class="action-btn">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div class="body">
+        <div class="title">Ping Steven about #1 (referral link regression)</div>
+        <div class="sub">Ranan's blocker — treat as today's urgent triage</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+
+    <div class="action-btn">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="body">
+        <div class="title">Confirm with Yitong: should #5 merge into RUN-1622?</div>
+        <div class="sub">Or file separately — model-routing default-ignore is adjacent but distinct</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+
+    <div class="action-btn">
+      <div class="icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      </div>
+      <div class="body">
+        <div class="title">Decide whether to slot #3 + #4 under RUN-1343 as children</div>
+        <div class="sub">Both Heartbeat issues, single owner (Steven) — could collapse</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="msg-input-bar">
+  <div class="msg-input">
+    <input type="text" placeholder="Reply to continue this session..." />
+    <button class="send" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const TICKETS = [
+    {
+      title: "#1 Referral link still doesn't auto-apply invite code",
+      priority: "p1",
+      assignee: "Zac",
+      area: "backend / referrals",
+      quotes: [
+        { who: "Ranan", text: "the shared link doesn't auto-apply the invite code despite RUN-1472 being Done. blocking 250 user shares" },
+        { who: "Laura", text: "hit the same thing yesterday, can't share with anyone" }
+      ],
+      rationale: "Regression of RUN-1472 (marked Done 2026-04-25). Two unrelated reporters in the same day. Ranan is gating 250 user shares on it — needs the regression caught fast."
+    },
+    {
+      title: "#2 Editable user message + deletable assistant response",
+      priority: "p2",
+      assignee: "Art",
+      area: "frontend / chat UX",
+      quotes: [
+        { who: "Naazia", text: "would love a Perplexity-style edit + regenerate on my last message" },
+        { who: "Nilesh", text: "+1 — and let me delete a bad turn" }
+      ],
+      rationale: "Two independent asks for the same Perplexity-style pattern. Yitong agreed in-thread that this fits the planned chat UX work."
+    },
+    {
+      title: "#3 Heartbeat shows \"account 2/3\" instead of email/name",
+      priority: "p3",
+      assignee: "Steven",
+      area: "backend / heartbeat",
+      quotes: [
+        { who: "dcbuilder", text: "the Heartbeat summary shows my accounts as 'account 2' and 'account 3' — can it use the email or display name?" }
+      ],
+      rationale: "Same area as RUN-1775/2067 (already on Steven). Display fallback when account label is missing."
+    },
+    {
+      title: "#4 Heartbeat doesn't scan Telegram",
+      priority: "p3",
+      assignee: "Steven",
+      area: "backend / heartbeat",
+      quotes: [
+        { who: "dcbuilder", text: "Heartbeat scans Slack and WhatsApp but skips Telegram entirely" }
+      ],
+      rationale: "Likely child of RUN-1343 (connector breadth). Could collapse under that parent."
+    },
+    {
+      title: "#5 BYO-Claude-Max still shows \"Runner billing required\"",
+      priority: "p2",
+      assignee: "Steven",
+      area: "backend / billing UX",
+      quotes: [
+        { who: "Lui", text: "I signed up for the $50 plan, connected Claude Max, and still see 'Runner billing required'" }
+      ],
+      rationale: "Second recurrence in 24h, adjacent to RUN-2343. The model-routing default-ignore is the suspected root."
+    },
+    {
+      title: "#6 Add minimize button beside close X",
+      priority: "p4",
+      assignee: "Art",
+      area: "frontend / window chrome",
+      quotes: [
+        { who: "David Yap", text: "small thing — would love a minimize button next to the close X" }
+      ],
+      rationale: "Discoverability gap. Low effort, broad appeal."
+    }
+  ];
+
+  const TOTAL = TICKETS.length;
+  const state = {
+    current: 0,
+    statuses: TICKETS.map(() => "pending"),
+    edits: TICKETS.map((t) => ({ title: t.title, edited: false }))
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const $composer = $("t-composer");
+  const $doneState = $("t-done-state");
+  const $footer = $("t-footer");
+  const $title = $("t-title");
+  const $quotes = $("t-quotes");
+  const $rationale = $("t-rationale");
+  const $editedFlag = $("t-edited-flag");
+  const $position = $("t-position");
+  const $prev = $("t-prev");
+  const $next = $("t-next");
+  const $file = $("t-file");
+  const $skip = $("t-skip");
+  const $fileAll = $("t-file-all");
+  const $tally = $("t-tally");
+  const $doneTally = $("t-done-tally");
+  const $reset = $("t-reset");
+  const $chipRow = $("t-chip-row");
+  const $chipPriority = $("t-chip-priority");
+  const $chipRouting = $("t-chip-routing");
+
+  function counts() {
+    let p = 0, f = 0, s = 0;
+    state.statuses.forEach((v) => { if (v === "pending") p++; else if (v === "filed") f++; else s++; });
+    return { pending: p, filed: f, skipped: s };
+  }
+
+  function findNextPending(from) {
+    for (let i = from + 1; i < TOTAL; i++) if (state.statuses[i] === "pending") return i;
+    for (let i = 0; i < from; i++) if (state.statuses[i] === "pending") return i;
+    return -1;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function renderComposer() {
+    const i = state.current;
+    const t = TICKETS[i];
+    const edits = state.edits[i];
+    const status = state.statuses[i];
+    const disabled = status !== "pending";
+
+    $title.value = edits.title;
+    $title.disabled = disabled;
+    $editedFlag.hidden = !(edits.edited && status === "pending");
+
+    $chipPriority.className = "chip" + (t.priority === "p1" ? " is-p1" : "");
+    $chipPriority.textContent = t.priority.toUpperCase();
+    $chipRouting.textContent = "→ " + t.assignee + " · " + t.area;
+
+    $quotes.innerHTML = t.quotes.map((q) =>
+      '<blockquote class="ticket-quote">"' + escapeHtml(q.text) + '" — <span>' + escapeHtml(q.who) + '</span></blockquote>'
+    ).join("");
+
+    $rationale.textContent = t.rationale;
+  }
+
+  function renderFooter() {
+    const c = counts();
+    const status = state.statuses[state.current];
+
+    $position.textContent = (state.current + 1) + " / " + TOTAL;
+    $prev.disabled = state.current === 0;
+    $next.disabled = state.current === TOTAL - 1;
+    $file.disabled = status !== "pending";
+    $skip.disabled = status !== "pending";
+    $fileAll.disabled = c.pending === 0;
+    $fileAll.textContent = "File all " + c.pending;
+
+    const parts = [];
+    if (c.filed > 0) parts.push('<span class="tally-sent">' + c.filed + ' filed</span>');
+    if (c.skipped > 0) parts.push('<span class="tally-discarded">' + c.skipped + ' skipped</span>');
+    $tally.innerHTML = parts.join(" · ");
+  }
+
+  function renderDoneState() {
+    const c = counts();
+    const isDone = c.pending === 0;
+    $doneState.hidden = !isDone;
+    $composer.hidden = isDone;
+    $footer.hidden = isDone;
+    $chipRow.hidden = isDone;
+    if (isDone) {
+      const parts = [];
+      if (c.filed > 0) parts.push('<span class="tally-sent">' + c.filed + ' filed</span>');
+      if (c.skipped > 0) parts.push('<span class="tally-discarded">' + c.skipped + ' skipped</span>');
+      $doneTally.innerHTML = parts.join(" · ");
+    }
+  }
+
+  function renderAll() {
+    renderComposer();
+    renderFooter();
+    renderDoneState();
+  }
+
+  function markEdited() {
+    if (!state.edits[state.current].edited) {
+      state.edits[state.current].edited = true;
+      $editedFlag.hidden = state.statuses[state.current] !== "pending";
+    }
+  }
+
+  $title.addEventListener("input", (e) => { state.edits[state.current].title = e.target.value; markEdited(); });
+  $prev.addEventListener("click", () => { if (state.current > 0) { state.current--; renderAll(); } });
+  $next.addEventListener("click", () => { if (state.current < TOTAL - 1) { state.current++; renderAll(); } });
+  $file.addEventListener("click", () => {
+    state.statuses[state.current] = "filed";
+    const nxt = findNextPending(state.current);
+    if (nxt !== -1) state.current = nxt;
+    renderAll();
+  });
+  $skip.addEventListener("click", () => {
+    state.statuses[state.current] = "skipped";
+    const nxt = findNextPending(state.current);
+    if (nxt !== -1) state.current = nxt;
+    renderAll();
+  });
+  $fileAll.addEventListener("click", () => {
+    state.statuses = state.statuses.map((s) => (s === "pending" ? "filed" : s));
+    renderAll();
+  });
+  $reset.addEventListener("click", () => {
+    state.statuses = TICKETS.map(() => "pending");
+    state.edits = TICKETS.map((t) => ({ title: t.title, edited: false }));
+    state.current = 0;
+    renderAll();
+  });
+
+  renderAll();
+})();
+</script>
+</body>
+</html>

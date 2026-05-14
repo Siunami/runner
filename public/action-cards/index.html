@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Runner — Action Cards Exploration</title>
+<style>
+  :root {
+    --background: #21201d;
+    --background-2: #1a1917;
+    --foreground: #f7f7f5;
+    --foreground-70: rgba(247, 247, 245, 0.70);
+    --foreground-50: rgba(247, 247, 245, 0.50);
+    --foreground-30: rgba(247, 247, 245, 0.30);
+    --foreground-6: rgba(247, 247, 245, 0.06);
+    --foreground-4: rgba(247, 247, 245, 0.04);
+    --border: rgba(247, 247, 245, 0.06);
+    --accent: #f7f7f5;
+    --sidebar-w: 260px;
+    --font-ui: "Geist", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: var(--font-ui);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--background);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .sb-section {
+    padding: 12px 12px 4px;
+  }
+  .sb-section:first-child { padding-top: 16px; }
+  .sb-section-label {
+    font-size: 11px;
+    color: var(--foreground-50);
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 6px 6px 4px;
+    font-weight: 500;
+  }
+  .sb-list {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    gap: 1px;
+  }
+  .sb-item {
+    display: block;
+    padding: 6px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--foreground);
+    user-select: none;
+    line-height: 1.3;
+  }
+  .sb-item:hover { background: var(--foreground-4); }
+  .sb-item.active { background: var(--foreground-6); }
+  .sb-item .title {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+  .sb-item .meta {
+    display: block;
+    color: var(--foreground-50);
+    font-size: 11px;
+    margin-top: 1px;
+  }
+
+  .sb-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .sb-scroll::-webkit-scrollbar { width: 6px; }
+  .sb-scroll::-webkit-scrollbar-thumb { background: var(--foreground-6); border-radius: 3px; }
+
+  /* Main: split view */
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-width: 0;
+    background: var(--background-2);
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+  .col-left { border-right: 1px solid var(--border); }
+  .col-body {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  iframe.session {
+    width: 100%; height: 100%;
+    border: 0;
+    background: var(--background);
+    display: block;
+  }
+  .placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground-50);
+    padding: 40px;
+    text-align: center;
+  }
+  .placeholder .ph-card {
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 32px 28px;
+    max-width: 380px;
+    background: var(--background);
+  }
+  .placeholder h2 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    color: var(--foreground);
+    font-weight: 600;
+  }
+  .placeholder p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--foreground-50);
+  }
+
+  /* Empty state for no selection */
+  .empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground-50);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-scroll">
+      <div class="sb-section">
+        <div class="sb-section-label">Automations</div>
+        <ul class="sb-list" id="list-automations"></ul>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-section-label">One-offs</div>
+        <ul class="sb-list" id="list-oneoffs"></ul>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main: split view -->
+  <main class="main">
+    <section class="col col-left">
+      <div class="col-body">
+        <div class="empty" id="left-empty">Click a session in the sidebar to load it.</div>
+        <iframe class="session" id="frame" title="Session" style="display:none"></iframe>
+      </div>
+    </section>
+
+    <section class="col col-right">
+      <div class="col-body">
+        <iframe class="session" id="cards-frame" title="Action Cards" style="display:none"></iframe>
+        <div class="placeholder" id="cards-placeholder">
+          <div class="ph-card">
+            <h2>Action cards view</h2>
+            <p>Not yet drafted for this session. The engagement-patterns prototype is the first one — pick "Understand user engagement patterns" in the sidebar to see it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const sessions = [
+    { kind: 'automation', file: 'rendered/automation-2-cTlZ0U.html',         title: 'Daily Feedback Triage',     date: 'May 13, 2026', time: '8:00 AM', cards: 'cards/automation-2-cTlZ0U.html' },
+    { kind: 'automation', file: 'rendered/automation-1-YDOfYewF.html',       title: 'Churn Win-Back',            date: 'May 13, 2026', time: '9:00 AM', cards: 'cards/automation-1-YDOfYewF.html' },
+    { kind: 'automation', file: 'rendered/automation-3-F_ZylqZp.html',       title: 'Order Team Lunch',          date: 'May 13, 2026', time: '9:30 AM', cards: 'cards/automation-3-F_ZylqZp.html' },
+    { kind: 'oneoff',     file: 'rendered/oneoff-scheduling-QCo8VZJb.html',  title: 'Schedule meeting with Kent',date: 'May 13, 2026', time: '9:04 AM', cards: 'cards/oneoff-scheduling-QCo8VZJb.html' },
+    { kind: 'oneoff',     file: 'rendered/oneoff-ops-ha892yvS.html',         title: 'Send Zac and Art something nice', date: 'May 10, 2026', time: '6:10 PM', cards: 'cards/oneoff-ops-ha892yvS.html' },
+    { kind: 'oneoff',     file: 'rendered/oneoff-meeting-iftKNCjB.html',     title: 'Understand user engagement patterns', date: 'May 8, 2026', time: '11:07 AM', cards: 'cards/oneoff-meeting-iftKNCjB.html' },
+  ];
+
+  function render() {
+    const auto = document.getElementById('list-automations');
+    const one  = document.getElementById('list-oneoffs');
+    sessions.forEach((s, idx) => {
+      const li = document.createElement('li');
+      li.className = 'sb-item';
+      li.dataset.idx = idx;
+      li.innerHTML = `<span class="title">${s.title}</span><span class="meta">${s.date} · ${s.time}</span>`;
+      li.addEventListener('click', () => select(idx));
+      (s.kind === 'automation' ? auto : one).appendChild(li);
+    });
+  }
+
+  function select(idx) {
+    document.querySelectorAll('.sb-item').forEach(el => el.classList.remove('active'));
+    const items = document.querySelectorAll('.sb-item');
+    const target = Array.from(items).find(el => Number(el.dataset.idx) === idx);
+    if (target) target.classList.add('active');
+
+    const s = sessions[idx];
+    const frame = document.getElementById('frame');
+    frame.src = s.file;
+    frame.style.display = 'block';
+    document.getElementById('left-empty').style.display = 'none';
+
+    // Right pane: cards if drafted, else placeholder
+    const cardsFrame = document.getElementById('cards-frame');
+    const cardsPh = document.getElementById('cards-placeholder');
+    if (s.cards) {
+      cardsFrame.src = s.cards;
+      cardsFrame.style.display = 'block';
+      cardsPh.style.display = 'none';
+    } else {
+      cardsFrame.src = 'about:blank';
+      cardsFrame.style.display = 'none';
+      cardsPh.style.display = 'flex';
+    }
+  }
+
+  render();
+  // default to the engagement-patterns session (index 5) so the cards prototype is visible
+  select(5);
+</script>
+</body>
+</html>
