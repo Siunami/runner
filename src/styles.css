@@ -9978,3 +9978,1662 @@ body,
   flex: 0 0 auto;
 }
 
+/* ---------- Agent Todolist (dark theme — cambridge home view) ---------- */
+
+.agt-shell {
+  /* Cambridge dark theme tokens — scoped so other prototypes stay untouched. */
+  --agt-background: #21201d;
+  --agt-foreground: #f7f7f5;
+  --agt-foreground-muted: #a6a4a0;
+  --agt-foreground-faint: #6f6d68;
+  --agt-muted-surface: rgba(247, 247, 245, 0.05);
+  --agt-muted-surface-strong: rgba(247, 247, 245, 0.1);
+  --agt-border: rgba(247, 247, 245, 0.06);
+  --agt-info: #fbbf24;
+  --agt-success: #22c55e;
+  --agt-destructive: #f87171;
+  --agt-selected-bar: #bf7743;
+
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  background: var(--agt-background);
+  color: var(--agt-foreground);
+  overflow: hidden;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  letter-spacing: 0;
+}
+
+.agt-scroll {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.agt-content {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 48px 24px 24px;
+}
+
+.agt-footer {
+  border-top: 1px solid transparent;
+  background: var(--agt-background);
+  padding: 16px 24px 22px;
+}
+
+.agt-footer-inner {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 880px;
+}
+
+/* Sections */
+
+.agt-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.agt-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px;
+  color: var(--agt-foreground);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.agt-section-toggle,
+.agt-section-static {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.agt-section-toggle {
+  cursor: pointer;
+}
+
+.agt-section-chev {
+  color: var(--agt-foreground-muted);
+}
+
+.agt-section-leading-icon {
+  color: var(--agt-foreground-muted);
+  flex-shrink: 0;
+}
+
+.agt-section-leading-success {
+  color: var(--agt-success);
+}
+
+.agt-section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--agt-muted-surface);
+  color: var(--agt-foreground-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.agt-section-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Row */
+
+.agt-row {
+  display: grid;
+  grid-template-columns: 22px 1fr 60px;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background-color 120ms ease;
+}
+
+.agt-create-row {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+  color: var(--agt-foreground-muted);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-create-row:hover {
+  background: var(--agt-muted-surface);
+  color: var(--agt-foreground);
+}
+
+.agt-create-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--agt-foreground-faint);
+}
+
+.agt-create-row-text {
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.agt-row:hover,
+.agt-row:focus-within,
+.agt-row.is-highlighted {
+  background: var(--agt-muted-surface);
+}
+
+.agt-row.is-archived {
+  opacity: 0.55;
+}
+
+.agt-row-main {
+  grid-column: 1 / span 2;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  outline: none;
+}
+
+.agt-row-main:focus-visible {
+  outline: 2px solid var(--agt-selected-bar);
+  outline-offset: 2px;
+}
+
+.agt-row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.agt-row-title-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.agt-row-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--agt-foreground);
+  line-height: 1.35;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agt-row-title-line > .agt-label-pill,
+.agt-row-title-line > .agt-schedule-chip,
+.agt-row-title-line > .agt-preview-chip {
+  flex-shrink: 0;
+}
+
+.agt-row-secondary {
+  font-size: 0.8rem;
+  color: var(--agt-foreground-muted);
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agt-row-secondary.is-stale {
+  opacity: 0.6;
+}
+
+.agt-stale-tag {
+  font-style: italic;
+}
+
+/* State icon */
+
+.agt-state-icon,
+.agt-state-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 6px;
+  color: var(--agt-foreground-muted);
+  transition:
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+.agt-state-running {
+  color: var(--agt-foreground-muted);
+}
+
+.agt-state-attention {
+  color: var(--agt-foreground-muted);
+}
+
+.agt-state-blocked {
+  color: var(--agt-destructive);
+}
+
+.agt-state-archived {
+  color: var(--agt-foreground-muted);
+}
+
+.agt-state-btn {
+  cursor: pointer;
+}
+
+.agt-state-btn.agt-state-idle:hover,
+.agt-state-btn.agt-state-archived:hover,
+.agt-state-btn.agt-state-attention:hover {
+  color: var(--agt-foreground);
+  background: var(--agt-muted-surface-strong);
+}
+
+/* Label pill */
+
+.agt-label-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: var(--agt-muted-surface);
+  color: var(--agt-foreground-muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 0;
+}
+
+.agt-label-pill.is-recurring {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--agt-success);
+}
+
+.agt-label-pill.is-clickable {
+  cursor: pointer;
+}
+
+.agt-label-pill.is-clickable:hover {
+  background: var(--agt-muted-surface-strong);
+  color: var(--agt-foreground);
+}
+
+.agt-label-pill.is-clickable.is-recurring:hover {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.agt-label-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.agt-label-icon {
+  flex-shrink: 0;
+}
+
+/* Schedule chip */
+
+.agt-schedule-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: rgba(191, 119, 67, 0.14);
+  color: var(--agt-selected-bar);
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.agt-schedule-chip:hover {
+  background: rgba(191, 119, 67, 0.24);
+}
+
+.agt-schedule-chip.is-overdue {
+  background: rgba(248, 113, 113, 0.14);
+  color: var(--agt-destructive);
+}
+
+.agt-schedule-chip.is-overdue:hover {
+  background: rgba(248, 113, 113, 0.24);
+}
+
+/* Row hover actions */
+
+.agt-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.agt-row-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 0;
+  color: var(--agt-foreground-muted);
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-row:hover .agt-row-action,
+.agt-row:focus-within .agt-row-action,
+.agt-row.is-highlighted .agt-row-action {
+  opacity: 1;
+}
+
+.agt-row-action:hover {
+  background: var(--agt-muted-surface-strong);
+  color: var(--agt-foreground);
+}
+
+/* Add a todo input */
+
+.agt-add-form {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 44px;
+  padding: 0 6px 0 16px;
+  background: var(--agt-background);
+  border-radius: 999px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(247, 247, 245, 0.05);
+  transition: box-shadow 120ms ease;
+}
+
+.agt-add-form:focus-within {
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.4),
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(247, 247, 245, 0.05),
+    0 0 0 4px rgba(191, 119, 67, 0.2);
+}
+
+.agt-add-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--agt-foreground);
+  font-size: 0.92rem;
+  line-height: 1.3;
+  padding: 0;
+}
+
+.agt-add-input::placeholder {
+  color: var(--agt-foreground-muted);
+}
+
+.agt-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 120ms ease;
+}
+
+.agt-add-mic {
+  background: var(--agt-muted-surface);
+  color: var(--agt-foreground-muted);
+}
+
+.agt-add-mic:hover:not(:disabled) {
+  background: var(--agt-muted-surface-strong);
+}
+
+.agt-add-mic:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.agt-add-send {
+  background: var(--agt-foreground);
+  color: var(--agt-background);
+}
+
+.agt-add-send:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.agt-add-send:disabled {
+  background: var(--agt-muted-surface-strong);
+  color: var(--agt-foreground-faint);
+  cursor: not-allowed;
+}
+
+/* Vertical rail — fixed right-side menu, mirrors cambridge ViewToggle. */
+
+.agt-rail {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.agt-rail > * {
+  pointer-events: auto;
+}
+
+.agt-rail-sprite {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 8%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: background-color 120ms ease;
+}
+
+.agt-rail-sprite:hover {
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 14%);
+}
+
+.agt-rail-sprite img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.agt-rail-pill {
+  position: relative;
+  width: 38px;
+  height: 66px;
+  padding: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 8%);
+  display: grid;
+  grid-template-rows: repeat(2, 28px);
+}
+
+.agt-rail-indicator {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--agt-background);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(247, 247, 245, 0.04);
+  transition: transform 220ms cubic-bezier(0.32, 0.72, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.agt-rail-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--agt-foreground);
+  opacity: 0.5;
+  transition: opacity 120ms ease;
+}
+
+.agt-rail-btn:hover,
+.agt-rail-btn.is-active {
+  opacity: 1;
+}
+
+.agt-rail-btn:focus-visible {
+  outline: 2px solid var(--agt-selected-bar);
+  outline-offset: 2px;
+}
+
+/* "Click the bunny" tooltip-style callout — anchored top-left, dismissable. */
+.agt-callout {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 55;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 300px;
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 12px 32px rgba(0, 0, 0, 0.36);
+  color: var(--agt-foreground);
+  pointer-events: auto;
+}
+
+.agt-callout-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(191, 119, 67, 0.18);
+  color: var(--agt-selected-bar);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.agt-callout-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.agt-callout-title {
+  margin: 0 0 2px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--agt-foreground);
+  line-height: 1.3;
+}
+
+.agt-callout-desc {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: var(--agt-foreground-muted);
+}
+
+.agt-callout-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: var(--agt-foreground-faint);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: -2px;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-callout-close:hover {
+  background: rgba(247, 247, 245, 0.08);
+  color: var(--agt-foreground);
+}
+
+.agt-rail-sprite {
+  position: relative;
+}
+
+.agt-rail-sprite-dot {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--agt-selected-bar);
+  box-shadow: 0 0 0 2px var(--agt-background);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.agt-rail-sprite.is-active .agt-rail-sprite-dot,
+.agt-rail-sprite:hover .agt-rail-sprite-dot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Bunny floating bubbles */
+
+@keyframes agt-bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.agt-bunny-bubbles {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: -8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 60;
+  width: max-content;
+  max-width: 320px;
+}
+
+.agt-bunny-bubble-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.agt-bunny-bubble-item {
+  opacity: 0;
+  animation: agt-bubble-in 240ms cubic-bezier(0.32, 0.72, 0.2, 1) forwards;
+}
+
+.agt-bunny-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 10px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 999px;
+  color: var(--agt-foreground);
+  font-size: 0.86rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.32);
+  transition:
+    background-color 120ms ease,
+    transform 120ms ease,
+    border-color 120ms ease;
+}
+
+.agt-bunny-bubble:hover {
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 16%);
+  border-color: rgba(247, 247, 245, 0.12);
+  transform: translateX(-2px);
+}
+
+.agt-bunny-bubble-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(191, 119, 67, 0.18);
+  color: var(--agt-selected-bar);
+  flex-shrink: 0;
+}
+
+.agt-bunny-bubble-title {
+  white-space: nowrap;
+}
+
+.agt-bunny-bubble-empty {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  color: var(--agt-foreground-muted);
+  font-size: 0.8rem;
+  list-style: none;
+  text-align: right;
+}
+
+/* Primary action chips — appear at the top of the bunny menu on first click.
+   Schedule / Project / Archive / Delete as the up-front options. */
+.agt-bunny-kinds {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  opacity: 0;
+  animation: agt-bubble-in 240ms cubic-bezier(0.32, 0.72, 0.2, 1) forwards;
+}
+
+.agt-bunny-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px 8px 10px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 999px;
+  color: var(--agt-foreground);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.32);
+  transition:
+    background-color 120ms ease,
+    transform 120ms ease,
+    border-color 120ms ease;
+}
+
+.agt-bunny-kind:hover {
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 16%);
+  border-color: rgba(247, 247, 245, 0.12);
+  transform: translateX(-2px);
+}
+
+.agt-bunny-kind-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(191, 119, 67, 0.18);
+  color: var(--agt-selected-bar);
+  flex-shrink: 0;
+}
+
+/* Natural-language query input */
+
+.agt-bunny-query {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 38px;
+  padding: 0 4px 0 14px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 999px;
+  width: 280px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.32);
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+  pointer-events: auto;
+}
+
+.agt-bunny-query:focus-within {
+  border-color: rgba(191, 119, 67, 0.45);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.32),
+    0 0 0 3px rgba(191, 119, 67, 0.2);
+}
+
+.agt-bunny-query-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--agt-foreground);
+  font-size: 0.86rem;
+  line-height: 1.3;
+  padding: 0;
+}
+
+.agt-bunny-query-input::placeholder {
+  color: var(--agt-foreground-muted);
+}
+
+.agt-bunny-query-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--agt-foreground);
+  color: var(--agt-background);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 120ms ease;
+}
+
+.agt-bunny-query-send:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.agt-bunny-query-send:disabled {
+  background: var(--agt-muted-surface-strong);
+  color: var(--agt-foreground-faint);
+  cursor: not-allowed;
+}
+
+/* Staging mode: row visuals */
+
+.agt-row.is-staging-mode {
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background-color 160ms ease,
+    opacity 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.agt-row.is-staging-mode * {
+  cursor: pointer;
+}
+
+.agt-row.is-staging-mode.is-not-staged {
+  opacity: 0.32;
+}
+
+.agt-row.is-staging-mode.is-not-staged:hover {
+  opacity: 0.55;
+}
+
+.agt-row.is-staging-mode {
+  position: relative;
+  isolation: isolate;
+}
+
+.agt-row.is-staging-mode.is-staged {
+  background: transparent;
+}
+
+
+
+/* Strikethrough on the title when the row will be archived */
+.agt-row-title.is-struck {
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: rgba(247, 247, 245, 0.45);
+  color: var(--agt-foreground-muted);
+}
+
+/* Strikethrough on the existing schedule chip when it will be replaced/cleared */
+.agt-schedule-chip.is-struck {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.agt-schedule-chip.is-struck:hover {
+  opacity: 0.55;
+}
+
+/* Stage check / add toggle replaces the state icon column */
+
+.agt-stage-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--agt-foreground-faint);
+  background: transparent;
+  color: var(--agt-foreground-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease;
+}
+
+.agt-stage-check:hover {
+  border-color: var(--agt-foreground-muted);
+  color: var(--agt-foreground);
+}
+
+.agt-stage-check.is-on {
+  background: var(--agt-selected-bar);
+  border-color: var(--agt-selected-bar);
+  color: var(--agt-background);
+}
+
+.agt-stage-check.is-on:hover {
+  background: #c98959;
+  border-color: #c98959;
+}
+
+/* Preview chip — shows what bulk op will do to this row */
+
+.agt-preview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
+  padding: 0 8px 0 6px;
+  border-radius: 6px;
+  background: var(--agt-selected-bar);
+  color: var(--agt-background);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.agt-preview-chip.is-archive {
+  background: rgba(247, 247, 245, 0.16);
+  color: var(--agt-foreground);
+}
+
+.agt-preview-chip.is-unschedule {
+  background: rgba(247, 247, 245, 0.16);
+  color: var(--agt-foreground);
+}
+
+.agt-preview-chip > svg {
+  flex-shrink: 0;
+}
+
+/* Row-action minus button (remove from staging) */
+
+.agt-row-action.is-remove {
+  opacity: 1;
+  color: var(--agt-foreground-muted);
+}
+
+.agt-row-action.is-remove:hover {
+  background: rgba(248, 113, 113, 0.16);
+  color: var(--agt-destructive);
+}
+
+/* Staging UI — anchored to the bunny, replaces the menu when an op is staged. */
+
+@keyframes agt-staging-bubble-slide {
+  from {
+    opacity: 0;
+    transform: translateY(var(--agt-slide-from, 0px));
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes agt-staging-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.agt-staging {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: -8px;
+  width: auto;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  z-index: 60;
+}
+
+/* The bubble: looks identical to a menu bubble; this is the one the bunny
+   "kept" — feels like the bunny's chat bubble currently in flight. */
+.agt-staging-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px 9px 10px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 999px;
+  color: var(--agt-foreground);
+  font-size: 0.86rem;
+  font-weight: 500;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.32);
+  animation: agt-staging-bubble-slide 420ms cubic-bezier(0.32, 0.72, 0.2, 1) both;
+}
+
+.agt-staging-bubble-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(191, 119, 67, 0.18);
+  color: var(--agt-selected-bar);
+  flex-shrink: 0;
+}
+
+.agt-staging-bubble-title {
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.agt-staging-bubble-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(247, 247, 245, 0.06);
+  color: var(--agt-foreground-muted);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 2px;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-staging-bubble-close:hover {
+  background: rgba(247, 247, 245, 0.14);
+  color: var(--agt-foreground);
+}
+
+/* Panel below the bubble — flat, no container chrome. The bunny's controls
+   sit on the page; spacing alone groups them. */
+.agt-staging-panel {
+  position: relative;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 12px 32px rgba(0, 0, 0, 0.42);
+  color: var(--agt-foreground);
+  animation: agt-staging-panel-in 260ms cubic-bezier(0.32, 0.72, 0.2, 1) 280ms both;
+  transform-origin: top right;
+}
+
+
+/* Icon-only action picker — flat row, no tray. Active = soft orange tint. */
+/* Top-level tab strip — sits above the content and controls what shows below.
+   Negative side-margin lets the bottom divider line span the panel's full
+   width despite the card's padding. Equal-width tabs via flex: 1. */
+.agt-staging-kinds {
+  display: flex;
+  gap: 0;
+  margin: -10px -10px 2px;
+  padding: 4px 4px 0;
+  background: rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(247, 247, 245, 0.08);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  overflow: hidden;
+}
+
+.agt-staging-kind {
+  position: relative;
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  min-width: 0;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--agt-foreground-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px 6px 0 0;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-staging-kind:hover {
+  color: var(--agt-foreground);
+  background: rgba(247, 247, 245, 0.04);
+}
+
+/* Active tab — bridges the divider line below; reads as "this controls the
+   content under me". */
+.agt-staging-kind.is-active {
+  color: var(--agt-selected-bar);
+  background: transparent;
+}
+
+.agt-staging-kind.is-active::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--agt-selected-bar);
+  border-radius: 1px;
+}
+
+.agt-staging-kind > svg {
+  flex-shrink: 0;
+}
+
+.agt-staging-kind > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Single inline statement: verb + count + chip + Cancel/Apply */
+/* Single content row: count + (optional) chip. Hugs its content so the panel
+   never has trailing empty space. Force single-line via nowrap on all parts. */
+.agt-staging-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: var(--agt-foreground);
+  white-space: nowrap;
+  flex-wrap: nowrap;
+}
+
+.agt-staging-target-block {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* Action bubbles — float beneath the staging panel, mirroring the menu's
+   chat-bubble metaphor: each "thing the bunny is doing" gets its own bubble.
+   Fade-in matches the panel timing (same delay + duration). */
+.agt-staging-action-bubbles {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+  animation: agt-staging-panel-in 260ms cubic-bezier(0.32, 0.72, 0.2, 1) 280ms both;
+}
+
+.agt-staging-action-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid rgba(247, 247, 245, 0.06);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 10%);
+  color: var(--agt-foreground);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 20px rgba(0, 0, 0, 0.3);
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-staging-action-bubble:hover {
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 16%);
+}
+
+.agt-staging-action-bubble.is-primary {
+  background: var(--agt-selected-bar);
+  color: var(--agt-background);
+  border-color: var(--agt-selected-bar);
+  font-weight: 600;
+}
+
+.agt-staging-action-bubble.is-primary:hover:not(:disabled) {
+  background: #c98959;
+  border-color: #c98959;
+}
+
+.agt-staging-action-bubble.is-primary.is-destructive {
+  background: var(--agt-destructive);
+  color: #1a1410;
+  border-color: var(--agt-destructive);
+}
+
+.agt-staging-action-bubble.is-primary.is-destructive:hover:not(:disabled) {
+  background: #fa8a8a;
+  border-color: #fa8a8a;
+}
+
+.agt-staging-action-bubble:disabled {
+  background: rgba(247, 247, 245, 0.06);
+  color: var(--agt-foreground-faint);
+  border-color: rgba(247, 247, 245, 0.04);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.agt-staging-count {
+  font-weight: 700;
+  color: var(--agt-foreground);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.agt-staging-prep {
+  color: var(--agt-foreground-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.agt-staging-target {
+  position: relative;
+  display: inline-flex;
+}
+
+.agt-staging-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 119, 67, 0.45);
+  background: rgba(191, 119, 67, 0.14);
+  color: var(--agt-selected-bar);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+
+.agt-staging-chip > span {
+  white-space: nowrap;
+}
+
+.agt-staging-chip:hover,
+.agt-staging-chip.is-open {
+  background: rgba(191, 119, 67, 0.22);
+  border-color: var(--agt-selected-bar);
+}
+
+
+.agt-staging-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--agt-foreground-faint);
+}
+
+/* Project picker popover — mirrors the schedule popover pattern */
+.agt-project-pop {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 180px;
+  padding: 6px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 14%);
+  border: 1px solid rgba(247, 247, 245, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.42);
+  animation: agt-staging-panel-in 180ms cubic-bezier(0.32, 0.72, 0.2, 1) both;
+}
+
+.agt-project-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--agt-foreground-muted);
+  font-size: 0.84rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.agt-project-option:hover {
+  background: rgba(247, 247, 245, 0.06);
+  color: var(--agt-foreground);
+}
+
+.agt-project-option.is-active {
+  color: var(--agt-selected-bar);
+}
+
+.agt-project-option-check {
+  margin-left: auto;
+}
+
+/* Preview chip variants for new kinds */
+
+.agt-preview-chip.is-delete {
+  background: rgba(248, 113, 113, 0.2);
+  color: var(--agt-destructive);
+}
+
+.agt-preview-chip.is-project {
+  background: rgba(191, 119, 67, 0.18);
+  color: var(--agt-selected-bar);
+}
+
+/* Schedule picker popover */
+
+.agt-sched-pop {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: -10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 260px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--agt-background), var(--agt-foreground) 14%);
+  border: 1px solid rgba(247, 247, 245, 0.1);
+  border-radius: 12px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.4),
+    0 16px 36px rgba(0, 0, 0, 0.45);
+  color: var(--agt-foreground);
+  z-index: 70;
+}
+
+.agt-sched-quick {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.agt-sched-quick-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 0;
+  background: var(--agt-muted-surface);
+  color: var(--agt-foreground);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.agt-sched-quick-btn:hover:not(:disabled) {
+  background: var(--agt-muted-surface-strong);
+}
+
+.agt-sched-quick-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.agt-sched-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agt-sched-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(247, 247, 245, 0.1);
+}
+
+.agt-sched-divider-text {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--agt-foreground-muted);
+}
+
+.agt-sched-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--agt-foreground-muted);
+}
+
+.agt-sched-field > span {
+  width: 44px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+}
+
+.agt-sched-field input {
+  flex: 1;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(247, 247, 245, 0.1);
+  background: var(--agt-background);
+  color: var(--agt-foreground);
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 120ms ease;
+  color-scheme: dark;
+}
+
+.agt-sched-field input:focus {
+  border-color: var(--agt-selected-bar);
+  box-shadow: 0 0 0 3px rgba(191, 119, 67, 0.2);
+}
+
+.agt-sched-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.agt-sched-reset,
+.agt-sched-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--agt-foreground-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.agt-sched-reset:hover,
+.agt-sched-clear:hover {
+  color: var(--agt-foreground);
+  background: var(--agt-muted-surface);
+}
+
+.agt-sched-clear {
+  color: var(--agt-destructive);
+}
+
+.agt-sched-clear:hover {
+  color: var(--agt-destructive);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.agt-sched-actions {
+  flex-wrap: wrap;
+}
+
+.agt-sched-save {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 0;
+  background: var(--agt-selected-bar);
+  color: var(--agt-background);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.agt-sched-save:hover {
+  background: #c98959;
+}
+
+.agt-bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.agt-bulk-action-secondary,
+.agt-bulk-action-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.agt-bulk-action-secondary {
+  background: var(--agt-muted-surface);
+  color: var(--agt-foreground);
+}
+
+.agt-bulk-action-secondary:hover {
+  background: var(--agt-muted-surface-strong);
+}
+
+.agt-bulk-action-primary {
+  background: var(--agt-selected-bar);
+  color: var(--agt-background);
+}
+
+.agt-bulk-action-primary:hover:not(:disabled) {
+  background: #c98959;
+}
+
+.agt-bulk-action-primary:disabled {
+  background: var(--agt-muted-surface-strong);
+  color: var(--agt-foreground-faint);
+  cursor: not-allowed;
+}
+
