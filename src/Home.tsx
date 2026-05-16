@@ -21,6 +21,12 @@ const PROTOTYPES: Prototype[] = [
       "Active Work System. Dashboard surfaces consequence-ranked attention; list shows live work state at a glance; detail turns ambiguity into structured action cards you can accept, redirect, or reject.",
   },
   {
+    slug: "agent-todolist",
+    name: "Agent todolist",
+    description:
+      "Ported from the Runner home view: every running, pending, blocked, and completed agent session in one partitioned list. State icons, label pills, schedule chips, and hover affordances.",
+  },
+  {
     slug: "dashboard-subscriptions",
     name: "Dashboard — Subscriptions",
     description:
