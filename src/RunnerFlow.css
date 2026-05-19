@@ -270,7 +270,16 @@
 }
 
 .rf-item--card .rf-item__head {
-  gap: var(--runner-space-3);
+  /* No `gap` here — a zero-width bullet is still a flex child, so a
+     parent gap would apply after it and push the title right of the
+     card's left edge. We space chip/expand off the title with explicit
+     `margin-left` on those siblings instead. */
+  gap: 0;
+}
+
+.rf-item--card .rf-item__needs,
+.rf-item--card .rf-item__expand {
+  margin-left: var(--runner-space-3);
 }
 
 /* Bullet — fades + shrinks to nothing at card stage so the title
