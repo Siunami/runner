@@ -1,0 +1,184 @@
+/*
+ * Reference page layout — uses tokens only. No magic numbers.
+ */
+
+.ds-page {
+  min-height: 100vh;
+  padding: var(--runner-space-12) 0;
+}
+
+.ds-page__inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 var(--runner-space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-12);
+}
+
+.ds-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--runner-space-6);
+}
+
+.ds-page__theme {
+  flex: 0 0 auto;
+  gap: var(--runner-space-3);
+}
+
+.ds-page__theme-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-pill);
+}
+
+.ds-page__theme-toggle button {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+}
+
+.ds-page__theme-toggle button.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+.ds-page__section {
+  scroll-margin-top: var(--runner-space-12);
+}
+
+.ds-page__code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-sm);
+  padding: 1px 6px;
+}
+
+/* ─────────── Colors ─────────── */
+
+.ds-page__color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--runner-space-4);
+}
+
+.ds-page__color {
+  display: flex;
+  gap: var(--runner-space-3);
+  align-items: flex-start;
+}
+
+.ds-page__color-swatch {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--runner-radius-lg);
+  border: 1px solid var(--foreground-10);
+  flex: 0 0 auto;
+}
+
+/* ─────────── Tints ─────────── */
+
+.ds-page__tint-row {
+  display: flex;
+  gap: var(--runner-space-2);
+  flex-wrap: wrap;
+}
+
+.ds-page__tint {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  min-width: 48px;
+}
+
+.ds-page__tint-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--runner-radius-md);
+  border: 1px solid var(--foreground-10);
+}
+
+/* ─────────── Radius ─────────── */
+
+.ds-page__radius {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+}
+
+.ds-page__radius-swatch {
+  width: 64px;
+  height: 64px;
+  background: var(--foreground-10);
+  border: 1px solid var(--foreground-20);
+}
+
+/* ─────────── Shadow ─────────── */
+
+.ds-page__shadow-row {
+  gap: var(--runner-space-6);
+}
+
+.ds-page__shadow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+  align-items: center;
+}
+
+.ds-page__shadow-swatch {
+  width: 130px;
+  height: 80px;
+  background: var(--background);
+  border-radius: var(--runner-radius-lg);
+  display: grid;
+  place-items: center;
+}
+
+/* ─────────── Spacing ─────────── */
+
+.ds-page__spacing {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ds-page__spacing-row {
+  display: flex;
+  align-items: center;
+  gap: var(--runner-space-3);
+}
+
+.ds-page__spacing-label {
+  width: 72px;
+  font-family: var(--font-mono);
+  font-size: var(--runner-text-xs);
+}
+
+.ds-page__spacing-bar {
+  height: 14px;
+  background: var(--accent-10);
+  border-radius: var(--runner-radius-xs);
+}
+
+/* ─────────── Footer ─────────── */
+
+.ds-page__footer {
+  padding: var(--runner-space-6);
+  border: 1px dashed var(--foreground-10);
+  border-radius: var(--runner-radius-lg);
+  background: var(--foreground-1\.5);
+}

@@ -1,0 +1,493 @@
+/*
+ * Triaged cards prototype — page layout.
+ * Components are styled almost entirely via ds-* primitives in primitives.css.
+ * The styles here are page chrome + the redesigned operational card.
+ */
+
+.triaged {
+  min-height: 100vh;
+  padding: var(--runner-space-12) 0;
+}
+
+.triaged__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--runner-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-12);
+}
+
+.triaged__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--runner-space-6);
+}
+
+.triaged__theme {
+  flex: 0 0 auto;
+  gap: var(--runner-space-3);
+}
+
+.triaged__theme-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-pill);
+}
+
+.triaged__theme-toggle button {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+}
+
+.triaged__theme-toggle button.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+/* ────────────── Family section ────────────── */
+
+.triaged__family {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-5);
+}
+
+.triaged__family--quiet {
+  opacity: 0.96;
+}
+
+.triaged__family-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-1);
+}
+
+.triaged__family-title-row {
+  gap: var(--runner-space-2);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ *  OPERATIONAL CARD — the elegant redesign
+ * ════════════════════════════════════════════════════════════════════ */
+
+.triaged__op {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+  padding: var(--runner-space-5);
+  overflow: hidden;
+}
+
+/* Subtle amber accent glow at the top edge when the card needs attention */
+.triaged__op--needs-you::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--info) 30%,
+    var(--info) 70%,
+    transparent 100%
+  );
+  opacity: 0.45;
+}
+
+.triaged__op-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--runner-space-3);
+}
+
+.triaged__op-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.triaged__op-title {
+  margin: 0;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+  font-size: var(--runner-text-lg);
+  line-height: 1.25;
+}
+
+.triaged__op-state {
+  margin: 2px 0 0;
+  font-size: var(--runner-text-md);
+  line-height: 1.55;
+  color: var(--foreground-80);
+  letter-spacing: -0.005em;
+}
+
+.triaged__chip-sep {
+  opacity: 0.5;
+  margin: 0 2px;
+}
+
+/* ─── Currently line (expanded only, when active) ─── */
+
+.triaged__currently {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 12px;
+  background: var(--success-3);
+  border: 1px solid var(--success-5);
+  border-radius: var(--runner-radius-sm);
+}
+
+.triaged__currently-label {
+  flex: 0 0 auto;
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--success-text);
+}
+
+.triaged__currently-value {
+  font-family: var(--font-mono);
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-80);
+  line-height: 1.45;
+  word-break: break-word;
+  min-width: 0;
+  animation: triaged-currently-in 320ms ease-out both;
+}
+
+@keyframes triaged-currently-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .triaged__currently-value {
+    animation: none;
+  }
+}
+
+/* ─── Top-right action cluster (Session + Expand) ─── */
+
+.triaged__op-actions {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ─── Open session button (icon-only, top-right of card) ─── */
+
+.triaged__session-button {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--runner-radius-md);
+  color: var(--foreground-50);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.triaged__session-button:hover {
+  background: var(--foreground-5);
+  color: var(--foreground);
+  border-color: var(--foreground-10);
+}
+
+.triaged__op-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: var(--runner-space-1);
+  min-width: 0;
+}
+
+.triaged__op-cluster-label {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-40);
+  flex: 0 0 auto;
+}
+
+.triaged__op-activity {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  font-size: var(--runner-text-sm);
+  line-height: 1.45;
+  color: var(--foreground-70);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triaged__op-activity-when {
+  color: var(--foreground-50);
+  font-feature-settings: "tnum" on, "lnum" on;
+  flex: 0 0 auto;
+}
+
+.triaged__op-activity-sep {
+  color: var(--foreground-30);
+  flex: 0 0 auto;
+}
+
+.triaged__op-activity-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Expanded body ─── */
+
+.triaged__op-expanded {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-4);
+  padding-top: var(--runner-space-3);
+  margin-top: var(--runner-space-1);
+  border-top: 1px solid var(--foreground-5);
+}
+
+.triaged__op-sources {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.triaged__op-sources-label {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-40);
+  margin: 0 0 2px 0;
+}
+
+/* ─── Footer lines (Output / Next / Waiting on) ─── */
+
+.triaged__op-footer {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 16px 72px 1fr;
+  align-items: baseline;
+  gap: 8px;
+  font-size: var(--runner-text-sm);
+  line-height: 1.55;
+  color: var(--foreground-70);
+}
+
+.triaged__op-footer-arrow {
+  color: var(--foreground-30);
+  font-size: var(--runner-text-md);
+  line-height: 1.2;
+}
+
+.triaged__op-footer-label {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-50);
+}
+
+.triaged__op-footer-value {
+  color: var(--foreground-80);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ *  RECURRING CARD
+ * ════════════════════════════════════════════════════════════════════ */
+
+.triaged__card {
+  position: relative;
+  padding: var(--runner-space-4) var(--runner-space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+}
+
+.triaged__card-top {
+  align-items: flex-start;
+  gap: var(--runner-space-3);
+}
+
+.triaged__card-top-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--runner-space-2);
+}
+
+.triaged__card-title {
+  letter-spacing: -0.01em;
+}
+
+.triaged__card-lanes {
+  gap: var(--runner-space-3);
+  row-gap: var(--runner-space-2);
+}
+
+.triaged__card-lanes--procedural {
+  font-family: var(--font-mono);
+  font-size: var(--runner-text-sm);
+}
+
+.triaged__recurring-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-sans);
+  font-size: var(--runner-text-sm);
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.triaged__lane-divider {
+  color: var(--foreground-30);
+  font-size: var(--runner-text-xs);
+}
+
+.triaged__card-expanded {
+  padding-top: var(--runner-space-3);
+  margin-top: var(--runner-space-1);
+  border-top: 1px solid var(--foreground-10);
+}
+
+.triaged__recurring-sources {
+  margin-top: var(--runner-space-2);
+}
+
+/* ────────────── Expand toggle (recurring only) ────────────── */
+
+.triaged__expand {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--runner-radius-md);
+  color: var(--foreground-50);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.triaged__expand:hover {
+  background: var(--foreground-5);
+  color: var(--foreground);
+  border-color: var(--foreground-10);
+}
+
+.triaged__expand--small {
+  width: 24px;
+  height: 24px;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ *  LIGHTWEIGHT — just the lists. No toggle, no chip, no actions.
+ * ════════════════════════════════════════════════════════════════════ */
+
+.triaged__lw-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--runner-space-3);
+}
+
+.triaged__lw {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+  padding: var(--runner-space-3) var(--runner-space-4);
+  background: var(--foreground-1\.5);
+  border: 1px solid var(--foreground-5);
+  border-radius: var(--runner-radius-md);
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.triaged__lw:hover {
+  background: var(--foreground-3);
+  border-color: var(--foreground-10);
+}
+
+.triaged__lw-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.triaged__lw-title {
+  margin: 0;
+  font-size: var(--runner-text-md);
+  font-weight: 600;
+  color: var(--foreground);
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+
+.triaged__lw-meta {
+  margin: 0;
+  font-size: var(--runner-text-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-40);
+}
+
+.triaged__lw-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.triaged__lw-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: var(--runner-text-sm);
+  line-height: 1.5;
+  color: var(--foreground-80);
+}
+
+.triaged__lw-bullet {
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin-top: 9px;
+  border-radius: 50%;
+  background: var(--foreground-40);
+}

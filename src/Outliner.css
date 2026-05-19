@@ -1,0 +1,273 @@
+/*
+ * Outliner / Scratchpad — page layout. Components use ds-* primitives.
+ *
+ * Visual model: single column outline. A "Triage" action runs a fake AI pass
+ * that drops a label (Task / Automate / Todo) on each top-level row.
+ * Children inherit the parent's label color as a left stripe so the parent
+ * label visually scopes its subtree.
+ */
+
+.outliner {
+  min-height: 100vh;
+  padding: var(--runner-space-12) 0;
+}
+
+.outliner__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 var(--runner-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-10);
+}
+
+.outliner__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--runner-space-6);
+}
+
+.outliner__theme {
+  flex: 0 0 auto;
+  gap: var(--runner-space-3);
+}
+
+.outliner__theme-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-pill);
+}
+
+.outliner__theme-toggle button {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+}
+
+.outliner__theme-toggle button.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+/* ────────────────────── Outline pad ────────────────────── */
+
+.outliner__pad {
+  background: var(--background);
+  border-radius: var(--runner-radius-xl);
+  padding: var(--runner-space-5) var(--runner-space-5) var(--runner-space-4);
+  box-shadow: var(--shadow-minimal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-4);
+}
+
+.outliner__pad-top {
+  gap: var(--runner-space-3);
+}
+
+.outliner__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* ────────────────────── Group (parent + its children) ────────────────────── */
+
+/* A group wraps a depth-0 row and any depth-1 rows that follow it. It owns a
+   single stripe that runs from the top of the parent down through the last
+   child. The stripe is invisible until the parent gets a label; on label,
+   it scales from 0 → 1 vertically (top-origin) so it appears to draw down. */
+.outliner__group {
+  position: relative;
+}
+
+.outliner__group-stripe {
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: transparent;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition:
+    background-color 200ms ease,
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.outliner__group[data-labeled="true"] .outliner__group-stripe {
+  transform: scaleY(1);
+}
+
+.outliner__group[data-label="task"] .outliner__group-stripe { background: var(--accent); }
+.outliner__group[data-label="automate"] .outliner__group-stripe { background: var(--info); }
+.outliner__group[data-label="todo"] .outliner__group-stripe { background: var(--foreground-30); }
+
+/* ────────────────────── Row ────────────────────── */
+
+.outliner__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--runner-space-2);
+  padding: 6px 10px 6px 14px;
+  border-radius: var(--runner-radius-md);
+  transition: background-color 120ms ease;
+}
+
+.outliner__row:hover {
+  background: var(--foreground-3);
+}
+
+.outliner__row:focus-within {
+  background: var(--foreground-3);
+}
+
+.outliner__row--depth-1 {
+  margin-left: 26px;
+}
+
+.outliner__bullet {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--foreground-40);
+  transition: background-color 120ms ease;
+}
+
+.outliner__row--depth-1 .outliner__bullet {
+  width: 5px;
+  height: 5px;
+  background: var(--foreground-30);
+}
+
+.outliner__row:focus-within .outliner__bullet {
+  background: var(--info);
+}
+
+.outliner__input {
+  flex: 1 1 auto;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: var(--runner-text-md);
+  line-height: 1.45;
+  padding: 0;
+  outline: none;
+  min-width: 0;
+}
+
+.outliner__input:disabled {
+  color: var(--foreground-70);
+  cursor: default;
+}
+
+.outliner__input::placeholder {
+  color: var(--foreground-40);
+}
+
+.outliner__row--depth-1 .outliner__input {
+  font-size: var(--runner-text-base);
+  color: var(--foreground-90);
+}
+
+/* ────────────────────── Label slot ────────────────────── */
+
+.outliner__label-slot {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.outliner__chip-wrap {
+  display: inline-flex;
+  animation: chipDrop 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes chipDrop {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Row pending = AI is "thinking" about this row. Subtle highlight so the
+   eye knows where the action is. */
+.outliner__row--pending {
+  background: var(--info-5);
+}
+
+.outliner__thinking {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 8px;
+}
+
+.outliner__thinking span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--info);
+  animation: dotPulse 900ms ease-in-out infinite;
+}
+
+.outliner__thinking span:nth-child(2) { animation-delay: 150ms; }
+.outliner__thinking span:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes dotPulse {
+  0%, 60%, 100% { opacity: 0.25; transform: scale(0.85); }
+  30% { opacity: 1; transform: scale(1.1); }
+}
+
+/* ────────────────────── Legend ────────────────────── */
+/* Sits below the pad as supporting documentation — not inside the
+   "production interface" surface. No top border or padding-top now
+   that the pad's edge already provides the visual separation. */
+
+.outliner__legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+}
+
+.outliner__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--runner-space-2);
+  margin-right: var(--runner-space-4);
+}
+
+/* ────────────────────── Kbd ────────────────────── */
+
+.outliner__kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--runner-radius-sm);
+  background: var(--foreground-5);
+  border: 1px solid var(--foreground-10);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--foreground-80);
+  line-height: 1.4;
+  margin: 0 1px;
+}

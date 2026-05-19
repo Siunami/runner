@@ -1,0 +1,751 @@
+/*
+ * /runner-flow
+ *
+ * One `.rf-item` element morphs across all four phases:
+ *
+ *   .rf-item              outline row (minimal chrome)
+ *   .rf-item--triaged     stripe drops in on the left
+ *   .rf-item--card        chrome morphs to full card (padding, bg,
+ *                         border, shadow); strip-minimal grows in
+ *                         on automate items; extras animate in via
+ *                         the grid-template-rows trick
+ *   sorted (parent flips) flex parent swaps from rf__list to rf__board
+ *                         with two sections; FLIP handles the slide
+ *
+ * Card chrome and section split come from /triaged-cards. The
+ * automate strip is the "strip · minimal" silhouette from
+ * /automate-silhouettes. Task cards drop the redundant Task chip —
+ * the section header carries the type signal once we're sorted.
+ */
+
+.rf {
+  min-height: 100vh;
+  padding: var(--runner-space-12) 0;
+}
+
+.rf__inner {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 var(--runner-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-8);
+}
+
+.rf__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--runner-space-6);
+}
+
+.rf__theme {
+  flex: 0 0 auto;
+  gap: var(--runner-space-3);
+}
+
+.rf__theme-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-pill);
+}
+
+.rf__theme-toggle button {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+}
+
+.rf__theme-toggle button.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+/* ─────────────────────────── Stage frame ─────────────────────────── */
+
+.rf__stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-4);
+  padding: var(--runner-space-5);
+  background: var(--foreground-1\.5);
+  border: 1px dashed var(--foreground-10);
+  border-radius: var(--runner-radius-xl);
+  transition: padding 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rf__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--runner-space-3);
+  padding: 0 var(--runner-space-1) var(--runner-space-2);
+  border-bottom: 1px solid var(--foreground-8);
+}
+
+.rf__toolbar-status {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--runner-space-2);
+}
+
+.rf__toolbar-action {
+  flex: 0 0 auto;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ─────────────────────────── Layout containers ─────────────────────────── */
+/* The same `.rf-item` elements live inside `.rf__list` for outline /
+   triaged / promoting phases and inside `.rf__board` (with sections)
+   for the sorted phase. Keeping the items mounted across the morph
+   lets CSS animate the chrome in place. */
+
+.rf__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: gap 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rf__stage[data-phase="promoting"] .rf__list {
+  gap: var(--runner-space-3);
+}
+
+.rf__board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-8);
+}
+
+.rf-family {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-4);
+}
+
+.rf-family__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+}
+
+.rf-family__title-row {
+  gap: var(--runner-space-2);
+}
+
+/* ─────────────────────────── Item base (outline row look) ─────────────────────────── */
+
+.rf-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--runner-radius-md);
+  box-shadow: none;
+  overflow: hidden;
+  transition:
+    padding 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 320ms ease,
+    border-color 320ms ease,
+    border-radius 320ms ease,
+    box-shadow 360ms ease,
+    transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--item-card-delay, 0ms);
+  cursor: default;
+  will-change: transform;
+}
+
+.rf-item--card {
+  background: var(--background);
+  border-color: var(--foreground-10);
+  border-radius: var(--runner-radius-lg);
+  box-shadow: var(--shadow-minimal);
+  cursor: pointer;
+}
+
+.rf-item--card.is-expanded {
+  cursor: default;
+  border-color: var(--foreground-15);
+  box-shadow: var(--shadow-light);
+}
+
+.rf-item--card:hover:not(.is-expanded) {
+  border-color: var(--foreground-20);
+  box-shadow: var(--shadow-light);
+}
+
+/* ─────────────────────────── Strip-minimal (automate only) ─────────────────────────── */
+/* Folds in from the top edge when the row becomes a card. max-height
+   transitions from 0 to a hard cap; opacity + padding round out the
+   reveal so the strip reads as part of the card chrome appearing. */
+
+.rf-item__strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 var(--runner-space-4);
+  opacity: 0;
+  background: linear-gradient(
+    to right,
+    var(--info-10) 0%,
+    var(--info-5) 100%
+  );
+  border-bottom: 1px solid transparent;
+  font-size: var(--runner-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--info-text);
+  transition:
+    max-height 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    padding 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 260ms ease,
+    border-color 320ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.rf-item--card .rf-item__strip {
+  max-height: 36px;
+  padding: 6px var(--runner-space-4);
+  opacity: 1;
+  border-bottom-color: var(--info-10);
+}
+
+.rf-item__strip-icon {
+  flex: 0 0 auto;
+  color: var(--info-text);
+}
+
+.rf-item__strip-label {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────── Body / head row ─────────────────────────── */
+
+.rf-item__body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 14px 6px 18px;
+  transition:
+    padding 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    gap 360ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+  gap: 0;
+}
+
+.rf-item--card .rf-item__body {
+  padding: var(--runner-space-4);
+  gap: var(--runner-space-2);
+}
+
+.rf-item--card.rf-item--automate .rf-item__body {
+  /* The strip already sits above, so the body padding-top can be
+     tighter and the title aligns flush with the strip. */
+  padding-top: var(--runner-space-3);
+}
+
+.rf-item__head {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  gap: 0;
+  transition: gap 320ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.rf-item--card .rf-item__head {
+  gap: var(--runner-space-3);
+}
+
+/* Bullet — fades + shrinks to nothing at card stage so the title
+   slides flush with the card body's left edge. */
+.rf-item__bullet {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--foreground-40);
+  transition:
+    opacity 260ms ease,
+    width 380ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin-right 380ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 360ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.rf-item--card .rf-item__bullet {
+  opacity: 0;
+  width: 0;
+  margin-right: 0;
+  transform: scale(0.5);
+}
+
+/* Title — text grows in weight + size at card stage. The text content
+   itself crossfades via the MorphText component. */
+.rf-item__title {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--runner-text-md);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+  white-space: pre-wrap;
+  transition:
+    font-size 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    font-weight 280ms ease,
+    letter-spacing 360ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.rf-item--card .rf-item__title {
+  font-size: var(--runner-text-lg);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+.rf-morph {
+  display: inline;
+  transition: opacity 220ms ease;
+}
+
+/* ─────────────────────────── Left stripe ─────────────────────────── */
+/* Drops in when triaged; fades out at card stage. Same pattern as
+   /scratchpad-to-cards. */
+
+.rf-item__stripe {
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--foreground-30);
+  transform: scaleY(0);
+  transform-origin: top;
+  opacity: 1;
+  transition:
+    transform 440ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 280ms ease;
+  pointer-events: none;
+}
+
+.rf-item--triaged .rf-item__stripe {
+  transform: scaleY(1);
+  transition-delay: var(--item-stripe-delay, 0ms);
+}
+
+.rf-item--task .rf-item__stripe {
+  background: var(--accent);
+}
+
+.rf-item--automate .rf-item__stripe {
+  background: var(--info);
+}
+
+.rf-item--card .rf-item__stripe {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+/* ─────────────────────────── Inline chip flipper ─────────────────────────── */
+
+.rf-item__chip-wrap {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  animation: rf-chip-drop 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  transition: opacity 220ms ease, transform 280ms ease;
+}
+
+@keyframes rf-chip-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.rf-item--card .rf-item__chip-wrap {
+  opacity: 0;
+  transform: translateY(-3px) scale(0.9);
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 280ms ease;
+}
+
+.rf-item__chip-flipper {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  border-radius: var(--runner-radius-pill);
+  perspective: 600px;
+  cursor: default;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.rf-item--editable .rf-item__chip-flipper {
+  cursor: pointer;
+}
+
+.rf-item--editable .rf-item__chip-flipper:hover,
+.rf-item--editable .rf-item__chip-flipper:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--foreground-15);
+}
+
+.rf-item--editable .rf-item__chip-flipper:active {
+  transform: scale(0.96);
+}
+
+.rf-item__chip-faces {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  transform-style: preserve-3d;
+  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rf-item__chip-faces.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.rf-item__chip-face {
+  grid-column: 1;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rf-item__chip-face--back {
+  transform: rotateY(180deg);
+}
+
+/* ─────────────────────────── Needs-you / Done pills ─────────────────────────── */
+
+.rf-item__needs {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 260ms ease,
+    transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rf-item--card .rf-item__needs {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: calc(var(--item-card-delay, 0ms) + 280ms);
+}
+
+/* ─────────────────────────── Expand button ─────────────────────────── */
+
+.rf-item__expand {
+  flex: 0 0 auto;
+  font: inherit;
+  border: 0;
+  background: transparent;
+  padding: 4px;
+  margin: -4px;
+  cursor: pointer;
+  color: var(--foreground-60);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    background 160ms ease,
+    color 160ms ease,
+    opacity 240ms ease,
+    transform 240ms ease;
+}
+
+.rf-item--card .rf-item__expand {
+  opacity: 1;
+  transform: scale(1);
+  transition-delay: calc(var(--item-card-delay, 0ms) + 240ms);
+}
+
+.rf-item__expand:hover {
+  background: var(--foreground-5);
+  color: var(--foreground);
+}
+
+/* ─────────────────────────── Extras (state / sources / summary / next) ─────────────────────────── */
+
+.rf-item__extra {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.rf-item__extra-inner {
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+}
+
+.rf-item--card .rf-item__extra {
+  grid-template-rows: 1fr;
+  transition-delay: calc(var(--item-card-delay, 0ms) + 80ms);
+}
+
+.rf-item--card .rf-item__extra-inner {
+  padding-top: var(--runner-space-1);
+}
+
+.rf-item__state,
+.rf-item__summary {
+  margin: 0;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-70);
+  line-height: 1.5;
+}
+
+.rf-item__next {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  color: var(--info-text);
+}
+
+.rf-item__looking {
+  display: flex;
+  align-items: center;
+  gap: var(--runner-space-2);
+  margin-top: 2px;
+}
+
+.rf-item__looking-label {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-50);
+}
+
+/* ─────────────────────────── Expansion body ─────────────────────────── */
+
+.rf-item__embed,
+.rf-item__automate-body {
+  margin-top: var(--runner-space-3);
+  padding-top: var(--runner-space-3);
+  border-top: 1px solid var(--foreground-8);
+}
+
+/* When an /action-card-detail card is embedded inside a flow card,
+   strip its outer chrome so it slots in instead of reading as a
+   card-inside-a-card. */
+.rf-item__embed .acd-card {
+  margin: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  container-type: normal;
+}
+
+.rf-item__embed .acd-card::before {
+  display: none;
+}
+
+/* Stack artifact + ask sidebar vertically. */
+.rf-item__embed .acd-card__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-4);
+  padding: 0;
+}
+
+.rf-item__embed .acd-card__sidebar {
+  padding-top: var(--runner-space-3);
+  padding-left: 0;
+  border-top: 1px dashed var(--foreground-10);
+  border-left: 0;
+}
+
+.rf-item__embed .acd-card__topline {
+  padding-bottom: 0;
+}
+
+/* Outer card already shows the state sentence — hide the looking-at
+   row when expanded so it doesn't sit on top of the embedded card. */
+.rf-item--card.is-expanded .rf-item__looking {
+  display: none;
+}
+
+/* ─────────────────────────── Narration ─────────────────────────── */
+
+.rf-narration {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-1);
+  padding: 0 var(--runner-space-1);
+}
+
+/* ─────────────────────────── Controls ─────────────────────────── */
+
+.rf__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+}
+
+.rf__controls-row {
+  justify-content: space-between;
+  gap: var(--runner-space-4);
+}
+
+.rf__dots {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--foreground-3);
+  border-radius: var(--runner-radius-pill);
+}
+
+.rf__dot {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+  color: var(--foreground-60);
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.rf__dot:hover {
+  color: var(--foreground);
+}
+
+.rf__dot.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+.rf__dot-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: var(--runner-text-xs);
+  font-weight: 700;
+  background: var(--foreground-10);
+  color: var(--foreground-70);
+}
+
+.rf__dot.is-active .rf__dot-index {
+  background: var(--accent-10);
+  color: var(--accent-text, var(--accent));
+}
+
+.rf__dot-label {
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+}
+
+.rf__buttons {
+  gap: var(--runner-space-2);
+}
+
+.rf__rail {
+  position: relative;
+  height: 3px;
+  background: var(--foreground-8);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rf__rail-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─────────────────────────── Reduced motion ─────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .rf-item,
+  .rf-item__body,
+  .rf-item__head,
+  .rf-item__bullet,
+  .rf-item__title,
+  .rf-item__stripe,
+  .rf-item__strip,
+  .rf-item__extra,
+  .rf-item__needs,
+  .rf-item__expand,
+  .rf-item__chip-faces,
+  .rf-item__chip-wrap,
+  .rf-morph,
+  .rf__list,
+  .rf__rail-fill {
+    transition: none !important;
+    animation: none !important;
+  }
+  .rf-item--triaged .rf-item__stripe {
+    transform: scaleY(1);
+  }
+}
+
+/* ─────────────────────────── Small screens ─────────────────────────── */
+
+@media (max-width: 720px) {
+  .rf__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .rf__controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .rf__dots {
+    overflow-x: auto;
+  }
+}
