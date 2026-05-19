@@ -1,0 +1,210 @@
+/*
+ * Runner design system — canonical tokens
+ *
+ * Source of truth for color, type, spacing, radius, shadow, and z-index in
+ * all new prototypes. Mirrors the core product's tokens at
+ * `cambridge/packages/ui/src/styles/index.css`, ported to plain CSS (no
+ * Tailwind) so any prototype can consume them.
+ *
+ * Architecture (from Cambridge):
+ *
+ *   6-color semantic palette
+ *     background  — surfaces
+ *     foreground  — text, icons
+ *     accent      — neutral accent (Execute mode)
+ *     info        — amber (Ask mode, warnings, "needs you")
+ *     success     — green
+ *     destructive — red
+ *
+ *   Mixed-color tints (NOT opacity) — solid tints by blending color toward
+ *   the background. Used for hover surfaces, tinted card backgrounds, etc.
+ *
+ *   Light is default. `.dark` (or `.ds-dark`) on an ancestor flips theme.
+ */
+
+:root {
+  /* ────────────────────────── 6 BASE COLORS ────────────────────────── */
+  --background: #fcfcfa;
+  --foreground: #252116;
+  --foreground-rgb: 37, 33, 22;
+  --accent: #5f665d;
+  --accent-rgb: 66, 71, 64; /* 70% of accent for shadow tints */
+  --info: #d97706;
+  --info-rgb: 217, 119, 6;
+  --success: #16a34a;
+  --success-rgb: 22, 163, 74;
+  --destructive: #dc2626;
+  --destructive-rgb: 220, 38, 38;
+
+  /* ───────────────── BRAND ACCENT (optional signature) ───────────────── */
+  --brand-accent: #bf7743; /* warm terracotta — used by /agent-todolist */
+
+  /* ───────── TEXT VARIANTS (mixed toward foreground for legibility) ───────── */
+  --success-text: color-mix(in oklab, var(--success) 50%, var(--foreground));
+  --destructive-text: color-mix(in oklab, var(--destructive) 50%, var(--foreground));
+  --info-text: color-mix(in oklab, var(--info) 50%, var(--foreground));
+
+  /* ─────────────────────── SHADOW OPACITY (themed) ─────────────────────── */
+  --shadow-border-opacity: 0.08;
+  --shadow-blur-opacity: 0.06;
+
+  /* ──────────────── FOREGROUND MIX VARIANTS (solid tints) ──────────────── */
+  --foreground-1\.5: color-mix(in srgb, var(--foreground) 1.5%, var(--background));
+  --foreground-2: color-mix(in srgb, var(--foreground) 2%, var(--background));
+  --foreground-3: color-mix(in srgb, var(--foreground) 3%, var(--background));
+  --foreground-5: color-mix(in srgb, var(--foreground) 5%, var(--background));
+  --foreground-10: color-mix(in srgb, var(--foreground) 10%, var(--background));
+  --foreground-20: color-mix(in srgb, var(--foreground) 20%, var(--background));
+  --foreground-30: color-mix(in srgb, var(--foreground) 30%, var(--background));
+  --foreground-40: color-mix(in srgb, var(--foreground) 40%, var(--background));
+  --foreground-50: color-mix(in srgb, var(--foreground) 50%, var(--background));
+  --foreground-60: color-mix(in srgb, var(--foreground) 60%, var(--background));
+  --foreground-70: color-mix(in srgb, var(--foreground) 70%, var(--background));
+  --foreground-80: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  --foreground-90: color-mix(in srgb, var(--foreground) 90%, var(--background));
+  --foreground-95: color-mix(in srgb, var(--foreground) 95%, var(--background));
+
+  /* ──────────────── COLORED MIX VARIANTS (tinted surfaces) ──────────────── */
+  --destructive-3: color-mix(in oklch, var(--destructive) 3%, var(--background));
+  --destructive-5: color-mix(in oklch, var(--destructive) 5%, var(--background));
+  --destructive-10: color-mix(in oklch, var(--destructive) 10%, var(--background));
+  --success-3: color-mix(in oklch, var(--success) 3%, var(--background));
+  --success-5: color-mix(in oklch, var(--success) 5%, var(--background));
+  --success-10: color-mix(in oklch, var(--success) 10%, var(--background));
+  --info-3: color-mix(in oklch, var(--info) 3%, var(--background));
+  --info-5: color-mix(in oklch, var(--info) 5%, var(--background));
+  --info-10: color-mix(in oklch, var(--info) 10%, var(--background));
+  --accent-3: color-mix(in oklch, var(--accent) 3%, var(--background));
+  --accent-5: color-mix(in oklch, var(--accent) 5%, var(--background));
+  --accent-10: color-mix(in oklch, var(--accent) 10%, var(--background));
+
+  /* ────────────────────────── SHADOWS ────────────────────────── */
+  --shadow-minimal:
+    rgba(var(--foreground-rgb), 0.06) 0 0 0 1px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 1px 1px -0.5px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 3px 3px -1.5px;
+
+  --shadow-middle:
+    rgba(var(--foreground-rgb), var(--shadow-border-opacity)) 0 0 0 1px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 1px 2px -0.5px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 4px 8px -2px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 12px 24px -8px;
+
+  --shadow-hero:
+    rgba(var(--foreground-rgb), var(--shadow-border-opacity)) 0 0 0 1px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 1px 1px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 2px 4px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 4px 8px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 8px 16px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 16px 32px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 32px 64px,
+    rgba(0, 0, 0, var(--shadow-blur-opacity)) 0 48px 96px;
+
+  /* ────────────────────── RADIUS ────────────────────── */
+  --runner-radius-xs: 3px;
+  --runner-radius-sm: 4px;
+  --runner-radius-md: 6px;
+  --runner-radius-lg: 8px;
+  --runner-radius-xl: 16px;
+  --runner-radius-pill: 999px;
+
+  /* ────────────────────── TYPE ────────────────────── */
+  --runner-text-xs: 10px;
+  --runner-text-sm: 12px;
+  --runner-text-base: 13px;
+  --runner-text-md: 15px;
+  --runner-text-lg: 18px;
+  --runner-text-xl: 22px;
+  --runner-text-2xl: 28px;
+
+  --font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Exposure", Georgia, "Times New Roman", serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
+
+  /* ────────────────────── SPACING ────────────────────── */
+  --runner-space-1: 4px;
+  --runner-space-2: 8px;
+  --runner-space-3: 12px;
+  --runner-space-4: 16px;
+  --runner-space-5: 20px;
+  --runner-space-6: 24px;
+  --runner-space-8: 32px;
+  --runner-space-10: 40px;
+  --runner-space-12: 48px;
+
+  /* ────────────────────── Z-INDEX ────────────────────── */
+  --z-base: 0;
+  --z-local: 10;
+  --z-sticky: 20;
+  --z-titlebar: 40;
+  --z-panel: 50;
+  --z-dropdown: 100;
+  --z-tooltip: 150;
+  --z-modal: 200;
+  --z-overlay: 300;
+  --z-fullscreen: 350;
+  --z-floating-backdrop: 390;
+  --z-floating-menu: 400;
+  --z-splash: 600;
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   DARK MODE — applied via `.dark` or `.ds-dark` on an ancestor element.
+   Mirrors Cambridge dark mode exactly. Same mix-variant pattern continues
+   to work because the formulas reference --background / --foreground, which
+   are flipped here.
+   ──────────────────────────────────────────────────────────────────────── */
+
+.dark,
+.ds-dark {
+  --background: #21201d;
+  --foreground: #f7f7f5;
+  --foreground-rgb: 247, 247, 245;
+  --accent: #7a8278;
+  --accent-rgb: 85, 90, 84;
+  --info: #fbbf24;
+  --info-rgb: 251, 191, 36;
+  --success: #22c55e;
+  --success-rgb: 34, 197, 94;
+  --destructive: #ef4444;
+  --destructive-rgb: 239, 68, 68;
+
+  --success-text: color-mix(in oklab, var(--success) 50%, var(--foreground));
+  --destructive-text: color-mix(in oklab, var(--destructive) 50%, var(--foreground));
+  --info-text: color-mix(in oklab, var(--info) 50%, var(--foreground));
+
+  --shadow-border-opacity: 0.15;
+  --shadow-blur-opacity: 0.12;
+
+  --foreground-1\.5: color-mix(in srgb, var(--foreground) 1.5%, var(--background));
+  --foreground-2: color-mix(in srgb, var(--foreground) 2%, var(--background));
+  --foreground-3: color-mix(in srgb, var(--foreground) 3%, var(--background));
+  --foreground-5: color-mix(in srgb, var(--foreground) 5%, var(--background));
+  --foreground-10: color-mix(in srgb, var(--foreground) 10%, var(--background));
+  --foreground-20: color-mix(in srgb, var(--foreground) 20%, var(--background));
+  --foreground-30: color-mix(in srgb, var(--foreground) 30%, var(--background));
+  --foreground-40: color-mix(in srgb, var(--foreground) 40%, var(--background));
+  --foreground-50: color-mix(in srgb, var(--foreground) 50%, var(--background));
+  --foreground-60: color-mix(in srgb, var(--foreground) 60%, var(--background));
+  --foreground-70: color-mix(in srgb, var(--foreground) 70%, var(--background));
+  --foreground-80: color-mix(in srgb, var(--foreground) 80%, var(--background));
+  --foreground-90: color-mix(in srgb, var(--foreground) 90%, var(--background));
+  --foreground-95: color-mix(in srgb, var(--foreground) 95%, var(--background));
+
+  --destructive-3: color-mix(in oklch, var(--destructive) 3%, var(--background));
+  --destructive-5: color-mix(in oklch, var(--destructive) 5%, var(--background));
+  --destructive-10: color-mix(in oklch, var(--destructive) 10%, var(--background));
+  --success-3: color-mix(in oklch, var(--success) 3%, var(--background));
+  --success-5: color-mix(in oklch, var(--success) 5%, var(--background));
+  --success-10: color-mix(in oklch, var(--success) 10%, var(--background));
+  --info-3: color-mix(in oklch, var(--info) 3%, var(--background));
+  --info-5: color-mix(in oklch, var(--info) 5%, var(--background));
+  --info-10: color-mix(in oklch, var(--info) 10%, var(--background));
+  --accent-3: color-mix(in oklch, var(--accent) 3%, var(--background));
+  --accent-5: color-mix(in oklch, var(--accent) 5%, var(--background));
+  --accent-10: color-mix(in oklch, var(--accent) 10%, var(--background));
+}

@@ -1,0 +1,579 @@
+/*
+ * /automate-silhouettes
+ *
+ * Layout shell + 4 visual variants for differentiating Task vs Automate
+ * cards. Task cards never change shape across variants — only Automate
+ * cards do. That keeps the comparison clean.
+ */
+
+.as {
+  min-height: 100vh;
+  padding: var(--runner-space-12) 0;
+}
+
+.as__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 var(--runner-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-6);
+}
+
+.as__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--runner-space-6);
+}
+
+.as__theme {
+  flex: 0 0 auto;
+  gap: var(--runner-space-3);
+}
+
+.as__theme-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-pill);
+}
+
+.as__theme-toggle button {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+}
+
+.as__theme-toggle button.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+/* ─────────────────────────── Variant toolbar ─────────────────────────── */
+/* Lives outside the frame — it's a prototype control, not part of the
+   production interface. */
+
+.as__toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+}
+
+.as__tabs {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 4px;
+  background: var(--foreground-3);
+  border-radius: var(--runner-radius-pill);
+}
+
+.as__tab {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.as__tab:hover {
+  color: var(--foreground);
+}
+
+.as__tab.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+.as__caption {
+  margin: 0;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-60);
+  line-height: 1.5;
+  max-width: 620px;
+}
+
+/* ─────────────────────────── Frame + list ─────────────────────────── */
+
+.as__frame {
+  padding: var(--runner-space-5);
+  background: var(--foreground-1\.5);
+  border: 1px dashed var(--foreground-10);
+  border-radius: var(--runner-radius-xl);
+}
+
+.as__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+}
+
+/* ─────────────────────────── Card base ─────────────────────────── */
+
+.as-card {
+  position: relative;
+  background: var(--background);
+  border: 1px solid var(--foreground-10);
+  border-radius: var(--runner-radius-lg);
+  box-shadow: var(--shadow-minimal);
+  padding: var(--runner-space-4) var(--runner-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+  transition:
+    padding 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 240ms ease,
+    background-color 240ms ease;
+}
+
+.as-card--task {
+  border-color: var(--foreground-15);
+}
+
+.as-card__chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.as-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--runner-space-3);
+  min-width: 0;
+}
+
+.as-card__title {
+  margin: 0;
+  font-size: var(--runner-text-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  color: var(--foreground);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.as-card__title-needs {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.as-card__state {
+  margin: 0;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-70);
+  line-height: 1.5;
+}
+
+.as-card__children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.as-card__child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 0 2px 4px;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-85);
+}
+
+.as-card__child-bullet {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--foreground-40);
+}
+
+.as-card__looking {
+  display: flex;
+  align-items: center;
+  gap: var(--runner-space-2);
+  margin-top: 2px;
+}
+
+.as-card__looking-label {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-50);
+}
+
+.as-card__summary {
+  margin: 0;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-70);
+  line-height: 1.45;
+}
+
+.as-card__next {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  color: var(--info-text);
+}
+
+/* ─────────────────────────── Variant: rail ─────────────────────────── */
+/* Automate cards grow a tinted left rail that holds the next-run
+   header and a vertical column of upcoming-run ticks. The card body
+   shifts right to make room — but the overall card width is unchanged
+   because the rail is part of the card, not outside it. */
+
+.as-card--v-rail {
+  flex-direction: row;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.as-card--v-rail .as-card__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+  padding: var(--runner-space-4);
+}
+
+.as-rail {
+  flex: 0 0 88px;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(
+      to bottom,
+      var(--info-10) 0%,
+      var(--info-5) 100%
+    );
+  border-right: 1px solid var(--foreground-10);
+  padding: var(--runner-space-3) var(--runner-space-3) var(--runner-space-4);
+  gap: var(--runner-space-2);
+}
+
+.as-rail__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.as-rail__eyebrow {
+  color: var(--info-text);
+}
+
+.as-rail__time {
+  font-size: var(--runner-text-md);
+  font-weight: 650;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.as-rail__cadence-short {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  color: var(--foreground-60);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.as-rail__ticks {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 8px;
+  padding-top: 4px;
+  position: relative;
+}
+
+.as-rail__ticks::before {
+  /* Faint vertical guide so the ticks read as a track, not loose dots. */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 8px;
+  width: 1px;
+  background: var(--foreground-10);
+  border-radius: 999px;
+}
+
+.as-rail__tick {
+  position: relative;
+  display: block;
+  width: 14px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--foreground-30);
+  z-index: 1;
+}
+
+.as-rail__tick.is-next {
+  width: 18px;
+  height: 6px;
+  background: var(--info);
+  box-shadow: 0 0 0 3px var(--info-10);
+}
+
+/* ─────────────────────────── Variant: ledger ─────────────────────────── */
+/* Automate cards become wide-short landscape rows. Title + summary on
+   the left, schedule + next run anchored right. The silhouette is a
+   schedule row, not a work card — instantly distinguishable from the
+   portrait task cards above and below it. */
+
+.as-card--v-ledger {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--runner-space-4);
+  padding: var(--runner-space-3) var(--runner-space-4);
+  background: var(--info-3);
+  border-color: var(--info-10);
+  border-radius: var(--runner-radius-md);
+}
+
+.as-ledger__left {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.as-ledger__title {
+  font-size: var(--runner-text-md);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.as-ledger__summary {
+  margin: 0;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-60);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.as-ledger__right {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.as-ledger__cadence {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  color: var(--foreground-60);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.as-ledger__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--runner-text-sm);
+  font-weight: 650;
+  color: var(--info-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────── Variant: header-strip ─────────────────────────── */
+/* Thin horizontal track above the chip row. The cadence is rendered
+   as part of the card's chrome — chip → ticks → label — so the
+   silhouette gets a distinctive top edge. */
+
+.as-card--v-header-strip {
+  padding: 0;
+}
+
+.as-card--v-header-strip .as-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+  padding: var(--runner-space-3) var(--runner-space-4) var(--runner-space-4);
+}
+
+.as-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px var(--runner-space-4);
+  background: linear-gradient(
+    to right,
+    var(--info-10) 0%,
+    var(--info-5) 100%
+  );
+  border-bottom: 1px solid var(--info-10);
+  font-size: var(--runner-text-xs);
+  color: var(--info-text);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.as-strip__icon {
+  flex: 0 0 auto;
+  color: var(--info-text);
+}
+
+.as-strip__ticks {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+.as-strip__ticks::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--foreground-10);
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.as-strip__tick {
+  position: relative;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--foreground-30);
+  z-index: 1;
+}
+
+.as-strip__tick.is-next {
+  width: 6px;
+  height: 6px;
+  background: var(--info);
+  box-shadow: 0 0 0 2px var(--info-10);
+}
+
+.as-strip__label {
+  flex: 0 0 auto;
+  font-size: var(--runner-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--info-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─────────────────────────── Variant: strip-minimal ─────────────────────────── */
+/* Same chrome as the header-strip, but no ticks at all. The strip is a
+   single quiet line — clock icon + cadence text. Task cards drop the
+   chip row entirely; the absence of the strip is the type signal. */
+
+.as-card--v-strip-minimal {
+  padding: 0;
+}
+
+.as-card--v-strip-minimal .as-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+  padding: var(--runner-space-3) var(--runner-space-4) var(--runner-space-4);
+}
+
+/* Task cards in this variant skip the chip row entirely, so the first
+   element inside the card is the title row. Add top padding back. */
+.as-card--task.as-card--v-strip-minimal {
+  padding: var(--runner-space-4);
+}
+
+.as-strip--minimal {
+  /* Override the default justification so the label sits next to the
+     icon instead of being pushed to the far right by an absent ticks
+     element. The strip stretches to fill the card width; content stays
+     left-aligned. */
+  justify-content: flex-start;
+}
+
+.as-strip--minimal .as-strip__label {
+  /* Slightly looser tracking so the cadence reads as a label, not a
+     cramped chip. */
+  letter-spacing: 0.06em;
+}
+
+/* ─────────────────────────── Small screens ─────────────────────────── */
+
+@media (max-width: 640px) {
+  .as__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .as-card--v-ledger {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .as-card--v-ledger .as-ledger__right {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .as-card--v-rail {
+    flex-direction: column;
+  }
+  .as-card--v-rail .as-rail {
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    border-right: 0;
+    border-bottom: 1px solid var(--foreground-10);
+  }
+  .as-rail__ticks {
+    flex-direction: row;
+    align-items: center;
+    padding-top: 0;
+  }
+  .as-rail__ticks::before {
+    top: 50%;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+  .as-rail__tick {
+    width: 4px;
+    height: 14px;
+  }
+  .as-rail__tick.is-next {
+    width: 6px;
+    height: 18px;
+  }
+}

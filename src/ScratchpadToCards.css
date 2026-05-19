@@ -1,0 +1,792 @@
+/*
+ * /scratchpad-to-cards
+ *
+ * Three-stage choreography for outline → triaged → cards.
+ *
+ * Items have stage-driven classes:
+ *   .stc-item              (stage 0)
+ *   .stc-item--triaged     (stage 1+)
+ *   .stc-item--card        (stage 2)
+ *
+ * Per-item stagger comes from `--item-triage-delay` and `--item-card-delay`
+ * inline CSS vars, set on each <article> by index.
+ *
+ * Chip choreography: the inline chip (right-of-title) drops in at stage 1
+ * and fades back out when the card forms. The header chip (top-left of
+ * the card) fades in to replace it. They're visually identical, so the
+ * crossfade reads as a single moving chip.
+ */
+
+.stc {
+  min-height: 100vh;
+  padding: var(--runner-space-12) 0;
+}
+
+.stc__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 var(--runner-space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-8);
+}
+
+.stc__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--runner-space-6);
+}
+
+.stc__theme {
+  flex: 0 0 auto;
+  gap: var(--runner-space-3);
+}
+
+.stc__theme-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--foreground-5);
+  border-radius: var(--runner-radius-pill);
+}
+
+.stc__theme-toggle button {
+  font: inherit;
+  border: 0;
+  background: transparent;
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--runner-radius-pill);
+  cursor: pointer;
+}
+
+.stc__theme-toggle button.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+/* ─────────────────────────── Stage area ─────────────────────────── */
+
+.stc__stage-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+  padding: var(--runner-space-5);
+  background: var(--foreground-1\.5);
+  border: 1px dashed var(--foreground-10);
+  border-radius: var(--runner-radius-xl);
+  transition: padding 480ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Toolbar lives at the top of the gray frame — this is part of the
+   production interface, so its primary action button (Triage at
+   stage 0, Accept & promote at stage 1) sits right where the user
+   would expect to find it inside the real product UI. */
+
+.stc__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--runner-space-3);
+  padding: 0 var(--runner-space-1) var(--runner-space-2);
+  border-bottom: 1px solid var(--foreground-8);
+}
+
+.stc__toolbar-status {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--runner-space-2);
+}
+
+.stc__toolbar-action {
+  flex: 0 0 auto;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.stc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: gap 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stc__stage-wrap[data-stage="2"] .stc__list {
+  gap: var(--runner-space-3);
+}
+
+/* ─────────────────────────── Section headers ───────────────────────────
+   Only mount once the cards have settled and `sorted` flips to true.
+   They fade in while the existing cards FLIP-migrate from outline order
+   into Tasks / Automations groups, so the migration reads as one beat:
+   sections appear, cards travel into them. */
+
+.stc-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 4px;
+  font-size: var(--runner-text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--foreground-60);
+  animation: stc-section-fade 380ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+.stc-section--gap {
+  margin-top: var(--runner-space-3);
+}
+
+.stc-section__icon {
+  flex: 0 0 auto;
+}
+
+.stc-section[data-tone="accent"] .stc-section__icon { color: var(--accent); }
+.stc-section[data-tone="info"]   .stc-section__icon { color: var(--info); }
+
+.stc-section__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.stc-section__count {
+  flex: 0 0 auto;
+  color: var(--foreground-40);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes stc-section-fade {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stc-section { animation: none; }
+}
+
+/* ─────────────────────────── Item shell ─────────────────────────── */
+
+.stc-item {
+  position: relative;
+  padding: 6px 14px 6px 18px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--runner-radius-md);
+  transition:
+    padding 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 320ms ease,
+    border-color 320ms ease,
+    border-radius 320ms ease,
+    box-shadow 360ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.stc-item--card {
+  padding: 38px 18px 16px 18px;
+  background: var(--background);
+  border-color: var(--foreground-10);
+  border-radius: var(--runner-radius-lg);
+  box-shadow: var(--shadow-minimal);
+}
+
+.stc-item--card.stc-item--operational {
+  border-color: var(--foreground-15);
+  box-shadow: var(--shadow-light);
+}
+
+/* ─────────────────────────── Stripe ─────────────────────────── */
+/* Drops down when triaged, fades when promoted to a full card.
+   Origin is the parent row top, so it appears to draw downward. */
+
+.stc-item__stripe {
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--foreground-30);
+  transform: scaleY(0);
+  transform-origin: top;
+  opacity: 1;
+  transition:
+    transform 440ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 280ms ease;
+  pointer-events: none;
+}
+
+.stc-item--triaged .stc-item__stripe {
+  transform: scaleY(1);
+  transition-delay: var(--item-triage-delay, 0ms);
+}
+
+.stc-item--operational .stc-item__stripe { background: var(--accent); }
+.stc-item--recurring   .stc-item__stripe { background: var(--info); }
+
+.stc-item--card .stc-item__stripe {
+  opacity: 0;
+  transition-delay: 0ms;
+}
+
+/* ─────────────────────────── Head row ─────────────────────────── */
+/* No flex `gap` here — we use margins on the bullet and inline chip so
+   we can collapse them to 0 at card stage. That lets the title slide
+   flush with the left edge of the card body when the bullet
+   disappears, keeping the title visually aligned with everything else
+   inside the card. */
+
+.stc-item__head {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+
+.stc-item__bullet {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--foreground-40);
+  transition:
+    opacity 260ms ease,
+    transform 360ms ease,
+    width 380ms cubic-bezier(0.16, 1, 0.3, 1),
+    margin 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stc-item--card .stc-item__bullet {
+  opacity: 0;
+  width: 0;
+  margin-right: 0;
+  transform: scale(0.5);
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.stc-item__title {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--runner-text-md);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--foreground);
+  transition:
+    font-size 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    font-weight 280ms ease,
+    letter-spacing 360ms ease;
+  transition-delay: var(--item-card-delay, 0ms);
+  /* Reserve a stable visual line so mid-scramble length changes don't
+     jitter neighbors. */
+  white-space: pre-wrap;
+}
+
+.stc-item--card .stc-item__title {
+  font-size: var(--runner-text-lg);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+}
+
+/* ─── Inline chip (flip-card) ─── */
+/* The chip is only rendered (in DOM) once an item's triage has revealed,
+   so at outline stage it doesn't exist at all — no faint trace of a
+   future label. With just two options (Task / Automate), the chip is a
+   literal coin flip — clicking it rotates a 3D flipper between two
+   stacked faces. On mount we animate the wrapper in, and on card stage
+   we fade it out since the header chip takes over the identity. */
+
+.stc-item__chip-wrap {
+  flex: 0 0 auto;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+  /* `backwards` fill-mode applies the `from` keyframe before the
+     animation starts (no flash on mount) but does NOT lock the `to`
+     values after it finishes — so the card-stage rule below can take
+     over and fade the chip back out. */
+  animation: stc-chip-drop 260ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  transition: opacity 220ms ease, transform 280ms ease;
+}
+
+@keyframes stc-chip-drop {
+  from { opacity: 0; transform: translateY(-3px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.stc-item__inline-chip {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: default;
+  border-radius: var(--runner-radius-pill);
+  /* Perspective gives the rotation depth — without it the flip reads
+     as a flat scaleX rather than a card flip. */
+  perspective: 600px;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+/* Editable mode (stage 1): chip is a real control. Hover/focus get a
+   subtle ring so the user knows it's clickable. */
+.stc-item--editable .stc-item__inline-chip {
+  cursor: pointer;
+}
+
+.stc-item--editable .stc-item__inline-chip:hover,
+.stc-item--editable .stc-item__inline-chip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--foreground-15);
+}
+
+.stc-item--editable .stc-item__inline-chip:active {
+  transform: scale(0.96);
+}
+
+/* The flipper is the rotating element. Both faces are stacked in the
+   same grid cell so the wrapper auto-sizes to whichever face is wider
+   — that way the chip's width doesn't jump mid-flip. Duration is kept
+   short (~160ms) because this is a high-frequency action; a cute slow
+   flip gets in the way when you're triaging dozens of items. */
+.stc-item__chip-flipper {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr;
+  transform-style: preserve-3d;
+  transition: transform 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stc-item__chip-flipper.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.stc-item__chip-face {
+  grid-column: 1;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.stc-item__chip-face--back {
+  transform: rotateY(180deg);
+}
+
+/* Card stage — the wrapper fades out as the header chip takes over. */
+.stc-item--card .stc-item__chip-wrap {
+  opacity: 0;
+  transform: translateY(-3px) scale(0.9);
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 280ms ease;
+}
+
+/* ─── Header chip (lives in card stage at top-left) ─── */
+
+.stc-item__header-chip {
+  position: absolute;
+  top: 14px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 280ms ease,
+    transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.stc-item--card .stc-item__header-chip {
+  opacity: 1;
+  transform: translateY(0);
+  /* Land in once the card surface has started forming. */
+  transition-delay: calc(var(--item-card-delay, 0ms) + 200ms);
+  pointer-events: auto;
+}
+
+.stc-item__needs-chip,
+.stc-item__schedule-chip {
+  opacity: 0;
+  transform: translateX(-6px);
+  transition:
+    opacity 260ms ease,
+    transform 340ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stc-item--card .stc-item__needs-chip,
+.stc-item--card .stc-item__schedule-chip {
+  opacity: 1;
+  transform: translateX(0);
+  transition-delay: calc(var(--item-card-delay, 0ms) + 320ms);
+}
+
+/* ─────────────────────────── Children ─────────────────────────── */
+
+.stc-item__children {
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Children stay visible on outline, triaged, and operational card
+     stages — they become subtask rows. Recurring cards collapse them
+     away (a schedule has no subtasks). */
+  max-height: 400px;
+  opacity: 1;
+  transition:
+    max-height 480ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 320ms ease,
+    margin 360ms ease;
+}
+
+.stc-item--card.stc-item--recurring .stc-item__children {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+}
+
+.stc-item__child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px 5px 26px;
+  font-size: var(--runner-text-base);
+  color: var(--foreground-80);
+  transition:
+    padding 420ms cubic-bezier(0.16, 1, 0.3, 1),
+    font-size 320ms ease,
+    color 280ms ease;
+  transition-delay: calc(var(--item-card-delay, 0ms) + 60ms);
+}
+
+.stc-item--card.stc-item--operational .stc-item__child {
+  padding-left: 4px;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-85);
+}
+
+.stc-item__child-bullet {
+  flex: 0 0 auto;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--foreground-30);
+  transition: width 280ms ease, height 280ms ease, background 280ms ease;
+}
+
+.stc-item--card.stc-item--operational .stc-item__child-bullet {
+  width: 4px;
+  height: 4px;
+  background: var(--foreground-40);
+}
+
+.stc-item__child-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: pre-wrap;
+  line-height: 1.4;
+}
+
+/* ─────────────────────────── Extras (card stage) ─────────────────────────── */
+/* The grid-template-rows 0fr → 1fr trick lets us animate an unknown
+   content height. The inner wrapper provides padding and overflow
+   clipping. */
+
+.stc-item__extra {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--item-card-delay, 0ms);
+}
+
+.stc-item__extra-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stc-item--card .stc-item__extra {
+  grid-template-rows: 1fr;
+  transition-delay: calc(var(--item-card-delay, 0ms) + 100ms);
+}
+
+.stc-item--card .stc-item__extra-inner {
+  padding-top: var(--runner-space-3);
+  margin-top: var(--runner-space-3);
+  border-top: 1px solid var(--foreground-5);
+}
+
+
+/* ─────────────────────────── Recurring extra ─────────────────────────── */
+
+.stc-extra {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-2);
+}
+
+.stc-extra__summary {
+  margin: 0;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-70);
+  line-height: 1.45;
+}
+
+.stc-extra__next {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  color: var(--info-text);
+}
+
+/* ─────────────────────────── Operational extra ─────────────────────────── */
+
+.stc-extra--operational {
+  gap: var(--runner-space-3);
+}
+
+.stc-extra__state {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: var(--runner-text-sm);
+  color: var(--foreground-80);
+  line-height: 1.5;
+}
+
+.stc-extra__state-text {
+  flex: 1 1 auto;
+}
+
+/* While Runner is still working, the state text reads slightly lighter
+   and gets a three-dot pulse anchored to the leading edge. */
+.stc-extra__state--live .stc-extra__state-text {
+  color: var(--foreground-60);
+  font-style: italic;
+}
+
+.stc-extra__pulse {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transform: translateY(-1px);
+}
+
+.stc-extra__pulse > span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--info);
+  animation: stc-pulse-dot 900ms ease-in-out infinite;
+}
+
+.stc-extra__pulse > span:nth-child(2) { animation-delay: 150ms; }
+.stc-extra__pulse > span:nth-child(3) { animation-delay: 300ms; }
+
+@keyframes stc-pulse-dot {
+  0%, 60%, 100% { opacity: 0.25; transform: scale(0.85); }
+  30%           { opacity: 1;    transform: scale(1.1);  }
+}
+
+.stc-extra__sources {
+  display: flex;
+  align-items: center;
+  gap: var(--runner-space-2);
+  flex-wrap: wrap;
+}
+
+.stc-extra__sources-label {
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-50);
+}
+
+.stc-extra__sources-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stc-extra__source-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: var(--runner-text-xs);
+  color: var(--foreground-70);
+  background: var(--foreground-3);
+  border: 1px solid var(--foreground-8);
+  border-radius: var(--runner-radius-pill);
+}
+
+/* ─────────────────────────── Operational cluster ─────────────────────────── */
+
+.stc-extra__cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--runner-space-2);
+}
+
+.stc-extra__cluster-label {
+  margin: 0;
+  font-size: var(--runner-text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--foreground-50);
+}
+
+/* ─────────────────────────── Morph text ─────────────────────────── */
+/* Plain crossfade for title text that needs to refine itself on the way
+   to becoming a card title. The opacity is driven by inline style; the
+   transition is declared here so all swaps share the same timing. */
+
+.stc-morph {
+  display: inline-block;
+  transition: opacity 220ms ease;
+}
+
+/* ─────────────────────────── Narration ─────────────────────────── */
+
+.stc-narration {
+  max-width: 560px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-1);
+  text-align: center;
+  animation: stc-fade-in 360ms ease;
+}
+
+@keyframes stc-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────── Controls ─────────────────────────── */
+
+.stc__controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--runner-space-3);
+}
+
+.stc__controls-row {
+  justify-content: space-between;
+  gap: var(--runner-space-3);
+}
+
+.stc__dots {
+  display: inline-flex;
+  gap: var(--runner-space-1);
+  background: var(--foreground-3);
+  padding: 4px;
+  border-radius: var(--runner-radius-pill);
+}
+
+.stc__dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 0;
+  background: transparent;
+  border-radius: var(--runner-radius-pill);
+  color: var(--foreground-60);
+  font-size: var(--runner-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.stc__dot:hover {
+  color: var(--foreground);
+}
+
+.stc__dot.is-active {
+  background: var(--background);
+  color: var(--foreground);
+  box-shadow: var(--shadow-minimal);
+}
+
+.stc__dot-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--foreground-10);
+  color: var(--foreground-60);
+  font-size: 10px;
+  font-weight: 700;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+.stc__dot.is-active .stc__dot-index {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.stc__dot-label {
+  letter-spacing: 0.01em;
+}
+
+.stc__buttons {
+  gap: var(--runner-space-2);
+}
+
+.stc__rail {
+  position: relative;
+  height: 3px;
+  background: var(--foreground-5);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.stc__rail-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--foreground-40);
+  border-radius: inherit;
+  transition: width 540ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─────────────────────────── Small screens ─────────────────────────── */
+
+@media (max-width: 640px) {
+  .stc__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stc__controls-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .stc__dots,
+  .stc__buttons {
+    justify-content: center;
+  }
+  .stc-item__title {
+    white-space: normal;
+  }
+}

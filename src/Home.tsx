@@ -9,6 +9,54 @@ interface Prototype {
 
 const PROTOTYPES: Prototype[] = [
   {
+    slug: "runner-flow",
+    name: "Runner flow · end-to-end demo",
+    description:
+      "The whole system on one route. Six bullets get triaged into Tasks and Automations, sorted into two sections (strip-minimal chrome on the automations), then click any task card to expand into the live /action-card-detail decision UI for flights, hotel, calendar, and outreach.",
+  },
+  {
+    slug: "scratchpad-to-cards",
+    name: "Scratchpad → Cards",
+    description:
+      "End-to-end morph. Six brain-dump bullets get triaged in place — chips drop, stripes extend through the children — then each item promotes to the right family of card. Titles polish themselves on the way via a per-letter scramble, so a raw phrase like \"Book flights SFO → YYZ, May 18-20\" lands as \"Toronto trip · SFO ↔ YYZ\" by the time it's a card.",
+  },
+  {
+    slug: "automate-silhouettes",
+    name: "Automate silhouettes",
+    description:
+      "Comparison harness for differentiating Automate cards from Task cards by silhouette alone, without leaning on the chip label. Toggle between baseline, schedule rail, ledger row, and header strip — applied to the same small sample of cards.",
+  },
+  {
+    slug: "scratchpad",
+    name: "Scratchpad · Outliner",
+    description:
+      "Capture surface seeded with Charlie's real prompt traffic. One line per item, two-level nesting. Hit Triage and Runner labels each top-level item — Task, Automate, or Todo — staggered like an AI thinking out loud. Children inherit the parent's label color.",
+  },
+  {
+    slug: "triage-flow",
+    name: "Triage flow · bullet → card",
+    description:
+      "A single thought transitions across three stages: raw bullet, triaged bullet (with chip), full task card. The Task chip is the throughline — same identity, two levels of custody. Play, scrub, and step through the morph.",
+  },
+  {
+    slug: "triaged-cards",
+    name: "Triaged item cards",
+    description:
+      "Three card families — Operational, Recurring, Lightweight — showing how Runner communicates the kind of burden it's carrying. Compact + inline-expanded states, built on the new design system.",
+  },
+  {
+    slug: "action-card-detail",
+    name: "Action card · next action",
+    description:
+      "Focused exploration of the UI for taking the next action inside one card. Options are the action targets — click Points or Cash to commit. A chat input at the bottom is the escape hatch: ask for other flights, an earlier outbound, or a different cabin and the new results stream in below the original.",
+  },
+  {
+    slug: "design-system",
+    name: "Design system",
+    description:
+      "Canonical tokens and primitives ported from the core product. Colors, type, radius, shadow, chips, cards, fields — the source of truth for every new prototype. Light/dark toggle.",
+  },
+  {
     slug: "runner-os",
     name: "Runner — Integrations in context",
     description:
