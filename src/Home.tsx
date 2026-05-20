@@ -9,6 +9,12 @@ interface Prototype {
 
 const PROTOTYPES: Prototype[] = [
   {
+    slug: "folders",
+    name: "Folders · macOS Finder, lightly enriched",
+    description:
+      "A simulated macOS desktop hosting a draggable Finder window. The folder itself is regular Finder — sidebar, list view, status bar. The only AI addition is a small Latest card at the top of the file list that summarizes what's happening with the contents. Mock data anchored to Charlie's real prompt traffic.",
+  },
+  {
     slug: "runner-flow",
     name: "Runner flow · end-to-end demo",
     description:
@@ -61,6 +67,12 @@ const PROTOTYPES: Prototype[] = [
     name: "Runner — Integrations in context",
     description:
       "Mock macOS desktop with movable Notes, Slack, and Chrome windows. The Runner character attaches to the focused window and suggests context-aware todos and workflows.",
+  },
+  {
+    slug: "sprite-positioning",
+    name: "Sprite positioning · placement rules",
+    description:
+      "Stripped-down demo of the sprite's four placement rules. One window, one sprite, no panel. Drag the window to flip Tier 1 ↔ Tier 2 (top-right outside ↔ top-left outside). Maximize to drop into the bottom-right corner (Tier 3). Double-click the sprite while in a bottom corner to flip to the other corner. Unmaximize and it returns to the outside anchor.",
   },
   {
     slug: "dashboard-todolist",

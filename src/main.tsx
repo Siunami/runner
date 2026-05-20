@@ -7,6 +7,7 @@ import AgentTodolist from "./AgentTodolist";
 import App from "./App";
 import AutomateSilhouettes from "./AutomateSilhouettes";
 import DesignSystem from "./design-system/DesignSystem";
+import Folders from "./Folders";
 import Home from "./Home";
 import Outliner from "./Outliner";
 import Runner from "./Runner";
@@ -16,6 +17,7 @@ import RunnerStyle from "./RunnerStyle";
 import RunnerSubscriptions from "./RunnerSubscriptions";
 import ScratchpadToCards from "./ScratchpadToCards";
 import SplitView from "./SplitView";
+import SpritePositioning from "./SpritePositioning";
 import TabView from "./TabView";
 import TriagedCards from "./TriagedCards";
 import TriageFlow from "./TriageFlow";
@@ -34,6 +36,7 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/dashboard-subscriptions" element={<RunnerSubscriptions />} />
         <Route path="/runner-style" element={<RunnerStyle />} />
         <Route path="/runner-os" element={<RunnerOS />} />
+        <Route path="/sprite-positioning" element={<SpritePositioning />} />
         <Route path="/action-cards" element={<ActionCards />} />
         <Route path="/action-card-detail" element={<ActionCardDetail />} />
         <Route path="/triaged-cards" element={<TriagedCards />} />
@@ -42,6 +45,7 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/scratchpad-to-cards" element={<ScratchpadToCards />} />
         <Route path="/automate-silhouettes" element={<AutomateSilhouettes />} />
         <Route path="/runner-flow" element={<RunnerFlow />} />
+        <Route path="/folders" element={<Folders />} />
         <Route path="/design-system" element={<DesignSystem />} />
       </Routes>
     </HashRouter>
