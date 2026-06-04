@@ -3163,23 +3163,6 @@
         gap: 6px;
       }
 
-      .minimal-outline-action-badge {
-        height: 22px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        background: color-mix(in srgb, var(--foreground) 2%, transparent);
-        color: var(--muted);
-        cursor: pointer;
-        padding: 0 7px;
-        font-size: 11px;
-        line-height: 1;
-      }
-
-      .minimal-outline-action-badge:hover {
-        border-color: var(--border-strong);
-        color: var(--foreground);
-      }
-
       .minimal-action-layout {
         display: grid;
         gap: 14px;
@@ -3242,6 +3225,123 @@
         padding: 10px 12px;
       }
 
+      .minimal-outcome-card {
+        border: 1px solid var(--border-strong);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--foreground) 3%, var(--surface));
+        padding: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .minimal-outcome-card.done {
+        border-color: color-mix(in srgb, var(--green) 24%, var(--border-strong));
+        background: color-mix(in srgb, var(--green-soft) 44%, var(--surface));
+      }
+
+      .minimal-outcome-card.review {
+        border-color: color-mix(in srgb, var(--selected) 28%, var(--border-strong));
+        background: color-mix(in srgb, var(--selected-soft) 48%, var(--surface));
+      }
+
+      .minimal-outcome-title {
+        font-weight: 720;
+        line-height: 1.25;
+      }
+
+      .minimal-outcome-body {
+        color: var(--muted);
+        line-height: 1.42;
+      }
+
+      .minimal-outcome-facts {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .minimal-outcome-detail {
+        border-top: 1px solid color-mix(in srgb, var(--foreground) 9%, transparent);
+        padding-top: 10px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .minimal-outcome-detail-section {
+        border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--background) 38%, var(--surface));
+        overflow: hidden;
+      }
+
+      .minimal-outcome-detail-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        padding: 10px;
+        border-bottom: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+        align-items: start;
+      }
+
+      .minimal-outcome-detail-title {
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .minimal-outcome-detail-meta {
+        margin-top: 2px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .minimal-outcome-detail-list {
+        display: grid;
+      }
+
+      .minimal-outcome-detail-row {
+        display: grid;
+        grid-template-columns: 132px minmax(0, 1fr) auto;
+        gap: 10px;
+        padding: 10px;
+        align-items: start;
+      }
+
+      .minimal-outcome-detail-row + .minimal-outcome-detail-row {
+        border-top: 1px solid color-mix(in srgb, var(--foreground) 7%, transparent);
+      }
+
+      .minimal-outcome-detail-label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .minimal-outcome-detail-name {
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .minimal-outcome-detail-body {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.38;
+      }
+
+      .minimal-outcome-detail-facts {
+        margin-top: 7px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .minimal-outcome-detail-status {
+        justify-self: end;
+        white-space: nowrap;
+      }
+
       .minimal-card-nav {
         display: inline-flex;
         align-items: center;
@@ -3284,6 +3384,41 @@
         display: flex;
         justify-content: flex-start;
         padding-top: 8px;
+      }
+
+      .minimal-overview-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .minimal-overview-card {
+        border: 1px solid color-mix(in srgb, var(--foreground) 10%, transparent);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--foreground) 2%, var(--surface));
+        padding: 10px;
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+      }
+
+      .minimal-overview-label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.25;
+      }
+
+      .minimal-overview-title {
+        font-weight: 680;
+        line-height: 1.3;
+      }
+
+      .minimal-overview-body {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.4;
       }
 
       .minimal-selected-history {
@@ -3929,6 +4064,16 @@
           grid-template-columns: minmax(0, 1fr);
         }
 
+        .minimal-overview-card,
+        .minimal-outcome-detail-header,
+        .minimal-outcome-detail-row {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .minimal-outcome-detail-status {
+          justify-self: start;
+        }
+
         .todo-expanded {
           padding-left: 10px;
         }
@@ -4407,7 +4552,6 @@
       let activeFocusedSubgoalId = null;
       let activeFocusedRoute = "list";
       let activeMinimalCardIndex = 0;
-      let activeMinimalHistoryExpanded = false;
       let activeMinimalOutlineId = null;
       let activeMinimalOutlineDragId = null;
       let activeMinimalOutlineDragIds = new Set();
@@ -6403,6 +6547,559 @@
         },
       };
 
+      const minimalOverviewByScenario = {
+        dinner: {
+          task: [
+            {
+              label: "Needs review",
+              title: "Confirmation email is ready to send",
+              body: "Runner has assembled a Gmail send card using the chosen restaurant, reservation time, attendee list, and dietary constraints.",
+            },
+            {
+              label: "Resolved inputs",
+              title: "Venue, attendance, and dietary facts are settled",
+              body: "Foreign Cinema is the selected venue, all six attendees are accounted for, and the dietary notes are attached to the draft.",
+            },
+            {
+              label: "What remains",
+              title: "Approve or edit the outgoing message",
+              body: "Sending the email will complete the user-visible coordination step; the optional calendar hold can stay queued behind it.",
+            },
+          ],
+          clarify: [
+            {
+              label: "Outcome",
+              title: "The task has a usable operating contract",
+              body: "Runner can safely coordinate dinner for six near Moscone on Saturday evening without asking more setup questions.",
+            },
+            {
+              label: "Inputs captured",
+              title: "Count, timing, and location are locked",
+              body: "The goal now includes six attendees, a 7:00-8:15 PM dinner window, and a nearby-Moscone location constraint.",
+            },
+            {
+              label: "Visible downstream",
+              title: "Those constraints drive the rest of the work",
+              body: "Venue research, reservation hold, and the final attendee email all reference the approved constraints.",
+            },
+          ],
+          "clarify-count": [
+            {
+              label: "Input",
+              title: "Six attendees, no plus-ones",
+              body: "Matthew confirmed the reservation should cover the six named attendees only.",
+            },
+            {
+              label: "Applied to work",
+              title: "Every venue check used six seats",
+              body: "Runner used that count for availability checks, the reservation hold, and the final attendee message.",
+            },
+            {
+              label: "Outcome",
+              title: "Attendee count is no longer ambiguous",
+              body: "The booking and confirmation are now grounded in a single party size.",
+            },
+          ],
+          "clarify-window": [
+            {
+              label: "Input",
+              title: "Dinner should follow the conference day",
+              body: "Matthew wanted a Saturday dinner around 7:00-8:00 PM.",
+            },
+            {
+              label: "Applied to search",
+              title: "Late-only restaurants were removed",
+              body: "Runner filtered out otherwise viable restaurants that only had slots outside the acceptable dinner window.",
+            },
+            {
+              label: "Outcome",
+              title: "The task now has an acceptable booking window",
+              body: "Reservation work is constrained to Saturday tables between 7:00 PM and 8:15 PM.",
+            },
+          ],
+          "clarify-radius": [
+            {
+              label: "Input",
+              title: "Keep dinner near Moscone",
+              body: "Matthew asked Runner to keep the restaurant close to the conference hotel instead of searching all of San Francisco.",
+            },
+            {
+              label: "Applied to search",
+              title: "Long-ride options were dropped",
+              body: "Runner used the hotel as the anchor and removed venues that would require a long rideshare after the conference day.",
+            },
+            {
+              label: "Outcome",
+              title: "Location constraint is visible in the shortlist",
+              body: "The nearby-Moscone rule is attached to the venue shortlist and helps explain why Foreign Cinema is preferred.",
+            },
+          ],
+          research: [
+            {
+              label: "Outcome",
+              title: "The viable venue set is narrowed",
+              body: "Runner checked a real Moscone-area candidate set, kept the nearby backups, then expanded to short-ride options when the walking-distance set did not satisfy the quieter-table constraint.",
+            },
+            {
+              label: "Recommendation",
+              title: "Foreign Cinema is the best final fit",
+              body: "Barcha, Fang, Tropisueno, Fogo de Chao, Prospect, and Amber India remain visible in the search record, but Foreign Cinema wins on patio fit, timing, and dietary handling.",
+            },
+          ],
+          "research-search-area": [
+            {
+              label: "Search bounds",
+              title: "Runner searched a concrete Moscone-area candidate set",
+              body: "The search started with restaurants around Yerba Buena, Howard, Folsom, and Fremont, then expanded only to short rides once the close-in set had timing or conversation-fit tradeoffs.",
+            },
+            {
+              label: "Outcome",
+              title: "Six restaurants stayed in the task record",
+              body: "The outcome now includes the candidate list, addresses, group-fit read, and why each option was kept or dropped before shortlist comparison.",
+            },
+          ],
+          "research-shortlist": [
+            {
+              label: "Shortlist",
+              title: "Foreign Cinema, Barcha, and Fang remain explainable",
+              body: "Runner compared the final options against group size, timing, distance, noise level, budget, and dietary fit.",
+            },
+            {
+              label: "Outcome",
+              title: "Foreign Cinema is the recommendation",
+              body: "Barcha is the polished walking-distance backup; Fang is the closest family-style fallback; Nopa stays as an overflow fallback if the preferred hold falls through.",
+            },
+          ],
+          collect: [
+            {
+              label: "Outcome",
+              title: "Attendee responses are complete",
+              body: "All six attendees are accounted for and the dietary notes are available for the reservation and outgoing confirmation.",
+            },
+            {
+              label: "Important detail",
+              title: "One dietary note came from outside email",
+              body: "Priya's no-shellfish constraint was supplied by Matthew from a text thread and recorded in the task.",
+            },
+          ],
+          "collect-rsvp": [
+            {
+              label: "Response status",
+              title: "Everyone is accounted for",
+              body: "Runner tracked replies until all six attendee statuses were known.",
+            },
+            {
+              label: "Outcome",
+              title: "No attendance blocker remains",
+              body: "The reservation can move forward without waiting for more RSVP replies.",
+            },
+          ],
+          "collect-diet": [
+            {
+              label: "Constraints",
+              title: "Dietary notes are complete",
+              body: "Runner has vegetarian, no-red-meat, and no-shellfish notes attached to the reservation facts.",
+            },
+            {
+              label: "Outcome",
+              title: "The confirmation can mention accommodations",
+              body: "The final attendee email can say dietary details were included with the restaurant.",
+            },
+          ],
+          "collect-response-source": [
+            {
+              label: "Source",
+              title: "Out-of-band text was captured",
+              body: "Matthew supplied Priya's no-shellfish note from a separate conversation.",
+            },
+            {
+              label: "Outcome",
+              title: "The task record now explains where the fact came from",
+              body: "Runner can use the dietary note without pretending it arrived through the RSVP email thread.",
+            },
+          ],
+          booking: [
+            {
+              label: "Outcome",
+              title: "Reservation details are ready for the email",
+              body: "Foreign Cinema is selected, a patio table for six is held until 3 PM, and booking terms are attached to the send card.",
+            },
+            {
+              label: "Fallback",
+              title: "Nopa remains available as backup",
+              body: "Runner kept the second-best option in case the preferred hold expires before approval.",
+            },
+          ],
+          "booking-pick": [
+            {
+              label: "Decision",
+              title: "Foreign Cinema is the strongest venue",
+              body: "It best balances nearby location, acceptable timing, quieter patio fit, and dietary accommodation.",
+            },
+            {
+              label: "Outcome",
+              title: "The venue choice is explainable",
+              body: "The task can show why the recommendation changed from a list of options to one preferred booking.",
+            },
+          ],
+          "booking-hold": [
+            {
+              label: "Reservation",
+              title: "Foreign Cinema is holding a table",
+              body: "The restaurant can hold a patio table for six until 3 PM.",
+            },
+            {
+              label: "Outcome",
+              title: "The hold details are attached to the send card",
+              body: "The user can approve the email knowing what reservation Runner is confirming.",
+            },
+          ],
+          "booking-policy": [
+            {
+              label: "Terms",
+              title: "Booking terms are recorded",
+              body: "Runner captured cancellation timing, hold expiry, and dietary accommodation notes.",
+            },
+            {
+              label: "Outcome",
+              title: "The confirmation is grounded in real booking facts",
+              body: "The user can review the outbound message without needing to reopen the restaurant research.",
+            },
+          ],
+          prepare: [
+            {
+              label: "Needs review",
+              title: "The final attendee email is ready",
+              body: "The draft includes the restaurant, time, address, attendees, and dietary accommodation note.",
+            },
+            {
+              label: "Visible artifact",
+              title: "Gmail send card",
+              body: "The current card is the approval surface. Sending it will notify the attendee group.",
+            },
+            {
+              label: "Queued follow-up",
+              title: "Calendar invite stays optional",
+              body: "Runner can create a calendar hold after the email, but the email alone is enough to complete the requested confirmation.",
+            },
+          ],
+          "prepare-email": [
+            {
+              label: "Artifact",
+              title: "Attendee confirmation email",
+              body: "The message is assembled from the final restaurant, timing, RSVP, and dietary facts.",
+            },
+            {
+              label: "Outcome",
+              title: "Ready to send after approval",
+              body: "The only remaining step is the user decision on the Gmail send card.",
+            },
+          ],
+          "prepare-review": [
+            {
+              label: "Review surface",
+              title: "Send card created",
+              body: "Runner converted the draft into a user approval card with recipients, subject, body, and source facts.",
+            },
+            {
+              label: "Outcome",
+              title: "Approval resolves the attendee-message step",
+              body: "Once sent, the group has the final dinner logistics and this stage can close.",
+            },
+          ],
+          "prepare-calendar": [
+            {
+              label: "Optional",
+              title: "Calendar hold is queued, not blocking",
+              body: "Runner can create it after the email if the user wants calendar coverage.",
+            },
+            {
+              label: "Outcome",
+              title: "The task can still complete without it",
+              body: "The final confirmation email is the required deliverable for this ask.",
+            },
+          ],
+          confirm: [
+            {
+              label: "Final state",
+              title: "Dinner coordination is ready to close",
+              body: "The booking and attendee notification goal is satisfied once the user accepts the result.",
+            },
+            {
+              label: "Outcome",
+              title: "Reservation and attendee communication are visible",
+              body: "The task history keeps the venue, time, attendee message, and dietary details available for recall.",
+            },
+          ],
+          "confirm-review": [
+            {
+              label: "Outcome",
+              title: "Final result accepted",
+              body: "Dinner is booked, attendees were notified, and the dietary notes are captured.",
+            },
+          ],
+        },
+      };
+
+      const minimalOutcomeDetailsByScenario = {
+        dinner: {
+          task: [
+            {
+              title: "Visible task outputs",
+              meta: "What the user can inspect before approving the send card.",
+              status: "ready",
+              rows: [
+                {
+                  label: "Restaurant",
+                  name: "Foreign Cinema",
+                  meta: "2534 Mission St · short ride from Moscone",
+                  body: "Selected because the patio table, 7:30 PM timing, and dietary accommodation fit the group better than the close-in options.",
+                  status: "selected",
+                  facts: ["table for six", "patio", "dietary notes attached"],
+                },
+                {
+                  label: "Artifact",
+                  name: "Gmail send card",
+                  meta: "To: Alex, Priya, Sam, Mina, Diego, Lee",
+                  body: "The review surface includes the final restaurant, time, address, reservation note, and collected dietary constraints.",
+                  status: "needs review",
+                  facts: ["ready to send", "edit available"],
+                },
+                {
+                  label: "Research",
+                  name: "Restaurant candidate list",
+                  meta: "Moscone-area candidates plus short-ride expansions",
+                  body: "The search record is preserved so the recommendation can be audited without reopening the whole task run.",
+                  status: "attached",
+                  facts: ["6 close-in candidates", "2 final contenders"],
+                },
+              ],
+            },
+          ],
+          research: [
+            {
+              title: "Restaurant search result",
+              meta: "Candidate pool after applying party size, Saturday timing, distance, conversation fit, and dietary constraints.",
+              status: "shortlisted",
+              rows: [
+                {
+                  label: "1",
+                  name: "Foreign Cinema",
+                  meta: "2534 Mission St · California / Mediterranean · short ride",
+                  body: "Best final fit after the search widened beyond walking distance: patio table, acceptable dinner time, and clear dietary handling.",
+                  status: "recommended",
+                  facts: ["7:30 PM target", "patio fit", "short ride"],
+                },
+                {
+                  label: "2",
+                  name: "Barcha",
+                  meta: "28 Fremont St · Mediterranean / Middle Eastern · near Moscone",
+                  body: "Strong polished backup close to the conference area, with group/private-dining fit and a menu that can handle mixed preferences.",
+                  status: "backup",
+                  facts: ["nearby", "group friendly", "polished"],
+                },
+                {
+                  label: "3",
+                  name: "Fang",
+                  meta: "660 Howard St · Chinese · near Moscone",
+                  body: "Closest family-style fallback. Kept because it is convenient and seats groups, but ranked below quieter dinner options.",
+                  status: "fallback",
+                  facts: ["nearby", "family style", "livelier room"],
+                },
+              ],
+            },
+          ],
+          "research-search-area": [
+            {
+              title: "Restaurants found near Moscone",
+              meta: "Initial candidate set before ranking; walking-distance options stayed visible even when they were not selected.",
+              status: "6 found",
+              rows: [
+                {
+                  label: "Candidate",
+                  name: "Barcha",
+                  meta: "28 Fremont St · Mediterranean / Middle Eastern",
+                  body: "Polished nearby option with group-event fit and an open patio feel. Kept as the strongest walking-distance backup.",
+                  status: "viable",
+                  facts: ["near Moscone", "group friendly", "backup"],
+                },
+                {
+                  label: "Candidate",
+                  name: "Fang",
+                  meta: "660 Howard St · Chinese",
+                  body: "Very close to Moscone and good for sharing dishes. Kept as a convenient fallback, but the room is likely less calm for a conference dinner.",
+                  status: "fallback",
+                  facts: ["very close", "family style", "lively"],
+                },
+                {
+                  label: "Candidate",
+                  name: "Tropisueno",
+                  meta: "75 Yerba Buena Ln · Mexican",
+                  body: "Excellent proximity and casual energy. Dropped for this task because the goal calls for a quieter table and more polished client-dinner feel.",
+                  status: "dropped",
+                  facts: ["steps away", "casual", "too lively"],
+                },
+                {
+                  label: "Candidate",
+                  name: "Fogo de Chao",
+                  meta: "201 Third St · Brazilian steakhouse",
+                  body: "Strong group capacity and very close to Moscone. Dropped because the format is heavy, louder, and less flexible for the dietary mix.",
+                  status: "dropped",
+                  facts: ["nearby", "large groups", "format mismatch"],
+                },
+                {
+                  label: "Candidate",
+                  name: "Amber India",
+                  meta: "25 Yerba Buena Ln · North Indian",
+                  body: "Good vegetarian coverage and close to Moscone. Kept in the search notes but ranked below Barcha for the final group-dinner read.",
+                  status: "reserve backup",
+                  facts: ["nearby", "vegetarian fit", "upscale"],
+                },
+                {
+                  label: "Candidate",
+                  name: "Prospect",
+                  meta: "300 Spear St · New American",
+                  body: "More of a walk or short ride, but polished enough for a business dinner. Kept as a quality fallback if nearby tables fall through.",
+                  status: "reserve backup",
+                  facts: ["polished", "short ride", "events fit"],
+                },
+              ],
+            },
+            {
+              title: "Why the search expanded",
+              meta: "What changed after the close-in set was checked.",
+              status: "decision",
+              rows: [
+                {
+                  label: "Constraint",
+                  name: "Close to Moscone was necessary but not sufficient",
+                  meta: "Party of six · Saturday 7:00-8:15 PM · quieter table",
+                  body: "The nearby list produced viable backups, but the highest-confidence choice needed better conversation fit and a stronger patio/table match.",
+                  status: "applied",
+                  facts: ["distance", "timing", "noise", "dietary"],
+                },
+                {
+                  label: "Next step",
+                  name: "Expand only to short rides",
+                  meta: "No citywide search",
+                  body: "Runner widened the radius just enough to include higher-fit dinner rooms while keeping the post-conference travel burden low.",
+                  status: "bounded",
+                  facts: ["short ride only", "Moscone anchor retained"],
+                },
+              ],
+            },
+          ],
+          "research-shortlist": [
+            {
+              title: "Ranked shortlist",
+              meta: "The final comparison visible before booking work starts.",
+              status: "3 ranked",
+              rows: [
+                {
+                  label: "Recommended",
+                  name: "Foreign Cinema",
+                  meta: "Mission · short ride · patio dinner",
+                  body: "Best fit for a real dinner conversation: patio, reliable group feel, and reservation facts can be explained cleanly in the confirmation email.",
+                  status: "book first",
+                  facts: ["best overall fit", "dietary accommodation", "7:30 PM"],
+                },
+                {
+                  label: "Backup",
+                  name: "Barcha",
+                  meta: "28 Fremont St · near Moscone",
+                  body: "Best nearby fallback if short-ride expansion is rejected or the preferred hold expires.",
+                  status: "keep warm",
+                  facts: ["nearby", "polished", "group-friendly"],
+                },
+                {
+                  label: "Fallback",
+                  name: "Fang",
+                  meta: "660 Howard St · near Moscone",
+                  body: "Useful if convenience beats ambience. It stays behind Barcha because the table experience is likely livelier.",
+                  status: "fallback",
+                  facts: ["closest", "sharing menu", "lively"],
+                },
+              ],
+            },
+          ],
+          booking: [
+            {
+              title: "Reservation details carried forward",
+              meta: "The facts attached to the approval card.",
+              status: "ready",
+              rows: [
+                {
+                  label: "Venue",
+                  name: "Foreign Cinema",
+                  meta: "Patio table for six · Saturday 7:30 PM",
+                  body: "Selected over the closer backups because it better matches the dinner experience, not just distance.",
+                  status: "held",
+                  facts: ["hold expires 3 PM", "party of six", "patio"],
+                },
+                {
+                  label: "Backup",
+                  name: "Barcha",
+                  meta: "28 Fremont St",
+                  body: "Walking-distance alternative preserved in case the hold expires or the user wants to optimize for proximity.",
+                  status: "backup",
+                  facts: ["near Moscone", "polished"],
+                },
+              ],
+            },
+          ],
+          prepare: [
+            {
+              title: "What the approval card contains",
+              meta: "The user-visible output assembled from the research and booking work.",
+              status: "needs review",
+              rows: [
+                {
+                  label: "Email",
+                  name: "Dinner confirmation draft",
+                  meta: "To: Alex, Priya, Sam, Mina, Diego, Lee",
+                  body: "Includes Foreign Cinema, Saturday 7:30 PM, party of six, patio note, and the sentence that dietary details were shared with the restaurant.",
+                  status: "ready",
+                  facts: ["recipient list", "reservation facts", "dietary note"],
+                },
+                {
+                  label: "Source",
+                  name: "Restaurant research attached",
+                  meta: "Why Foreign Cinema won",
+                  body: "The send card can explain that closer options were checked and kept as backups, which makes the recommendation more trustworthy.",
+                  status: "attached",
+                  facts: ["candidate list", "shortlist", "backup plan"],
+                },
+              ],
+            },
+          ],
+          "prepare-email": [
+            {
+              title: "Email content ready for approval",
+              meta: "The actual deliverable for the task.",
+              status: "drafted",
+              rows: [
+                {
+                  label: "Subject",
+                  name: "Saturday dinner confirmed: Foreign Cinema at 7:30 PM",
+                  meta: "Gmail draft",
+                  body: "Concise subject line with the restaurant and time, so attendees can scan it from the inbox.",
+                  status: "ready",
+                  facts: ["restaurant", "time", "confirmed"],
+                },
+                {
+                  label: "Body",
+                  name: "Reservation details and attendee note",
+                  meta: "Includes address, time, party size, and dietary line",
+                  body: "The body tells attendees dinner is confirmed, the reservation is for six on the patio, and dietary notes have already been included.",
+                  status: "ready",
+                  facts: ["address", "party size", "dietary"],
+                },
+              ],
+            },
+          ],
+        },
+      };
+
       const ledgerResolutionByScenario = {
         dinner: {
           clarify: {
@@ -8376,34 +9073,6 @@
         return minimalHumanActionCountForSubgoal(scope.parent);
       }
 
-      function minimalActivityCountForLine(model, lineId) {
-        const scope = findFocusedGoalScope(model, lineId);
-        if (!scope) return 0;
-        return focusedActivityEntries(model, scope).length;
-      }
-
-      function renderMinimalOutlineActionBadge(model, lineId) {
-        const actionCount = minimalActivityCountForLine(model, lineId);
-        const reviewCount = minimalActionCountForLine(model, lineId);
-        if (!actionCount && !reviewCount) return "";
-        return [
-          actionCount
-            ? `
-              <button class="minimal-outline-action-badge" type="button" data-minimal-action-filter="${lineId}">
-                ${actionCount} action${actionCount === 1 ? "" : "s"}
-              </button>
-            `
-            : "",
-          reviewCount
-            ? `
-              <button class="minimal-outline-action-badge" type="button" data-minimal-action-filter="${lineId}">
-                ${reviewCount} review${reviewCount === 1 ? "" : "s"}
-              </button>
-            `
-            : "",
-        ].join("");
-      }
-
       function minimalOutlineAddMaxDepth(model) {
         const rows = minimalOutlineRows(model);
         const lastRow = rows[rows.length - 1];
@@ -8767,7 +9436,6 @@
 
       function renderMinimalOutlineRow(model, row, rows) {
         const depth = row.depth || 0;
-        const actionBadge = renderMinimalOutlineActionBadge(model, row.id);
         const progressLineId = minimalOutlineGroupRootId(rows, row.id);
         const progressKey = minimalProgressKey(model, progressLineId);
         const progressCategory = minimalProgressCategoryForRows(minimalOutlineGroupRows(rows, progressLineId));
@@ -8788,7 +9456,6 @@
               <div class="minimal-outline-title">${title}</div>
             </div>
             <div class="minimal-outline-meta">
-              ${actionBadge}
               <button class="minimal-outline-remove" type="button" data-minimal-outline-remove="${row.id}" aria-label="Remove ${title}">x</button>
             </div>
           </div>
@@ -8825,13 +9492,13 @@
         return `
           <section class="focused-action-section">
             <div class="focused-action-section-title">
-              <p class="section-title">Human action</p>
+              <p class="section-title">Current review</p>
               ${
                 cards.length > 1
                   ? `<div class="minimal-card-nav">
-                      <button class="card-arrow-button" type="button" data-minimal-card-step="-1" aria-label="Previous human action">‹</button>
+                      <button class="card-arrow-button" type="button" data-minimal-card-step="-1" aria-label="Previous review card">‹</button>
                       <span class="ledger-neutral-chip">${safeIndex + 1} / ${cards.length}</span>
-                      <button class="card-arrow-button" type="button" data-minimal-card-step="1" aria-label="Next human action">›</button>
+                      <button class="card-arrow-button" type="button" data-minimal-card-step="1" aria-label="Next review card">›</button>
                     </div>`
                   : `<span class="ledger-neutral-chip">1</span>`
               }
@@ -8881,45 +9548,227 @@
           .sort((a, b) => b.sortKey - a.sortKey);
       }
 
-      function renderMinimalRecentHistory(model, scope = null) {
-        const events = minimalHistoryEntries(model, scope);
-        if (!events.length) {
-          return `<div class="ledger-action-empty">${focusedWaitingCopy(model, scope)}</div>`;
+      function minimalScopeIndicator(scope) {
+        if (!scope) return "needs-action";
+        return scope.isChild ? scope.indicator : aggregateSubgoalIndicator(scope.parent);
+      }
+
+      function minimalOutcomeEntryForScope(model, scope = null) {
+        const overview = minimalOverviewByScenario[model.id]?.[scope?.id || "task"] || [];
+        return (
+          overview.find((entry) => /outcome|visible|artifact|review|final|needs/i.test(entry.label)) ||
+          overview[0] ||
+          null
+        );
+      }
+
+      function minimalOutcomeForScope(model, scope = null, humanCards = []) {
+        const current = scope?.parent || ledgerCurrentSubgoal(model);
+        const currentIndicator = scope ? minimalScopeIndicator(scope) : ledgerTaskIndicator(model);
+        const currentPath = scope ? minimalLinePath(model, scope.id) || scope.title : current?.title || model.status;
+        const resolution = scope?.isChild ? scope.line.resolution : current?.resolution;
+        if (resolution) {
+          return {
+            tone: "done",
+            status: "outcome",
+            title: resolution.title,
+            body: resolution.body,
+            facts: [
+              scope?.isChild ? `Attached to ${scope.parent.title}` : "Goal line complete",
+              currentPath,
+            ],
+          };
         }
-        const visibleEvents = activeMinimalHistoryExpanded ? events : events.slice(0, 5);
+        const blockingCard = humanCards.find(({ card }) => card.blocking);
+        if (blockingCard) {
+          return {
+            tone: "review",
+            status: "needs review",
+            title: `${blockingCard.card.title} is ready for approval`,
+            body:
+              "Runner has enough completed work to put a user-visible decision in front of you. Approving this card moves the task toward its final state.",
+            facts: [blockingCard.card.status, `Attached to ${blockingCard.subgoal.title}`],
+          };
+        }
+        const overviewOutcome = minimalOutcomeEntryForScope(model, scope);
+        if (overviewOutcome && currentIndicator !== "todo") {
+          return {
+            tone: currentIndicator === "done" ? "done" : currentIndicator === "needs-action" ? "review" : currentIndicator,
+            status: overviewOutcome.label.toLowerCase(),
+            title: overviewOutcome.title,
+            body: overviewOutcome.body,
+            facts: [ledgerIndicatorLabel(currentIndicator), currentPath],
+          };
+        }
+        if (currentIndicator === "waiting") {
+          return {
+            tone: "waiting",
+            status: "waiting",
+            title: `${currentPath} is waiting on an outside dependency`,
+            body: focusedWaitingCopy(model, scope || findFocusedGoalScope(model, current?.id)),
+            facts: ["No user review card yet"],
+          };
+        }
+        if (currentIndicator === "working") {
+          return {
+            tone: "working",
+            status: "working",
+            title: `Runner is working on ${currentPath}`,
+            body: "This line has progress, but it has not produced a completed outcome or reviewable card yet.",
+            facts: ["In progress"],
+          };
+        }
+        return {
+          tone: "neutral",
+          status: ledgerIndicatorLabel(currentIndicator).toLowerCase(),
+          title: currentPath,
+          body: focusedWaitingCopy(model, scope || findFocusedGoalScope(model, current?.id)),
+          facts: [],
+        };
+      }
+
+      function minimalOutcomeDetailsForScope(model, scope = null) {
+        const scenarioDetails = minimalOutcomeDetailsByScenario[model.id] || {};
+        const directDetails = scenarioDetails[scope?.id || "task"];
+        if (directDetails?.length) return directDetails;
+        if (scope?.isChild) {
+          const parentDetails = scenarioDetails[scope.parent.id];
+          if (parentDetails?.length) return parentDetails;
+        }
+        return [];
+      }
+
+      function renderMinimalOutcomeDetailFacts(facts = []) {
+        if (!facts.length) return "";
         return `
-          <div class="minimal-timeline ${activeMinimalHistoryExpanded ? "expanded" : ""}">
-            ${visibleEvents
+          <div class="minimal-outcome-detail-facts">
+            ${facts.map((fact) => `<span class="summary-chip">${minimalEscapeHtml(fact)}</span>`).join("")}
+          </div>
+        `;
+      }
+
+      function renderMinimalOutcomeDetails(model, scope = null) {
+        const sections = minimalOutcomeDetailsForScope(model, scope);
+        if (!sections.length) return "";
+        return `
+          <div class="minimal-outcome-detail">
+            ${sections
               .map(
-                (event) => `
-                  <div class="minimal-timeline-row">
-                    <span class="fine muted">${event.time}</span>
-                    <div>
-                      <div class="minimal-timeline-title">${event.title}</div>
-                      <div class="minimal-timeline-body">${event.body}</div>
+                (section) => `
+                  <div class="minimal-outcome-detail-section">
+                    <div class="minimal-outcome-detail-header">
+                      <div>
+                        <div class="minimal-outcome-detail-title">${minimalEscapeHtml(section.title)}</div>
+                        ${section.meta ? `<div class="minimal-outcome-detail-meta">${minimalEscapeHtml(section.meta)}</div>` : ""}
+                      </div>
+                      ${section.status ? `<span class="ledger-neutral-chip minimal-outcome-detail-status">${minimalEscapeHtml(section.status)}</span>` : ""}
                     </div>
-                    <span class="ledger-actor-badge ${event.actor}">${event.actor}</span>
+                    <div class="minimal-outcome-detail-list">
+                      ${(section.rows || [])
+                        .map(
+                          (row) => `
+                            <div class="minimal-outcome-detail-row">
+                              <div class="minimal-outcome-detail-label">${minimalEscapeHtml(row.label || "")}</div>
+                              <div>
+                                <div class="minimal-outcome-detail-name">${minimalEscapeHtml(row.name || "")}</div>
+                                ${row.meta ? `<div class="minimal-outcome-detail-meta">${minimalEscapeHtml(row.meta)}</div>` : ""}
+                                ${row.body ? `<div class="minimal-outcome-detail-body">${minimalEscapeHtml(row.body)}</div>` : ""}
+                                ${renderMinimalOutcomeDetailFacts(row.facts || [])}
+                              </div>
+                              ${row.status ? `<span class="ledger-neutral-chip minimal-outcome-detail-status">${minimalEscapeHtml(row.status)}</span>` : ""}
+                            </div>
+                          `,
+                        )
+                        .join("")}
+                    </div>
                   </div>
                 `,
               )
               .join("")}
           </div>
-          ${
-            events.length > 5
-              ? `<div class="minimal-history-footer">
-                  <button class="secondary-button" type="button" data-minimal-history-toggle>
-                    ${activeMinimalHistoryExpanded ? "Show recent 5" : `Show ${Math.min(10, events.length)} at once`}
-                  </button>
-                </div>`
-              : ""
-          }
+        `;
+      }
+
+      function renderMinimalOutcomeSection(model, scope = null, humanCards = []) {
+        const outcome = minimalOutcomeForScope(model, scope, humanCards);
+        return `
+          <section class="focused-action-section">
+            <div class="focused-action-section-title">
+              <p class="section-title">Outcome</p>
+              <span class="ledger-neutral-chip">${outcome.status}</span>
+            </div>
+            <div class="minimal-outcome-card ${outcome.tone}">
+              <div>
+                <div class="minimal-outcome-title">${outcome.title}</div>
+                <div class="minimal-outcome-body">${outcome.body}</div>
+              </div>
+              ${
+                outcome.facts.length
+                  ? `<div class="minimal-outcome-facts">${outcome.facts.map((fact) => `<span class="summary-chip">${fact}</span>`).join("")}</div>`
+                  : ""
+              }
+              ${renderMinimalOutcomeDetails(model, scope)}
+            </div>
+          </section>
+        `;
+      }
+
+      function minimalGenericOverviewEntries(model, scope = null) {
+        const eventIsUseful = (event) => !/subject|tighten|copy edit|edit draft|edited/i.test(event.title);
+        const events = minimalHistoryEntries(model, scope).filter(eventIsUseful);
+        if (!events.length) {
+          return [
+            {
+              label: "Status",
+              title: "No visible work has been recorded yet",
+              body: focusedWaitingCopy(model, scope),
+            },
+          ];
+        }
+        const userEvent = events.find((event) => event.actor === "user");
+        const agentEvent = events.find((event) => event.actor === "agent");
+        const outcomeEvent = events.find((event) => /resolved|outcome|complete|ready/i.test(event.title));
+        return [
+          outcomeEvent
+            ? { label: "Outcome", title: outcomeEvent.title, body: outcomeEvent.body }
+            : { label: "Current state", title: events[0].title, body: events[0].body },
+          agentEvent ? { label: "Runner work", title: agentEvent.title, body: agentEvent.body } : null,
+          userEvent ? { label: "User input", title: userEvent.title, body: userEvent.body } : null,
+        ].filter(Boolean);
+      }
+
+      function minimalOverviewEntries(model, scope = null) {
+        const scenarioOverview = minimalOverviewByScenario[model.id] || {};
+        const custom = scenarioOverview[scope?.id || "task"];
+        if (custom?.length) return custom;
+        return minimalGenericOverviewEntries(model, scope);
+      }
+
+      function renderMinimalActivityOverview(model, scope = null) {
+        const entries = minimalOverviewEntries(model, scope);
+        return `
+          <div class="minimal-overview-list">
+            ${entries
+              .map(
+                (entry) => `
+                  <div class="minimal-overview-card">
+                    <div class="minimal-overview-label">${entry.label}</div>
+                    <div>
+                      <div class="minimal-overview-title">${entry.title}</div>
+                      <div class="minimal-overview-body">${entry.body}</div>
+                    </div>
+                  </div>
+                `,
+              )
+              .join("")}
+          </div>
         `;
       }
 
       function renderMinimalActionsTab(model) {
         const scope = activeFocusedSubgoalId ? findFocusedGoalScope(model, activeFocusedSubgoalId) : null;
         const humanCards = minimalHumanActionCards(model, scope);
-        const historyCount = minimalHistoryEntries(model, scope).length;
+        const overviewCount = minimalOverviewEntries(model, scope).length;
         return `
           <div class="minimal-action-layout">
             ${
@@ -8929,17 +9778,14 @@
                   </div>`
                 : ""
             }
+            ${renderMinimalOutcomeSection(model, scope, humanCards)}
             ${renderMinimalHumanActionCard(model, humanCards, scope)}
             <section class="focused-action-section">
               <div class="focused-action-section-title">
-                <p class="section-title">Recent history</p>
-                <span class="ledger-neutral-chip">${
-                  activeMinimalHistoryExpanded
-                    ? `${historyCount} action${historyCount === 1 ? "" : "s"}`
-                    : `${Math.min(5, historyCount)} recent`
-                }</span>
+                <p class="section-title">Activity overview</p>
+                <span class="ledger-neutral-chip">${overviewCount} update${overviewCount === 1 ? "" : "s"}</span>
               </div>
-              ${renderMinimalRecentHistory(model, scope)}
+              ${renderMinimalActivityOverview(model, scope)}
             </section>
           </div>
         `;
@@ -9227,7 +10073,7 @@
                   ${renderTaskOrgOutlinePreview(model)}
                 </div>
                 <div>
-                  <p class="section-title">Recent history</p>
+                  <p class="section-title">Activity overview</p>
                   ${renderTaskOrgRecentHistory(model)}
                 </div>
               </div>
@@ -9819,7 +10665,6 @@
             activeFocusedSubgoalId = null;
             activeMinimalOutlineId = null;
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             render();
             return;
           }
@@ -9829,7 +10674,6 @@
             activeFocusedTab = tabButton.getAttribute("data-minimal-tab") || "goal";
             if (activeFocusedTab === "actions") activeFocusedSubgoalId = null;
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             render();
             return;
           }
@@ -9839,7 +10683,6 @@
             activeFocusedSubgoalId = null;
             activeFocusedTab = "actions";
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             render();
             return;
           }
@@ -9847,14 +10690,6 @@
           const cardNav = target.closest("[data-minimal-card-step]");
           if (cardNav) {
             activeMinimalCardIndex += Number(cardNav.getAttribute("data-minimal-card-step") || 0);
-            activeFocusedTab = "actions";
-            render();
-            return;
-          }
-
-          const historyToggle = target.closest("[data-minimal-history-toggle]");
-          if (historyToggle) {
-            activeMinimalHistoryExpanded = !activeMinimalHistoryExpanded;
             activeFocusedTab = "actions";
             render();
             return;
@@ -9868,7 +10703,6 @@
             activeFocusedTab = "actions";
             activeFocusedRoute = "detail";
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             render();
             return;
           }
@@ -9878,7 +10712,6 @@
             activeFocusedSubgoalId = actionFilter.getAttribute("data-minimal-action-filter");
             activeFocusedTab = "actions";
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             render();
             return;
           }
@@ -9907,7 +10740,6 @@
             activeFocusedSubgoalId = goalLine.getAttribute("data-minimal-goal-line");
             activeFocusedTab = "actions";
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             render();
             return;
           }
@@ -9921,7 +10753,6 @@
             activeFocusedTab = "goal";
             activeFocusedRoute = "detail";
             activeMinimalCardIndex = 0;
-            activeMinimalHistoryExpanded = false;
             activeMinimalOutlineAddDepth = 0;
             render();
           }
