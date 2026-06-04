@@ -19,6 +19,7 @@ import ScratchpadToCards from "./ScratchpadToCards";
 import SplitView from "./SplitView";
 import SpritePositioning from "./SpritePositioning";
 import TabView from "./TabView";
+import TaskDetailConceptS from "./TaskDetailConceptS";
 import TriagedCards from "./TriagedCards";
 import TriageFlow from "./TriageFlow";
 import "./styles.css";
@@ -31,6 +32,7 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/action-board" element={<App />} />
         <Route path="/split" element={<SplitView />} />
         <Route path="/tab" element={<TabView />} />
+        <Route path="/task-detail-concept-s" element={<TaskDetailConceptS />} />
         <Route path="/dashboard-todolist" element={<Runner />} />
         <Route path="/agent-todolist" element={<AgentTodolist />} />
         <Route path="/dashboard-subscriptions" element={<RunnerSubscriptions />} />

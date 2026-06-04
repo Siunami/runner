@@ -9,6 +9,12 @@ interface Prototype {
 
 const PROTOTYPES: Prototype[] = [
   {
+    slug: "task-detail-concept-s",
+    name: "Task detail · Concept S",
+    description:
+      "Standalone extraction of Concept S from the task-detail playground. Minimal task list, focused Goal and Actions detail, progress rail, outline rows, and one human action card at a time.",
+  },
+  {
     slug: "folders",
     name: "Folders · macOS Finder, lightly enriched",
     description:
