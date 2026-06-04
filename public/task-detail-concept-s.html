@@ -2324,7 +2324,7 @@
       }
 
       .focused-progress-rail:not(.large) .progress-segment {
-        cursor: default;
+        cursor: pointer;
       }
 
       .focused-progress-rail.large .progress-segment {
@@ -7959,7 +7959,7 @@
       function renderFocusedProgressRail(model, selectedSubgoalId, size = "compact") {
         const selectedScope = findFocusedGoalScope(model, selectedSubgoalId) || findFocusedGoalScope(model, model.defaultSubgoalId);
         const selectedId = selectedScope?.parent.id || model.defaultSubgoalId;
-        const interactive = size === "large";
+        const interactive = true;
         const segments = focusedProgressSegments(model);
         return `
           <div class="focused-progress-rail ${size === "large" ? "large" : ""}" style="--segments: ${model.subgoals.length}" aria-label="Goal progress">
@@ -8292,16 +8292,6 @@
           const target = event.target instanceof Element ? event.target : null;
           if (!target) return;
 
-          const taskButton = target.closest("[data-focused-task]");
-          if (taskButton) {
-            activeLedgerExample = taskButton.getAttribute("data-focused-task") || activeLedgerExample;
-            activeFocusedSubgoalId = null;
-            activeFocusedTab = "goal";
-            activeFocusedRoute = "detail";
-            render();
-            return;
-          }
-
           const backButton = target.closest("[data-focused-back]");
           if (backButton) {
             activeFocusedRoute = "list";
@@ -8335,8 +8325,21 @@
 
           const progressSegment = target.closest("[data-focused-progress]");
           if (progressSegment) {
+            const taskButton = progressSegment.closest("[data-focused-task]");
+            if (taskButton) activeLedgerExample = taskButton.getAttribute("data-focused-task") || activeLedgerExample;
             activeFocusedSubgoalId = progressSegment.getAttribute("data-focused-progress");
             activeFocusedTab = "actions";
+            activeFocusedRoute = "detail";
+            render();
+            return;
+          }
+
+          const taskButton = target.closest("[data-focused-task]");
+          if (taskButton) {
+            activeLedgerExample = taskButton.getAttribute("data-focused-task") || activeLedgerExample;
+            activeFocusedSubgoalId = null;
+            activeFocusedTab = "goal";
+            activeFocusedRoute = "detail";
             render();
             return;
           }
@@ -8635,7 +8638,7 @@
       }
 
       function renderMinimalProgressRail(model, selectedSubgoalId, size = "compact", rows = minimalOutlineRows(model)) {
-        const interactive = size === "large";
+        const interactive = true;
         return `
           <div
             class="minimal-progress-rail ${size === "large" ? "large" : ""} ${activeMinimalOutlineDragId ? "dragging" : ""}"
@@ -9859,8 +9862,11 @@
 
           const progressSegment = target.closest("[data-minimal-progress]");
           if (progressSegment) {
+            const taskButton = progressSegment.closest("[data-minimal-task]");
+            if (taskButton) activeLedgerExample = taskButton.getAttribute("data-minimal-task") || activeLedgerExample;
             activeFocusedSubgoalId = progressSegment.getAttribute("data-minimal-progress");
             activeFocusedTab = "actions";
+            activeFocusedRoute = "detail";
             activeMinimalCardIndex = 0;
             activeMinimalHistoryExpanded = false;
             render();
